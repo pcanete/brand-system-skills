@@ -1,0 +1,375 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://reference-web-system.local/reference-evidence.schema.json",
+  "title": "Reference Web System — REFERENCE_EVIDENCE",
+  "type": "object",
+  "required": [
+    "version",
+    "reference",
+    "scan",
+    "viewports",
+    "routes",
+    "captures",
+    "interactions",
+    "motion_samples",
+    "responsive_samples",
+    "coverage",
+    "limitations"
+  ],
+  "properties": {
+    "version": { "type": "string" },
+    "reference": {
+      "type": "object",
+      "required": ["url"],
+      "properties": {
+        "url": { "type": "string", "format": "uri" },
+        "scanned_at": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "scan_id": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "scan": {
+      "type": "object",
+      "required": ["mode", "capabilities"],
+      "properties": {
+        "mode": {
+          "enum": ["quick", "standard", "forensic"]
+        },
+        "capabilities": {
+          "type": "object",
+          "additionalProperties": { "type": "boolean" }
+        }
+      }
+    },
+    "viewports": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/viewport" }
+    },
+    "routes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/route" }
+    },
+    "captures": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/capture" }
+    },
+    "interactions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/interaction" }
+    },
+    "motion_samples": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/motion" }
+    },
+    "responsive_samples": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/responsive" }
+    },
+    "runtime_observations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/runtimeObservation" }
+    },
+    "technology_hypotheses": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/technologyHypothesis" }
+    },
+    "content_sources": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "accessibility_observations": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "limitations": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "viewport": {
+      "type": "object",
+      "required": ["id", "width", "height"],
+      "properties": {
+        "id": { "type": "string" },
+        "width": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "height": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "dpr": {
+          "type": "number",
+          "minimum": 0.1
+        }
+      },
+      "additionalProperties": false
+    },
+    "route": {
+      "type": "object",
+      "required": [
+        "path",
+        "family",
+        "importance",
+        "scan_status"
+      ],
+      "properties": {
+        "path": { "type": "string" },
+        "family": { "type": "string" },
+        "importance": {
+          "enum": [
+            "primary",
+            "secondary",
+            "utility"
+          ]
+        },
+        "scan_status": {
+          "enum": [
+            "not-scanned",
+            "partial",
+            "complete",
+            "blocked"
+          ]
+        },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "capture": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "route",
+        "artifact"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "type": {
+          "enum": [
+            "screenshot",
+            "video",
+            "dom-snapshot",
+            "computed-style",
+            "trace",
+            "other"
+          ]
+        },
+        "route": { "type": "string" },
+        "viewport": {
+          "type": ["string", "null"]
+        },
+        "artifact": { "type": "string" },
+        "scroll_position": {
+          "type": ["number", "null"]
+        },
+        "state": { "type": "object" },
+        "notes": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "interaction": {
+      "type": "object",
+      "required": [
+        "id",
+        "route",
+        "action",
+        "confidence"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "route": { "type": "string" },
+        "target": { "type": "object" },
+        "action": { "type": "string" },
+        "observed": { "type": "object" },
+        "before_capture": {
+          "type": ["string", "null"]
+        },
+        "after_capture": {
+          "type": ["string", "null"]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "salience": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "motion": {
+      "type": "object",
+      "required": [
+        "id",
+        "category",
+        "confidence"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "category": {
+          "enum": [
+            "entrance",
+            "exit",
+            "interaction",
+            "scroll-triggered",
+            "scroll-linked",
+            "continuous",
+            "media",
+            "page-transition",
+            "webgl"
+          ]
+        },
+        "target": {
+          "type": ["string", "object"]
+        },
+        "trigger": { "type": "object" },
+        "initial_state": { "type": "object" },
+        "final_state": { "type": "object" },
+        "timing": { "type": "object" },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "salience": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "responsive": {
+      "type": "object",
+      "required": [
+        "id",
+        "target",
+        "transformations"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "target": { "type": "string" },
+        "desktop": { "type": "object" },
+        "tablet": { "type": "object" },
+        "mobile": { "type": "object" },
+        "transformations": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "invariant",
+              "scale",
+              "reflow",
+              "reorder",
+              "replace",
+              "omit",
+              "recrop",
+              "interaction-substitution",
+              "motion-reduction",
+              "layout-mode-change"
+            ]
+          }
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "salience": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "runtimeObservation": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "value"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "kind": { "type": "string" },
+        "value": true,
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "technologyHypothesis": {
+      "type": "object",
+      "required": [
+        "id",
+        "hypothesis",
+        "confidence"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "behavior_ref": {
+          "type": ["string", "null"]
+        },
+        "hypothesis": { "type": "string" },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "additionalProperties": true
+    },
+    "coverage": {
+      "type": "object",
+      "properties": {
+        "visual": { "$ref": "#/$defs/score" },
+        "typography": { "$ref": "#/$defs/score" },
+        "layout": { "$ref": "#/$defs/score" },
+        "media": { "$ref": "#/$defs/score" },
+        "interaction": { "$ref": "#/$defs/score" },
+        "motion": { "$ref": "#/$defs/score" },
+        "responsive": { "$ref": "#/$defs/score" },
+        "transition": { "$ref": "#/$defs/score" },
+        "webgl": { "$ref": "#/$defs/score" }
+      },
+      "additionalProperties": false
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  },
+  "additionalProperties": true
+}
