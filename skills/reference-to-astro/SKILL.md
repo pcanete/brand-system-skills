@@ -1,9 +1,9 @@
 ---
 name: reference-to-astro
-description: Reconstructs reference-driven websites from STYLE_DNA, CONTENT_MANIFEST, and BUILD_BRIEF into high-fidelity Astro implementations. Use for recreating the visual, editorial, responsive, motion, media, and interaction language of a reference website with supplied content.
+description: Builds a website in Astro from an analyzed reference. Consumes STYLE_DNA, CONTENT_MANIFEST and BUILD_BRIEF, and reconstructs the reference's layout, typography, media, responsive, interaction and motion language using the client's own content. Use when reference contracts exist and the site has to be built, extended or verified. Not for inventing a visual direction from scratch, and not for analyzing a reference — that is reference-scanner.
 license: MIT
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # Reference-to-Astro
@@ -33,6 +33,57 @@ If an input is unavailable, do not fabricate certainty.
 Continue with available evidence and mark assumptions as inferred.
 
 Read `references/input-contract.md`.
+
+Each input has a contract:
+
+| Input | Schema | Template |
+| --- | --- | --- |
+| `STYLE_DNA.json` | `schemas/style-dna.schema.json` | produced by `reference-scanner` |
+| `REFERENCE_EVIDENCE.json` | `schemas/reference-evidence.schema.json` | produced by `reference-scanner` |
+| `CONTENT_MANIFEST.json` | `schemas/content-manifest.schema.json` | `assets/CONTENT_MANIFEST.example.json` |
+| `BUILD_BRIEF.md` | — | `assets/BUILD_BRIEF.template.md` |
+
+When an input is missing, produce it from its template before building rather
+than improvising around the gap.
+
+## Bundled tooling
+
+This skill ships executable checks. They are not optional decoration: run them
+at the points named below.
+
+| Command | When |
+| --- | --- |
+| `node scripts/validate-inputs.mjs` | before any construction work |
+| `node scripts/build-check.mjs` | after the structural build, and again before QA |
+| `node scripts/audit-assets.mjs` | once supplied media is wired in |
+| `node scripts/visual-qa.mjs` | during QA, once the site serves |
+
+All four accept `--project <dir>` and write their reports under `qa/` in that
+project. Install their dependencies once with `npm install` inside the skill
+directory.
+
+## Input gate
+
+Before any construction work, verify the contracts:
+
+```bash
+node scripts/validate-inputs.mjs \
+  --style STYLE_DNA.json \
+  --evidence REFERENCE_EVIDENCE.json \
+  --content CONTENT_MANIFEST.json
+```
+
+The validator rejects contracts that are well-formed but unsupported: claims
+recorded as observed with no evidence behind them, coverage that the scan did
+not earn, salient claims missing from `observations`.
+
+If it fails, do not start building. Return to whoever produced the contract
+with the specific gaps. Building on an unsupported contract produces a site
+whose decisions nobody can defend later.
+
+`--lenient` checks shape only. Use it to confirm a contract is at least
+well-formed while its evidence is still being gathered — never as a way past
+the gate.
 
 ## Authority hierarchy
 
@@ -125,6 +176,17 @@ Adapt the reference system to the content while preserving:
 
 Do not retrieve or reuse third-party copyrighted assets from the reference
 unless explicitly supplied or authorized.
+
+Read `references/media-strategy.md` before wiring media in: formats, cropping,
+loading, poster states and fallbacks are where supplied content most often
+breaks a reference layout.
+
+Once media is wired in, confirm every referenced asset actually resolves:
+
+```bash
+node scripts/audit-assets.mjs --content CONTENT_MANIFEST.json \
+  --evidence REFERENCE_EVIDENCE.json --project .
+```
 
 ## Framework policy
 
@@ -331,14 +393,26 @@ The build is not complete when it compiles.
 
 Read `references/visual-qa.md`.
 
-Run:
+Run the automated passes:
 
-- build check
-- console check
-- asset check
-- desktop pass
-- tablet pass
-- mobile pass
+```bash
+node scripts/build-check.mjs --project .
+node scripts/audit-assets.mjs --project .
+node scripts/visual-qa.mjs --profile QA_PROFILE.json --project .
+```
+
+`assets/QA_PROFILE.example.json` shows how to declare routes, viewports and
+interaction steps. Report findings with `assets/QA_REPORT.template.md`.
+
+`visual-qa.mjs` captures evidence — baselines per route and viewport,
+before/after pairs for each declared interaction, a reduced-motion pass, and
+every console or page error. It does not decide whether the result matches the
+reference. That comparison is yours: open the captures against the reference
+and judge them in the order below.
+
+Then run the passes the tooling cannot do for you:
+
+- desktop, tablet and mobile comparison against the reference
 - interaction pass
 - motion pass
 - reduced-motion pass
@@ -365,6 +439,9 @@ Review in this order:
 
 Complete only when:
 
+- `validate-inputs.mjs` passed before the build started
+- `build-check.mjs`, `audit-assets.mjs` and `visual-qa.mjs` ran and their
+  reports are in `qa/`
 - production build succeeds
 - no relevant console errors remain
 - supplied assets resolve

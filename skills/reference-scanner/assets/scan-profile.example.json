@@ -1,7 +1,7 @@
 {
   "version": "0.3",
   "mode": "forensic",
-  "reference_url": "https://example.com/",
+  "reference_url": "https://example.invalid/",
   "viewports": [
     {
       "id": "desktop-large",

@@ -84,6 +84,12 @@
       "kind": "direct-manipulation",
       "value": "Product experience instructs the user to drag around.",
       "confidence": 0.99
+    },
+    {
+      "id": "synthetic-media-sequence",
+      "kind": "media-sequence",
+      "value": "Three-step object transformation sequence presented in explicit order.",
+      "confidence": 0.99
     }
   ],
   "technology_hypotheses": [

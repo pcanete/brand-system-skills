@@ -1,9 +1,9 @@
 ---
 name: brand-dna-scanner
-description: Extracts a complete evidence-backed Brand DNA from websites, brand guidelines, campaigns, social media, photography, video, packaging, product, UI, copy, motion, environmental design, and other brand touchpoints. Distinguishes core brand identity from category conventions, campaign-specific styling, and one-off executions. Produces BRAND_DNA, BRAND_EVIDENCE, BRAND_REPORT, BRAND_RULES, and a reusable BRAND_PROMPT.
+description: Extracts an evidence-backed Brand DNA from a brand's own material — website, guidelines, campaigns, social, photography, video, packaging, product, UI and copy — separating lasting identity from category convention, campaign styling and one-off execution. Produces BRAND_DNA, BRAND_EVIDENCE, BRAND_REPORT, BRAND_RULES and a reusable BRAND_PROMPT. Use when a brand's rules have to be captured, audited, or handed to whoever makes new work. Not for analyzing one reference website's layout and behavior — that is reference-scanner.
 license: MIT
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Brand DNA Scanner
@@ -36,6 +36,27 @@ BRAND_RULES defines operational brand constraints.
 
 BRAND_PROMPT converts the DNA into reusable instructions for another
 creative/design agent.
+
+## Working files
+
+Write against the contracts from the start rather than reshaping the output at
+the end.
+
+| Output | Contract or template |
+| --- | --- |
+| `BRAND_DNA.json` | `schemas/brand-dna.schema.json` |
+| `BRAND_EVIDENCE.json` | `schemas/brand-evidence.schema.json` |
+| `BRAND_REPORT.md` | `assets/BRAND_REPORT.template.md` |
+| `BRAND_RULES.md` | `assets/BRAND_RULES.template.md` |
+| `BRAND_PROMPT.md` | `assets/BRAND_PROMPT.template.md` |
+
+`assets/SCAN_PROFILE.example.json` shows how to declare the scan up front:
+sources, channels, mode and the capabilities actually available.
+
+`examples/BRAND_DNA.example.json` and `examples/BRAND_EVIDENCE.example.json`
+are a small worked pair. Read them before writing your own: they show what
+"supported" looks like, including a claim deliberately kept channel-specific
+because a single source cannot establish recurrence.
 
 ## Evidence-first behavior
 
@@ -384,69 +405,13 @@ Analyze:
 - proof mechanisms
 - recurring content modules
 
-## Phase 10 — Product / packaging / physical
+## Phases 10-13 — Optional channels
 
-When evidence exists analyze:
+Product and packaging, environmental identity, sonic identity and brand
+behavior are expressed by some brands and not others.
 
-- form
-- silhouette
-- materials
-- proportions
-- labels
-- typography
-- tactile cues
-- unboxing
-- premium cues
-- sustainability cues
-- retail presentation
-- relationship between physical and digital identity
-
-## Phase 11 — Environmental identity
-
-When evidence exists analyze:
-
-- architecture/interiors
-- signage
-- wayfinding
-- spatial typography
-- material language
-- lighting
-- color
-- exhibition/event design
-- object placement
-- sensory cues
-
-## Phase 12 — Sonic identity
-
-When evidence exists analyze:
-
-- sonic logo
-- voice
-- music
-- tempo
-- instrumentation
-- interaction sounds
-- ambience
-- silence
-- recurring sonic motifs
-
-## Phase 13 — Brand behavior
-
-Analyze:
-
-- customer-service tone
-- onboarding
-- selling style
-- education
-- exclusivity
-- scarcity
-- transparency
-- community
-- social responses
-- error recovery
-- cultural participation
-
-Only infer behavior when enough evidence exists.
+Read `references/optional-channels.md` and analyze only the channels the
+available evidence actually supports. An empty channel is a correct result.
 
 ## Phase 14 — Distinctive asset analysis
 
@@ -528,78 +493,20 @@ Identify:
 Do not make a recent experimental campaign define the historical brand unless
 it is clearly becoming the new system.
 
-## Phase 18 — Recognition model
+## Phases 18-20 — Synthesis
 
-Determine:
+Read `references/synthesis-rules.md`.
 
-- minimum recognizable asset set
-- strongest three assets
-- strongest five assets
-- generic category assets
-- weakly owned assets
-- potentially proprietary combinations
+This is where the scan either becomes a system or stays an inventory. Produce:
 
-Example:
-
-Brand recognition may depend on:
-
-specific type proportion
-+ unusual crop style
-+ one accent color
-
-rather than logo alone.
-
-## Phase 19 — Relationship graph
-
-The most important synthesis step.
-
-Connect strategic principles to actual execution.
-
-Example:
-
-PRINCIPLE:
-Precision with cultural confidence.
-
-VERBAL:
-Short authoritative claims.
-
-TYPOGRAPHY:
-Tight, controlled display system.
-
-LAYOUT:
-Strict grid with deliberate exceptions.
-
-PHOTOGRAPHY:
-Technical objects treated as sculptural subjects.
-
-MOTION:
-Controlled and inertial rather than playful.
+- the **relationship graph**: strategic principles connected to the executions
+  that express them
+- the **recognition model**: the minimum asset set the brand is recognized by,
+  which is often not the logo
+- the **rule sets**: must preserve, may adapt, must not introduce, plus what is
+  channel-specific and what is campaign-specific
 
 Do not output disconnected checklists only.
-
-## Phase 20 — Brand rules
-
-Generate:
-
-### MUST PRESERVE
-
-Identity-defining principles/assets.
-
-### MAY ADAPT
-
-Flexible rules whose intent matters more than literal execution.
-
-### MUST NOT INTRODUCE
-
-Patterns incompatible with the observed identity.
-
-### CHANNEL-SPECIFIC
-
-Behaviors that should not be universalized.
-
-### CAMPAIGN-SPECIFIC
-
-Temporary art-direction rules.
 
 ## Phase 21 — Master Brand Prompt
 
@@ -634,6 +541,34 @@ FORENSIC mode should not claim complete Brand DNA when:
 - core identity is contradicted without resolution
 - distinctive asset claims lack recurrence
 - current vs legacy identity cannot be separated
+
+## Verification gate
+
+Before presenting anything, verify the contracts:
+
+```bash
+node scripts/validate-brand-dna.mjs \
+  --dna BRAND_DNA.json --evidence BRAND_EVIDENCE.json
+```
+
+Install the validator's dependencies once with `npm install` in the skill
+directory.
+
+Beyond schema shape, the validator enforces what this skill exists to protect:
+
+- an observation recorded as `exact` or `derived` carries `evidence_refs`
+- an asset claimed as owned or recurrent carries evidence
+- **recurrence is earned**: anything scored recurrent must trace back to at
+  least two distinct sources, so one spectacular execution cannot become
+  Brand DNA
+- declared coverage is backed by observations in that dimension
+- claims the contract itself marks as salient and confident appear in
+  `observations`, where they can be traced
+
+A rejection is information, not an obstacle. There are two honest answers to
+one: record the missing evidence, or lower the claim to what the material
+actually supports. `--lenient` checks shape only; it is for work in progress,
+never for a delivered Brand DNA.
 
 ## Final response
 

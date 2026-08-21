@@ -21,10 +21,14 @@ jobs:
           cache: npm
           cache-dependency-path: |
             skills/brand-dna-scanner/package-lock.json
+            skills/reference-scanner/package-lock.json
             skills/reference-to-astro/package-lock.json
 
       - name: Install Brand DNA validator dependencies
         run: npm ci --prefix skills/brand-dna-scanner
+
+      - name: Install reference scanner validator dependencies
+        run: npm ci --prefix skills/reference-scanner
 
       - name: Install Astro builder validator dependencies
         run: npm ci --prefix skills/reference-to-astro

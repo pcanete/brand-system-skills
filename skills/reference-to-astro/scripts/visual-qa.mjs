@@ -6,8 +6,6 @@ import process from "node:process";
 
 import { chromium } from "playwright";
 
-const cwd = process.cwd();
-
 function arg(name, fallback) {
   const index =
     process.argv.indexOf(`--${name}`);
@@ -16,6 +14,11 @@ function arg(name, fallback) {
     ? fallback
     : process.argv[index + 1];
 }
+
+const cwd = path.resolve(
+  process.cwd(),
+  arg("project", ".")
+);
 
 const profileFile =
   arg("profile", "QA_PROFILE.json");
@@ -40,6 +43,34 @@ function safe(value) {
     .replace(/[^a-z0-9-_]+/gi, "-")
     .replace(/^-|-$/g, "")
     .toLowerCase();
+}
+
+// A reference-grade site usually has looping video, ambient motion or a live
+// WebGL scene, and never reaches network idle. Load, then give the network a
+// bounded chance to settle instead of waiting on it.
+async function load(page, url, timeout) {
+  const settleTimeout =
+    typeof timeout === "number" ? timeout : 3000;
+
+  await page.goto(url, { waitUntil: "domcontentloaded" });
+
+  try {
+    await page.waitForLoadState("networkidle", {
+      timeout: settleTimeout
+    });
+  } catch {
+    // Expected on continuously animated pages. Not a failure.
+  }
+}
+
+function isIgnored(text, patterns = []) {
+  return patterns.some((pattern) => {
+    try {
+      return new RegExp(pattern, "i").test(text);
+    } catch {
+      return text.includes(pattern);
+    }
+  });
 }
 
 async function ensureFonts(page) {
@@ -150,7 +181,7 @@ async function performStep(page, step) {
 
     case "reload":
       await page.reload({
-        waitUntil: "networkidle"
+        waitUntil: "domcontentloaded"
       });
       break;
 
@@ -214,9 +245,7 @@ async function captureBaseline({
       profile.base_url
     ).toString();
 
-  await page.goto(url, {
-    waitUntil: "networkidle"
-  });
+  await load(page, url, profile.load_settle_ms);
 
   await settle(page);
 
@@ -245,6 +274,8 @@ async function captureBaseline({
   });
 
   for (const error of consoleErrors) {
+    if (isIgnored(error, profile.ignore_console)) continue;
+
     report.console_errors.push({
       route: route.id,
       viewport: viewport.id,
@@ -314,9 +345,7 @@ async function captureInteraction({
       profile.base_url
     ).toString();
 
-  await page.goto(url, {
-    waitUntil: "networkidle"
-  });
+  await load(page, url, profile.load_settle_ms);
 
   await settle(page);
 
@@ -358,6 +387,8 @@ async function captureInteraction({
   });
 
   for (const error of consoleErrors) {
+    if (isIgnored(error, profile.ignore_console)) continue;
+
     report.console_errors.push({
       interaction: interaction.id,
       viewport: viewport.id,
@@ -475,7 +506,14 @@ async function main() {
       }
     }
 
-    const mobile =
+    // Reduced motion is a property of the whole site, not of its homepage.
+    // Every route gets the pass. The viewport can be declared with
+    // `reduced_motion_viewport`; otherwise it follows the mobile one.
+    const reducedViewport =
+      viewportById(
+        profile,
+        profile.reduced_motion_viewport
+      ) ||
       profile.viewports.find(
         (viewport) =>
           viewport.id === "mobile"
@@ -484,24 +522,25 @@ async function main() {
         profile.viewports.length - 1
       ];
 
-    const home =
-      profile.routes[0];
-
-    if (mobile && home) {
-      try {
-        await captureBaseline({
-          browser,
-          profile,
-          viewport: mobile,
-          route: home,
-          report,
-          reducedMotion: "reduce"
-        });
-      } catch (error) {
-        report.failures.push({
-          type: "reduced-motion",
-          error: error.message
-        });
+    if (reducedViewport) {
+      for (const route of profile.routes) {
+        try {
+          await captureBaseline({
+            browser,
+            profile,
+            viewport: reducedViewport,
+            route,
+            report,
+            reducedMotion: "reduce"
+          });
+        } catch (error) {
+          report.failures.push({
+            type: "reduced-motion",
+            route: route.id,
+            viewport: reducedViewport.id,
+            error: error.message
+          });
+        }
       }
     }
   } finally {
@@ -542,9 +581,17 @@ async function main() {
 
   console.log(`Report: ${reportPath}`);
 
+  console.log(
+    "\nCaptures are evidence, not a verdict: compare them against the reference."
+  );
+
+  // A console error is a defect until someone decides otherwise. Noise from
+  // third-party embeds belongs in the profile's `ignore_console` patterns,
+  // where the decision stays visible, rather than being silently tolerated.
   if (
     report.page_errors.length ||
-    report.failures.length
+    report.failures.length ||
+    report.console_errors.length
   ) {
     process.exitCode = 1;
   }

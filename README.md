@@ -68,6 +68,19 @@ La reconstrucción busca equivalencia perceptual y funcional. No copia código p
 
 Los contratos JSON se validan contra esquemas y la implementación incluye controles automatizados. El resultado se puede revisar, repetir y mantener.
 
+### La disciplina se verifica, no se pide
+
+Un principio que solo está escrito en prosa es una exhortación: quien produce el contrato puede ignorarlo sin que nada lo señale. Por eso cada skill trae un validador que corre sobre su propia salida, y ese validador no revisa solamente la forma.
+
+Rechaza un contrato bien armado pero sin sustento:
+
+- una observación registrada como `exact` o `derived` sin ninguna evidencia detrás;
+- una cobertura declarada que el escaneo no ganó —`motion: 0.8` sin una sola muestra de movimiento—;
+- una afirmación que el propio contrato marca como saliente y confiable pero que no aparece en `observations`, donde podría rastrearse;
+- en marca, un activo declarado **recurrente** que se apoya en una sola fuente. La recurrencia significa literalmente que algo aparece más de una vez: exigir dos fuentes distintas es lo que impide que una campaña espectacular se convierta en ADN.
+
+Frente a un rechazo hay dos respuestas honestas: registrar la evidencia que falta, o bajar la afirmación a lo que el material realmente sostiene. El modo `--lenient` verifica solo la forma y existe para trabajo en curso, no para entregar.
+
 ## Los skills
 
 ### 1. `brand-dna-scanner`
@@ -84,8 +97,6 @@ Produce:
 
 Puede alimentar webs, presentaciones, campañas, contenido social, guiones, prompts visuales y sistemas de diseño. Su foco no es describir una pieza aislada, sino encontrar los patrones que sobreviven entre canales.
 
-Versión actual: `0.1.0`.
-
 ### 2. `reference-scanner`
 
 Analiza una web de referencia como un sistema visual y conductual. Registra el comportamiento de escritorio y móvil, la estructura de las páginas, la tipografía, el color, los medios, el movimiento, las interacciones y las relaciones espaciales.
@@ -97,9 +108,7 @@ Produce:
 - `STYLE_REPORT.md`: explicación legible de los hallazgos;
 - capturas, inventarios y artefactos auxiliares cuando el análisis lo requiere.
 
-Puede trabajar como skill independiente. Si existe un `BRAND_DNA`, lo usa como contexto de interpretación sin promover automáticamente una conducta web a regla central de marca.
-
-Versión actual: `0.3.0`.
+Puede trabajar como skill independiente, y verifica su propia salida antes de entregarla. Si existe un `BRAND_DNA`, lo usa como contexto de interpretación sin promover automáticamente una conducta web a regla central de marca.
 
 ### 3. `reference-to-astro`
 
@@ -111,12 +120,11 @@ El skill:
 - reemplaza el contenido de la referencia por contenido autorizado del cliente;
 - mantiene responsive, jerarquía, ritmo y comportamiento;
 - implementa movimiento con respeto por `prefers-reduced-motion`;
+- rechaza los contratos de entrada que no estén sostenidos por evidencia, antes de empezar a construir;
 - valida estructura, contratos y calidad técnica;
-- ejecuta QA visual con Playwright cuando corresponde.
+- produce evidencia visual con Playwright —capturas por ruta y viewport, pares antes/después de cada interacción, pasada de movimiento reducido— para que la comparación contra la referencia se haga mirando, no recordando. Esa comparación es humana: acá no hay diff automático.
 
 Su meta no es entregar una maqueta estática, sino una base web mantenible y verificable.
-
-Versión actual: `0.3.0`.
 
 ## Flujo completo de trabajo
 
@@ -128,6 +136,8 @@ Versión actual: `0.3.0`.
 6. **Preparar el build brief.** Mapear contenido, rutas, componentes, activos y restricciones.
 7. **Construir con Astro.** Ejecutar `reference-to-astro` y producir la implementación.
 8. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
+
+Cada paso que produce un contrato termina con su validador. Un contrato rechazado no se fuerza: se completa la evidencia o se baja la afirmación.
 
 También es posible utilizar solamente una capa. Por ejemplo, `brand-dna-scanner` puede preparar una campaña sin construir una web, y `reference-scanner` puede documentar una referencia para un equipo que implementará con otra tecnología.
 
@@ -155,14 +165,9 @@ También es posible utilizar solamente una capa. Por ejemplo, `brand-dna-scanner
 
 ## Instalación
 
-### Desde Codex
-
-Puedes pedir la instalación de cada skill usando su directorio público:
-
-```text
-Instala este skill:
-https://github.com/pcanete/brand-system-skills/tree/main/skills/brand-dna-scanner
-```
+Los tres skills funcionan igual en **Claude** y en **Codex**: un `SKILL.md` con
+su frontmatter, sus referencias, sus contratos y sus validadores. Cambia dónde
+se copia el directorio.
 
 Skills disponibles:
 
@@ -172,15 +177,33 @@ Skills disponibles:
 
 Instala los tres para el flujo completo de marca a web, o solamente el que corresponda a una tarea puntual.
 
-### Instalación manual
+### En Claude
 
-Copia cada directorio deseado directamente dentro de la carpeta local de skills de Codex:
+Copia el directorio del skill dentro de la carpeta de skills:
+
+```text
+~/.claude/skills/<nombre-del-skill>/SKILL.md      personal, disponible en todo proyecto
+<proyecto>/.claude/skills/<nombre-del-skill>/     del proyecto, viaja con el repositorio
+```
+
+Claude lee la descripción del frontmatter para decidir cuándo activarlo, así que cada skill debe quedar como hijo directo de la carpeta.
+
+### En Codex
+
+Puedes pedir la instalación usando el directorio público:
+
+```text
+Instala este skill:
+https://github.com/pcanete/brand-system-skills/tree/main/skills/brand-dna-scanner
+```
+
+O copiarlo a mano:
 
 ```text
 ~/.codex/skills/<nombre-del-skill>/SKILL.md
 ```
 
-No copies el monorepo completo como si fuera un único skill: Codex debe encontrar cada skill como hijo directo de `~/.codex/skills`.
+En los dos motores vale la misma advertencia: no copies el monorepo completo como si fuera un único skill.
 
 Consulta la [guía de instalación](docs/installation.md) para dependencias y detalles.
 
@@ -214,10 +237,12 @@ brand-system-skills/
 │   │   ├── SKILL.md
 │   │   ├── schemas/
 │   │   ├── scripts/
+│   │   ├── examples/
 │   │   └── references/
 │   ├── reference-scanner/
 │   │   ├── SKILL.md
 │   │   ├── schemas/
+│   │   ├── scripts/
 │   │   └── references/
 │   └── reference-to-astro/
 │       ├── SKILL.md
@@ -230,6 +255,8 @@ brand-system-skills/
 │   └── versioning.md
 ├── scripts/
 ├── tests/
+│   ├── reference-system/   fixtures que deben validar
+│   └── rejected/           fixtures que deben ser rechazados
 ├── .github/workflows/
 ├── CHANGELOG.md
 ├── CONTRIBUTING.md
@@ -241,21 +268,25 @@ Es un monorepo de mantenimiento, no un skill único acoplado. Cada skill conserv
 
 ## Desarrollo y validación
 
-Para validar el repositorio:
+Los validadores de los skills son los que ejecuta la revisión del repositorio, así que sus dependencias hacen falta antes de correr `npm test`:
 
 ```bash
-npm install
+npm ci --prefix skills/brand-dna-scanner
+```
+
+```bash
+npm ci --prefix skills/reference-scanner
+```
+
+```bash
+npm ci --prefix skills/reference-to-astro
+```
+
+```bash
 npm test
 ```
 
-La validación comprueba estructura, metadatos, archivos requeridos, JSON, sincronización de contratos compartidos y otros invariantes del repositorio. GitHub Actions ejecuta la misma revisión en cada cambio.
-
-Algunas herramientas incluidas en los skills tienen dependencias propias:
-
-```bash
-npm install --prefix skills/brand-dna-scanner
-npm install --prefix skills/reference-to-astro
-```
+La revisión comprueba estructura, metadatos, archivos requeridos, JSON, coherencia de versiones entre `SKILL.md`, `package.json` y la documentación, sincronización de los contratos compartidos, y que ningún archivo empaquetado quede sin ser mencionado por su skill. Además corre los validadores sobre los ejemplos —que deben pasar— y sobre los fixtures de `tests/rejected/` —que deben ser rechazados—: si un contrato sin sustento pasara, las compuertas dejaron de funcionar. GitHub Actions ejecuta lo mismo en cada cambio.
 
 El QA visual de `reference-to-astro` puede requerir Chromium para Playwright:
 
@@ -269,9 +300,9 @@ Cada skill sigue versionado semántico de forma independiente:
 
 | Skill | Versión actual | Contrato compatible |
 | --- | ---: | --- |
-| `brand-dna-scanner` | `0.1.0` | Brand DNA `0.1.x` |
-| `reference-scanner` | `0.3.0` | Web reference schemas `0.3.x` |
-| `reference-to-astro` | `0.3.0` | Web reference schemas `0.3.x` |
+| `brand-dna-scanner` | `0.2.0` | Brand DNA `0.1.x` |
+| `reference-scanner` | `0.4.0` | Web reference schemas `0.3.x` |
+| `reference-to-astro` | `0.4.0` | Web reference schemas `0.3.x` |
 
 Para actualizar una copia del repositorio:
 

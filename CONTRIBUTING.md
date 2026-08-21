@@ -14,9 +14,19 @@ schema clarity, validation, or real-world usefulness.
 
 ```powershell
 npm ci --prefix skills/brand-dna-scanner
+npm ci --prefix skills/reference-scanner
 npm ci --prefix skills/reference-to-astro
 npm test
 ```
+
+## Changes to the gates
+
+The validators in each skill are the point of the project: they turn the stated
+discipline into something that fails. Loosening a gate needs a reason in the
+pull request, and `tests/rejected/` must keep failing.
+
+Keep `scripts/lib/web-contracts.mjs` byte-identical between `reference-scanner`
+and `reference-to-astro`.
 
 ## Changes to schemas
 

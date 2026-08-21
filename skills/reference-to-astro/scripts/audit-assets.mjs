@@ -4,8 +4,6 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
-const cwd = process.cwd();
-
 function arg(name, fallback) {
   const index = process.argv.indexOf(`--${name}`);
 
@@ -13,6 +11,11 @@ function arg(name, fallback) {
     ? fallback
     : process.argv[index + 1];
 }
+
+const cwd = path.resolve(
+  process.cwd(),
+  arg("project", ".")
+);
 
 const contentFile =
   arg("content", "CONTENT_MANIFEST.json");

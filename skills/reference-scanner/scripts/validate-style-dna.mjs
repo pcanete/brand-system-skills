@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-// Verifies the Brand DNA this skill produces. Schema validity is necessary
-// but not sufficient: the gates check that the identity model is actually
-// supported by the material that was inventoried.
+// Verifies the artifacts this skill produces, before they are handed to an
+// implementer. Schema validity is necessary but not sufficient: the gates
+// also check that the contract is actually supported by recorded evidence.
 //
 // Usage:
-//   node scripts/validate-brand-dna.mjs \
-//     --dna BRAND_DNA.json --evidence BRAND_EVIDENCE.json
+//   node scripts/validate-style-dna.mjs \
+//     --style STYLE_DNA.json --evidence REFERENCE_EVIDENCE.json
 //
 //   --lenient   check shape and reference integrity only
 //   --schemas   override the schema directory
@@ -20,8 +20,8 @@ import {
   formatSchemaErrors,
   readJson,
   reportGroups,
-  verifyBrandContracts
-} from "./lib/brand-contracts.mjs";
+  verifyWebContracts
+} from "./lib/web-contracts.mjs";
 
 const cwd = process.cwd();
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -34,26 +34,29 @@ function arg(name, fallback) {
 
 const strict = !process.argv.includes("--lenient");
 
-const dnaFile = arg("dna", "BRAND_DNA.json");
-const evidenceFile = arg("evidence", "BRAND_EVIDENCE.json");
+const files = {
+  style: arg("style", "STYLE_DNA.json"),
+  evidence: arg("evidence", "REFERENCE_EVIDENCE.json")
+};
+
 const schemaDir = arg("schemas", path.resolve(scriptDir, "../schemas"));
 
 async function main() {
-  const [dna, evidence, dnaSchema, evidenceSchema] = await Promise.all([
-    readJson(dnaFile, cwd),
-    readJson(evidenceFile, cwd),
-    readJson(path.join(schemaDir, "brand-dna.schema.json"), cwd),
-    readJson(path.join(schemaDir, "brand-evidence.schema.json"), cwd)
+  const [style, evidence, styleSchema, evidenceSchema] = await Promise.all([
+    readJson(files.style, cwd),
+    readJson(files.evidence, cwd),
+    readJson(path.join(schemaDir, "style-dna.schema.json"), cwd),
+    readJson(path.join(schemaDir, "reference-evidence.schema.json"), cwd)
   ]);
 
   const validators = createValidator({
-    BRAND_DNA: dnaSchema,
-    BRAND_EVIDENCE: evidenceSchema
+    STYLE_DNA: styleSchema,
+    REFERENCE_EVIDENCE: evidenceSchema
   });
 
   const documents = {
-    BRAND_DNA: dna,
-    BRAND_EVIDENCE: evidence
+    STYLE_DNA: style,
+    REFERENCE_EVIDENCE: evidence
   };
 
   let failed = false;
@@ -68,20 +71,20 @@ async function main() {
     }
   }
 
-  if (reportGroups(verifyBrandContracts(dna, evidence, { strict }))) {
+  if (reportGroups(verifyWebContracts(style, evidence, { strict }))) {
     failed = true;
   }
 
   if (failed) {
     console.error(
-      "\nBrand DNA rejected. Record the missing evidence or lower the claim."
+      "\nScan artifacts rejected. Record the missing evidence or lower the claim."
     );
     process.exitCode = 1;
     return;
   }
 
   console.log(
-    `\nBrand DNA verified${strict ? "" : " (lenient: shape only)"}.`
+    `\nScan artifacts verified${strict ? "" : " (lenient: shape only)"}.`
   );
 }
 
