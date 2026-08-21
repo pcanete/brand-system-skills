@@ -1,2 +1,314 @@
-# brand-system-skills
-Evidence-driven Brand DNA, reference website analysis, and Astro reconstruction skills
+# Brand System Skills
+
+**Un sistema abierto de skills para pasar de señales dispersas de una marca a una implementación web fiel, explicable y verificable.**
+
+Una marca no es solamente una paleta. Una web no es solamente una captura de pantalla. Y reconstruir una referencia no debería significar copiar su código ni confundir su identidad con la del cliente.
+
+`brand-system-skills` organiza ese trabajo en tres capacidades independientes y compatibles: extraer el ADN de una marca, analizar el sistema visual y conductual de una web de referencia, y convertir esos contratos en un sitio Astro con contenido y materiales reales.
+
+El repositorio está pensado para diseñadores, desarrolladores, equipos de marca y agentes de IA que necesitan trabajar con más criterio que una indicación como «hacelo parecido a esto».
+
+## El problema que resuelve
+
+En un proyecto real suelen convivir fuentes incompletas o contradictorias:
+
+- una web existente;
+- un manual de marca;
+- redes sociales y campañas;
+- fotografías, videos y piezas editoriales;
+- una referencia externa elegida por su estructura o su atmósfera;
+- contenido nuevo provisto por el cliente.
+
+Sin un método, esas señales terminan convertidas en decisiones arbitrarias. Este sistema las transforma en contratos explícitos: qué está observado, qué fue inferido, qué pertenece al núcleo de la marca, qué corresponde solamente al canal web y cómo debe implementarse.
+
+El objetivo no es automatizar el gusto. Es hacer visible el razonamiento para que la dirección creativa, la producción y la validación puedan trabajar sobre una misma base.
+
+## Las tres capas
+
+| Capa | Skill | Pregunta que responde | Salida principal |
+| --- | --- | --- | --- |
+| Identidad | `brand-dna-scanner` | ¿Qué hace reconocible y consistente a esta marca? | `BRAND_DNA.json` y evidencia asociada |
+| Expresión web | `reference-scanner` | ¿Cómo funciona visualmente esta web de referencia? | `STYLE_DNA.json` y evidencia asociada |
+| Implementación | `reference-to-astro` | ¿Cómo se reconstruye ese sistema con el contenido del cliente? | Proyecto Astro verificado |
+
+```text
+Fuentes de marca ──> brand-dna-scanner ──> BRAND_DNA
+                                              │
+Web de referencia ─> reference-scanner ─> STYLE_DNA
+                                              │
+Contenido + assets + brief ───────────────────┤
+                                              v
+                                    reference-to-astro
+                                              │
+                                              v
+                                  sitio Astro + QA visual
+```
+
+Las capas se complementan, pero no se confunden. El ADN de marca puede orientar una web, una campaña, una presentación o una pieza social. El ADN visual de una referencia web describe ese canal específico. La implementación consume ambos criterios sin apropiarse de la identidad de terceros.
+
+## Principios de funcionamiento
+
+### Evidencia antes que certeza
+
+Cada afirmación relevante debe poder rastrearse hasta una fuente observada. Cuando algo no está demostrado, se registra como inferencia con un nivel de confianza, no como una verdad de marca.
+
+### Núcleo antes que ejecución
+
+El sistema distingue entre reglas duraderas —voz, personalidad, códigos visuales, tensiones y límites— y decisiones propias de una pieza o canal. Esto evita convertir una moda de campaña en una regla permanente.
+
+### Comportamiento antes que tecnología
+
+Una referencia web se analiza por su jerarquía, ritmo, composición, responsive, movimiento, interacción y uso de medios. El framework original de la referencia no define el resultado.
+
+### Fidelidad sin copia
+
+La reconstrucción busca equivalencia perceptual y funcional. No copia código propietario, textos, logos ni activos protegidos. La referencia aporta lógica visual; el cliente aporta identidad y contenido.
+
+### Verificación, no intuición aislada
+
+Los contratos JSON se validan contra esquemas y la implementación incluye controles automatizados. El resultado se puede revisar, repetir y mantener.
+
+## Los skills
+
+### 1. `brand-dna-scanner`
+
+Extrae un sistema de identidad respaldado por evidencia a partir de sitios, brand books, campañas, redes sociales, piezas editoriales y otros puntos de contacto.
+
+Produce:
+
+- `BRAND_DNA.json`: contrato estructurado de identidad;
+- `BRAND_EVIDENCE.json`: inventario de fuentes y soporte de cada hallazgo;
+- `BRAND_REPORT.md`: lectura humana del sistema de marca;
+- `BRAND_RULES.md`: reglas operativas, límites y anti-patrones;
+- `BRAND_PROMPT.md`: base reutilizable para crear nuevas piezas con IA.
+
+Puede alimentar webs, presentaciones, campañas, contenido social, guiones, prompts visuales y sistemas de diseño. Su foco no es describir una pieza aislada, sino encontrar los patrones que sobreviven entre canales.
+
+Versión actual: `0.1.0`.
+
+### 2. `reference-scanner`
+
+Analiza una web de referencia como un sistema visual y conductual. Registra el comportamiento de escritorio y móvil, la estructura de las páginas, la tipografía, el color, los medios, el movimiento, las interacciones y las relaciones espaciales.
+
+Produce:
+
+- `STYLE_DNA.json`: contrato reproducible del sistema web;
+- `REFERENCE_EVIDENCE.json`: observaciones y procedencia;
+- `STYLE_REPORT.md`: explicación legible de los hallazgos;
+- capturas, inventarios y artefactos auxiliares cuando el análisis lo requiere.
+
+Puede trabajar como skill independiente. Si existe un `BRAND_DNA`, lo usa como contexto de interpretación sin promover automáticamente una conducta web a regla central de marca.
+
+Versión actual: `0.3.0`.
+
+### 3. `reference-to-astro`
+
+Construye una implementación Astro a partir de los contratos de referencia, un manifiesto de contenido, los materiales entregados y un brief de producción.
+
+El skill:
+
+- traduce reglas visuales a tokens, layouts y componentes;
+- reemplaza el contenido de la referencia por contenido autorizado del cliente;
+- mantiene responsive, jerarquía, ritmo y comportamiento;
+- implementa movimiento con respeto por `prefers-reduced-motion`;
+- valida estructura, contratos y calidad técnica;
+- ejecuta QA visual con Playwright cuando corresponde.
+
+Su meta no es entregar una maqueta estática, sino una base web mantenible y verificable.
+
+Versión actual: `0.3.0`.
+
+## Flujo completo de trabajo
+
+1. **Reunir fuentes.** Web, manuales, campañas, redes, contenido, fotografías, videos y la referencia elegida.
+2. **Escanear la marca.** Ejecutar `brand-dna-scanner` y revisar evidencia, conflictos e inferencias.
+3. **Aprobar el núcleo.** Validar tono, principios, códigos visuales, límites y activos permitidos.
+4. **Escanear la referencia.** Ejecutar `reference-scanner` en las páginas, estados y viewports relevantes.
+5. **Separar marca y canal.** Decidir qué pertenece al cliente, qué pertenece al lenguaje web y qué no debe trasladarse.
+6. **Preparar el build brief.** Mapear contenido, rutas, componentes, activos y restricciones.
+7. **Construir con Astro.** Ejecutar `reference-to-astro` y producir la implementación.
+8. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
+
+También es posible utilizar solamente una capa. Por ejemplo, `brand-dna-scanner` puede preparar una campaña sin construir una web, y `reference-scanner` puede documentar una referencia para un equipo que implementará con otra tecnología.
+
+## Casos de uso
+
+- reconstruir una web de referencia con la identidad y el contenido de un cliente;
+- transformar un manual de marca y sus piezas reales en reglas utilizables por agentes de IA;
+- alinear diseño y desarrollo antes de producir componentes;
+- preparar prompts consistentes para imágenes, presentaciones, redes o campañas;
+- auditar si una pieza nueva respeta el núcleo de una marca;
+- documentar el sistema visual de una web antes de migrarla;
+- crear una base reproducible para equipos distribuidos.
+
+## Qué no es
+
+`brand-system-skills` no es:
+
+- un scraper para apropiarse de contenido o activos de terceros;
+- un clonador de código fuente;
+- un generador automático de logos;
+- un sustituto de la aprobación estratégica o legal;
+- una promesa de identidad definitiva a partir de una sola captura;
+- un tema Astro universal listo para cualquier negocio;
+- un sistema que oculta sus inferencias detrás de una puntuación opaca.
+
+## Instalación
+
+### Desde Codex
+
+Puedes pedir la instalación de cada skill usando su directorio público:
+
+```text
+Instala este skill:
+https://github.com/pcanete/brand-system-skills/tree/main/skills/brand-dna-scanner
+```
+
+Skills disponibles:
+
+- [brand-dna-scanner](https://github.com/pcanete/brand-system-skills/tree/main/skills/brand-dna-scanner)
+- [reference-scanner](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-scanner)
+- [reference-to-astro](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-to-astro)
+
+Instala los tres para el flujo completo de marca a web, o solamente el que corresponda a una tarea puntual.
+
+### Instalación manual
+
+Copia cada directorio deseado directamente dentro de la carpeta local de skills de Codex:
+
+```text
+~/.codex/skills/<nombre-del-skill>/SKILL.md
+```
+
+No copies el monorepo completo como si fuera un único skill: Codex debe encontrar cada skill como hijo directo de `~/.codex/skills`.
+
+Consulta la [guía de instalación](docs/installation.md) para dependencias y detalles.
+
+## Cómo invocarlos
+
+Ejemplos de pedidos:
+
+```text
+Usa brand-dna-scanner para extraer el ADN de esta marca a partir de
+su sitio, brand book y campañas. Separa evidencia, inferencias y conflictos.
+```
+
+```text
+Usa reference-scanner para analizar esta web en desktop y mobile.
+Necesito su sistema de layout, tipografía, movimiento e interacciones.
+```
+
+```text
+Usa reference-to-astro para construir un sitio Astro con este STYLE_DNA,
+este CONTENT_MANIFEST y los assets del cliente. Verifica el resultado visual.
+```
+
+Para mejores resultados, indica fuentes, páginas prioritarias, viewports, restricciones legales, contenido autorizado y el nivel de fidelidad esperado.
+
+## Estructura del repositorio
+
+```text
+brand-system-skills/
+├── skills/
+│   ├── brand-dna-scanner/
+│   │   ├── SKILL.md
+│   │   ├── schemas/
+│   │   ├── scripts/
+│   │   └── references/
+│   ├── reference-scanner/
+│   │   ├── SKILL.md
+│   │   ├── schemas/
+│   │   └── references/
+│   └── reference-to-astro/
+│       ├── SKILL.md
+│       ├── schemas/
+│       ├── scripts/
+│       └── references/
+├── docs/
+│   ├── architecture.md
+│   ├── installation.md
+│   └── versioning.md
+├── scripts/
+├── tests/
+├── .github/workflows/
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── SECURITY.md
+└── LICENSE
+```
+
+Es un monorepo de mantenimiento, no un skill único acoplado. Cada skill conserva su propio contrato y puede instalarse por separado. Los esquemas web compartidos se verifican para impedir divergencias accidentales.
+
+## Desarrollo y validación
+
+Para validar el repositorio:
+
+```bash
+npm install
+npm test
+```
+
+La validación comprueba estructura, metadatos, archivos requeridos, JSON, sincronización de contratos compartidos y otros invariantes del repositorio. GitHub Actions ejecuta la misma revisión en cada cambio.
+
+Algunas herramientas incluidas en los skills tienen dependencias propias:
+
+```bash
+npm install --prefix skills/brand-dna-scanner
+npm install --prefix skills/reference-to-astro
+```
+
+El QA visual de `reference-to-astro` puede requerir Chromium para Playwright:
+
+```bash
+npx playwright install chromium
+```
+
+## Actualización y versiones
+
+Cada skill sigue versionado semántico de forma independiente:
+
+| Skill | Versión actual | Contrato compatible |
+| --- | ---: | --- |
+| `brand-dna-scanner` | `0.1.0` | Brand DNA `0.1.x` |
+| `reference-scanner` | `0.3.0` | Web reference schemas `0.3.x` |
+| `reference-to-astro` | `0.3.0` | Web reference schemas `0.3.x` |
+
+Para actualizar una copia del repositorio:
+
+```bash
+git pull
+npm test
+```
+
+Las copias ya instaladas bajo `~/.codex/skills` no se actualizan automáticamente al cambiar este repositorio. Deben reinstalarse o sincronizarse de forma explícita.
+
+Las reglas completas están en [versioning.md](docs/versioning.md) y los cambios publicados en [CHANGELOG.md](CHANGELOG.md).
+
+## Requisitos
+
+- Codex con soporte para skills;
+- Git para clonar y actualizar;
+- Node.js 18 o superior para los validadores;
+- acceso autorizado a las fuentes y materiales analizados;
+- un navegador compatible cuando el flujo requiere inspección o QA visual;
+- Astro en el proyecto de destino para la fase de implementación.
+
+## Privacidad, propiedad intelectual y seguridad
+
+- Usa únicamente fuentes públicas o materiales para los que tengas autorización.
+- No incluyas secretos, credenciales ni datos personales innecesarios en los artefactos.
+- Conserva procedencia y licencias de los activos del cliente.
+- Trata las referencias como evidencia de diseño, no como permiso para reutilizar su contenido.
+- Revisa [SECURITY.md](SECURITY.md) antes de reportar una vulnerabilidad.
+
+## Estado del proyecto
+
+El sistema está en etapa temprana, previa a `1.0`. Los contratos son utilizables y están versionados, pero pueden evolucionar a medida que se prueben con más marcas, canales y proyectos reales.
+
+Las contribuciones, casos de prueba y propuestas de mejora son bienvenidos. Consulta [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Licencia
+
+Publicado bajo licencia [MIT](LICENSE).
+
+Concepto y desarrollo inicial: **Patricio Cañete**.

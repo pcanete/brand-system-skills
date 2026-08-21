@@ -1,0 +1,34 @@
+{
+  "version": "0.3",
+  "mode": "forensic",
+  "reference_url": "https://example.com/",
+  "viewports": [
+    {
+      "id": "desktop-large",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "id": "desktop",
+      "width": 1280,
+      "height": 800
+    },
+    {
+      "id": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "id": "mobile",
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "priorities": {
+    "visual": "high",
+    "interaction": "high",
+    "motion": "high",
+    "responsive": "high",
+    "webgl": "evidence-driven"
+  }
+}
