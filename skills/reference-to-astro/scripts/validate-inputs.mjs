@@ -1,17 +1,30 @@
 #!/usr/bin/env node
 
-import fs from "node:fs/promises";
+// Verifies the inputs this skill is about to build from. Run it before any
+// construction work: a contract that cannot be trusted produces a site that
+// cannot be defended.
+//
+// Usage:
+//   node scripts/validate-inputs.mjs --style STYLE_DNA.json \
+//     --evidence REFERENCE_EVIDENCE.json --content CONTENT_MANIFEST.json
+//
+//   --lenient   check shape and reference integrity only
+//   --schemas   override the schema directory
+
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 
-import Ajv2020 from "ajv/dist/2020.js";
-import addFormats from "ajv-formats";
+import {
+  createValidator,
+  formatSchemaErrors,
+  readJson,
+  reportGroups,
+  verifyWebContracts
+} from "./lib/web-contracts.mjs";
 
 const cwd = process.cwd();
-const scriptDir = path.dirname(
-  fileURLToPath(import.meta.url)
-);
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 
 function arg(name, fallback) {
   const index = process.argv.indexOf(`--${name}`);
@@ -19,94 +32,22 @@ function arg(name, fallback) {
   return process.argv[index + 1];
 }
 
+const strict = !process.argv.includes("--lenient");
+
 const files = {
   style: arg("style", "STYLE_DNA.json"),
   evidence: arg("evidence", "REFERENCE_EVIDENCE.json"),
   content: arg("content", "CONTENT_MANIFEST.json")
 };
 
-const schemaDir = arg(
-  "schemas",
-  path.resolve(scriptDir, "../schemas")
-);
-
-async function readJson(filePath) {
-  const absolute = path.resolve(cwd, filePath);
-
-  try {
-    return JSON.parse(
-      await fs.readFile(absolute, "utf8")
-    );
-  } catch (error) {
-    throw new Error(
-      `Unable to read JSON: ${absolute}\n${error.message}`
-    );
-  }
-}
-
-async function loadSchema(name) {
-  return readJson(path.join(schemaDir, name));
-}
-
-function formatErrors(errors = []) {
-  return errors
-    .map((error) => {
-      const location = error.instancePath || "/";
-      return `  - ${location}: ${error.message}`;
-    })
-    .join("\n");
-}
+const schemaDir = arg("schemas", path.resolve(scriptDir, "../schemas"));
 
 function unique(values) {
   return new Set(values).size === values.length;
 }
 
-function collectEvidenceIds(evidence) {
-  const ids = new Set();
-
-  const groups = [
-    evidence.captures,
-    evidence.interactions,
-    evidence.motion_samples,
-    evidence.responsive_samples,
-    evidence.runtime_observations,
-    evidence.technology_hypotheses,
-    evidence.accessibility_observations,
-    evidence.content_sources
-  ];
-
-  for (const group of groups) {
-    for (const item of group || []) {
-      if (item?.id) ids.add(item.id);
-    }
-  }
-
-  return ids;
-}
-
-function validateEvidenceReferences(style, evidence) {
-  const known = collectEvidenceIds(evidence);
-  const missing = [];
-
-  for (const observation of style.observations || []) {
-    for (const ref of observation.evidence_refs || []) {
-      if (!known.has(ref)) {
-        missing.push({
-          path: observation.path,
-          ref
-        });
-      }
-    }
-  }
-
-  return missing;
-}
-
-function validateAssetIds(content) {
-  const ids = (content.assets || []).map(
-    (asset) => asset.id
-  );
-
+function checkAssetIds(content) {
+  const ids = (content.assets || []).map((asset) => asset.id);
   if (unique(ids)) return [];
 
   const seen = new Set();
@@ -117,35 +58,24 @@ function validateAssetIds(content) {
     seen.add(id);
   }
 
-  return [...duplicates];
+  return [...duplicates].map((id) => `duplicate asset id '${id}'`);
 }
 
-function validateSectionAssetReferences(content) {
-  const known = new Set(
-    (content.assets || []).map(
-      (asset) => asset.id
-    )
-  );
+function checkSectionAssets(content) {
+  const known = new Set((content.assets || []).map((asset) => asset.id));
+  const issues = [];
 
-  const missing = [];
-
-  for (const [pageId, page] of Object.entries(
-    content.pages || {}
-  )) {
+  for (const [pageId, page] of Object.entries(content.pages || {})) {
     for (const section of page.sections || []) {
       for (const assetId of section.media || []) {
         if (!known.has(assetId)) {
-          missing.push({
-            page: pageId,
-            section: section.id,
-            asset: assetId
-          });
+          issues.push(`${pageId}/${section.id}: unknown asset '${assetId}'`);
         }
       }
     }
   }
 
-  return missing;
+  return issues;
 }
 
 async function main() {
@@ -157,29 +87,19 @@ async function main() {
     evidenceSchema,
     contentSchema
   ] = await Promise.all([
-    readJson(files.style),
-    readJson(files.evidence),
-    readJson(files.content),
-
-    loadSchema("style-dna.schema.json"),
-    loadSchema("reference-evidence.schema.json"),
-    loadSchema("content-manifest.schema.json")
+    readJson(files.style, cwd),
+    readJson(files.evidence, cwd),
+    readJson(files.content, cwd),
+    readJson(path.join(schemaDir, "style-dna.schema.json"), cwd),
+    readJson(path.join(schemaDir, "reference-evidence.schema.json"), cwd),
+    readJson(path.join(schemaDir, "content-manifest.schema.json"), cwd)
   ]);
 
-  const ajv = new Ajv2020({
-    allErrors: true,
-    strict: false
+  const validators = createValidator({
+    STYLE_DNA: styleSchema,
+    REFERENCE_EVIDENCE: evidenceSchema,
+    CONTENT_MANIFEST: contentSchema
   });
-
-  addFormats(ajv);
-
-  const validators = {
-    STYLE_DNA: ajv.compile(styleSchema),
-    REFERENCE_EVIDENCE:
-      ajv.compile(evidenceSchema),
-    CONTENT_MANIFEST:
-      ajv.compile(contentSchema)
-  };
 
   const documents = {
     STYLE_DNA: style,
@@ -189,92 +109,42 @@ async function main() {
 
   let failed = false;
 
-  for (const [name, validator] of Object.entries(
-    validators
-  )) {
-    const valid = validator(documents[name]);
-
-    if (!valid) {
-      failed = true;
-
-      console.error(
-        `\n✗ ${name} schema validation failed`
-      );
-
-      console.error(
-        formatErrors(validator.errors)
-      );
-    } else {
+  for (const [name, validate] of Object.entries(validators)) {
+    if (validate(documents[name])) {
       console.log(`✓ ${name} schema valid`);
+    } else {
+      failed = true;
+      console.error(`\n✗ ${name} schema validation failed`);
+      console.error(formatSchemaErrors(validate.errors));
     }
   }
 
-  const missingEvidence =
-    validateEvidenceReferences(style, evidence);
-
-  if (missingEvidence.length) {
-    failed = true;
-
-    console.error(
-      "\n✗ STYLE_DNA contains unknown evidence_refs"
-    );
-
-    for (const issue of missingEvidence) {
-      console.error(
-        `  - ${issue.path}: ${issue.ref}`
-      );
+  const groups = [
+    ...verifyWebContracts(style, evidence, { strict }),
+    {
+      label: "Asset ids are unique",
+      issues: checkAssetIds(content)
+    },
+    {
+      label: "Section media resolve to assets",
+      issues: checkSectionAssets(content)
     }
-  } else {
-    console.log(
-      "✓ STYLE_DNA evidence references valid"
-    );
-  }
+  ];
 
-  const duplicateAssets =
-    validateAssetIds(content);
-
-  if (duplicateAssets.length) {
-    failed = true;
-
-    console.error(
-      "\n✗ Duplicate CONTENT_MANIFEST asset IDs"
-    );
-
-    for (const id of duplicateAssets) {
-      console.error(`  - ${id}`);
-    }
-  } else {
-    console.log("✓ Asset IDs unique");
-  }
-
-  const missingAssets =
-    validateSectionAssetReferences(content);
-
-  if (missingAssets.length) {
-    failed = true;
-
-    console.error(
-      "\n✗ Sections reference unknown assets"
-    );
-
-    for (const issue of missingAssets) {
-      console.error(
-        `  - ${issue.page}/${issue.section}: ${issue.asset}`
-      );
-    }
-  } else {
-    console.log(
-      "✓ Section asset references valid"
-    );
-  }
+  if (reportGroups(groups)) failed = true;
 
   if (failed) {
+    console.error(
+      "\nInputs rejected. Do not build on a contract that is not supported."
+    );
     process.exitCode = 1;
     return;
   }
 
   console.log(
-    "\nReference Web System input validation passed."
+    `\nReference Web System inputs verified${
+      strict ? "" : " (lenient: shape only)"
+    }.`
   );
 }
 

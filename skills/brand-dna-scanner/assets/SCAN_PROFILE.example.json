@@ -3,12 +3,12 @@
   "mode": "forensic",
   "brand": {
     "name": "Example Brand",
-    "website": "https://example.com"
+    "website": "https://example.invalid"
   },
   "sources": [
     {
       "channel": "website",
-      "url": "https://example.com",
+      "url": "https://example.invalid",
       "priority": "high"
     },
     {

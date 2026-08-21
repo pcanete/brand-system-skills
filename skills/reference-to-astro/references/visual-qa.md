@@ -2,6 +2,21 @@
 
 A successful build is not equivalent to a faithful build.
 
+## What the tooling does, and what it does not
+
+`scripts/visual-qa.mjs` drives a headless browser from `QA_PROFILE.json` and
+produces the material these passes need: a full-page baseline per route and
+viewport, a before/after pair for each declared interaction, a reduced-motion
+pass over every route, and any console or page error that appeared.
+
+It does not compare anything to the reference. There is no automatic diff and
+no score. The comparison below is human work performed against the captures;
+the tool exists so that work happens on evidence instead of memory.
+
+Two things it does decide: a page error, and a console error not listed in the
+profile's `ignore_console`, each fail the run. Silencing known third-party
+noise is a decision that belongs in the profile, where it stays visible.
+
 ## Required viewports
 
 At minimum inspect:

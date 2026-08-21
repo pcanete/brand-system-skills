@@ -30,15 +30,30 @@ function relative(file) {
   return path.relative(root, file).replaceAll("\\", "/");
 }
 
-function runNode(label, args, cwd = root) {
+function read(file) {
+  return fs.readFileSync(file, "utf8");
+}
+
+function runNode(label, args, { expect = "pass", cwd = root } = {}) {
   const result = spawnSync(process.execPath, args, {
     cwd,
     encoding: "utf8",
     stdio: "pipe"
   });
-  if (result.status !== 0) {
+
+  const passed = result.status === 0;
+
+  if (expect === "pass" && !passed) {
     fail(`${label}\n${result.stdout || ""}${result.stderr || ""}`);
-  } else if (result.stdout.trim()) {
+    return;
+  }
+
+  if (expect === "fail" && passed) {
+    fail(`${label}\n${result.stdout || ""}`);
+    return;
+  }
+
+  if (expect === "pass" && result.stdout.trim()) {
     console.log(result.stdout.trim());
   }
 }
@@ -47,7 +62,7 @@ const files = walk(root);
 
 for (const file of files.filter((item) => item.endsWith(".json"))) {
   try {
-    JSON.parse(fs.readFileSync(file, "utf8"));
+    JSON.parse(read(file));
   } catch (error) {
     fail(`Invalid JSON: ${relative(file)}: ${error.message}`);
   }
@@ -63,25 +78,111 @@ const skillNames = [
   "reference-to-astro"
 ];
 
+const declaredVersions = new Map();
+
 for (const name of skillNames) {
   const skillRoot = path.join(root, "skills", name);
   const skillFile = path.join(skillRoot, "SKILL.md");
   const agentFile = path.join(skillRoot, "agents", "openai.yaml");
-  if (!fs.existsSync(skillFile)) fail(`Missing skills/${name}/SKILL.md`);
-  if (!fs.existsSync(agentFile)) fail(`Missing skills/${name}/agents/openai.yaml`);
-  if (!fs.existsSync(skillFile)) continue;
 
-  const markdown = fs.readFileSync(skillFile, "utf8");
-  const declared = markdown.match(/^---[\s\S]*?^name:\s*([^\r\n]+)[\s\S]*?^---/m)?.[1]?.trim();
+  if (!fs.existsSync(skillFile)) {
+    fail(`Missing skills/${name}/SKILL.md`);
+    continue;
+  }
+
+  if (!fs.existsSync(agentFile)) fail(`Missing skills/${name}/agents/openai.yaml`);
+
+  const markdown = read(skillFile);
+  const frontmatter = markdown.match(/^---[\s\S]*?^---/m)?.[0] || "";
+  const declared = frontmatter.match(/^name:\s*([^\r\n]+)/m)?.[1]?.trim();
+
   if (declared !== name) {
     fail(`Skill name mismatch: directory ${name}, frontmatter ${declared || "missing"}`);
   }
 
-  const linkPattern = /`((?:references|assets|schemas)\/[^`]+)`/g;
+  const description = frontmatter.match(/^description:\s*([^\r\n]+)/m)?.[1]?.trim();
+
+  if (!description) {
+    fail(`skills/${name}/SKILL.md has no description`);
+  } else if (description.length > 1024) {
+    fail(`skills/${name}/SKILL.md description exceeds 1024 characters`);
+  }
+
+  const version = frontmatter.match(/version:\s*"?([0-9]+\.[0-9]+\.[0-9]+)"?/)?.[1];
+
+  if (!version) {
+    fail(`skills/${name}/SKILL.md declares no metadata.version`);
+  } else {
+    declaredVersions.set(name, version);
+  }
+
+  // Every companion file the skill ships must be reachable from its own
+  // instructions, or it is dead weight the agent will never open.
+  const bundled = ["references", "assets", "schemas", "scripts"];
+  const prose = [
+    markdown,
+    ...(fs.existsSync(path.join(skillRoot, "references"))
+      ? fs
+          .readdirSync(path.join(skillRoot, "references"))
+          .filter((entry) => entry.endsWith(".md"))
+          .map((entry) => read(path.join(skillRoot, "references", entry)))
+      : [])
+  ].join("\n");
+
+  for (const folder of bundled) {
+    const directory = path.join(skillRoot, folder);
+    if (!fs.existsSync(directory)) continue;
+
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      if (entry.isDirectory()) continue;
+      if (!prose.includes(entry.name)) {
+        fail(
+          `Unreferenced bundled file: skills/${name}/${folder}/${entry.name} ` +
+            `is never mentioned by the skill`
+        );
+      }
+    }
+  }
+
+  const linkPattern = /`((?:references|assets|schemas|scripts)\/[^`]+)`/g;
+
   for (const match of markdown.matchAll(linkPattern)) {
     const linked = path.join(skillRoot, ...match[1].split("/"));
     if (!fs.existsSync(linked)) {
       fail(`Broken local skill reference: skills/${name}/${match[1]}`);
+    }
+  }
+
+  const packageFile = path.join(skillRoot, "package.json");
+
+  if (fs.existsSync(packageFile) && version) {
+    const pkg = JSON.parse(read(packageFile));
+    if (pkg.version !== version) {
+      fail(
+        `Version drift: skills/${name}/SKILL.md says ${version}, package.json says ${pkg.version}`
+      );
+    }
+  }
+}
+
+// Published version tables must agree with the skills themselves.
+for (const document of ["README.md", "docs/versioning.md"]) {
+  const file = path.join(root, document);
+  if (!fs.existsSync(file)) continue;
+
+  const rows = read(file)
+    .split(/\r?\n/)
+    .filter(
+      (line) =>
+        line.trimStart().startsWith("|") && /\d+\.\d+\.\d+/.test(line)
+    );
+
+  for (const [name, version] of declaredVersions) {
+    for (const row of rows) {
+      if (!row.includes(name)) continue;
+      if (!row.includes(version)) {
+        fail(`Version drift in ${document}: ${name} should read ${version}\n  ${row.trim()}`);
+      }
     }
   }
 }
@@ -90,43 +191,140 @@ function digest(file) {
   return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
 }
 
-for (const schema of ["style-dna.schema.json", "reference-evidence.schema.json"]) {
-  const scanner = path.join(root, "skills", "reference-scanner", "schemas", schema);
-  const builder = path.join(root, "skills", "reference-to-astro", "schemas", schema);
-  if (!fs.existsSync(scanner) || !fs.existsSync(builder) || digest(scanner) !== digest(builder)) {
-    fail(`Shared web schema drift: ${schema}`);
+// Duplicated on purpose so each skill installs alone. CI keeps the copies honest.
+const duplicated = [
+  ["schemas", "style-dna.schema.json"],
+  ["schemas", "reference-evidence.schema.json"],
+  ["scripts/lib", "web-contracts.mjs"]
+];
+
+for (const [folder, filename] of duplicated) {
+  const scanner = path.join(root, "skills", "reference-scanner", folder, filename);
+  const builder = path.join(root, "skills", "reference-to-astro", folder, filename);
+
+  if (!fs.existsSync(scanner) || !fs.existsSync(builder)) {
+    fail(`Missing shared web contract copy: ${folder}/${filename}`);
+    continue;
+  }
+
+  if (digest(scanner) !== digest(builder)) {
+    fail(`Shared web contract drift: ${folder}/${filename}`);
   }
 }
 
-const publicFixtureText = files
-  .filter((file) => relative(file).startsWith("tests/"))
-  .map((file) => fs.readFileSync(file, "utf8"))
-  .join("\n");
+// Public fixtures and examples must stay synthetic.
+const publicFixtures = files.filter((file) => {
+  const name = relative(file);
+  return (
+    name.startsWith("tests/") ||
+    /^skills\/[^/]+\/(examples|assets)\//.test(name)
+  );
+});
+
+const publicFixtureText = publicFixtures.map(read).join("\n");
+
 if (/benchmark-/i.test(publicFixtureText)) {
   fail("Benchmark identifier leaked into public fixtures");
 }
-for (const match of publicFixtureText.matchAll(/https?:\/\/[^\s"']+/gi)) {
-  if (!match[0].startsWith("https://example.invalid")) {
-    fail(`Non-synthetic URL leaked into public fixtures: ${match[0]}`);
+
+for (const match of publicFixtureText.matchAll(/https?:\/\/[^\s"'`)]+/gi)) {
+  const url = match[0];
+  const synthetic =
+    /^https?:\/\/([a-z0-9-]+\.)*example\.invalid(\/|$)/i.test(url) ||
+    /^http:\/\/localhost(:\d+)?(\/|$)/i.test(url) ||
+    /^http:\/\/127\.0\.0\.1(:\d+)?(\/|$)/i.test(url);
+
+  if (!synthetic) {
+    fail(`Non-synthetic URL leaked into public fixtures: ${url}`);
   }
 }
 
-runNode("Brand DNA fixture validation failed", [
-  path.join(root, "skills", "brand-dna-scanner", "scripts", "validate-brand-dna.mjs"),
+const brandValidator = path.join(
+  root,
+  "skills",
+  "brand-dna-scanner",
+  "scripts",
+  "validate-brand-dna.mjs"
+);
+
+const scannerValidator = path.join(
+  root,
+  "skills",
+  "reference-scanner",
+  "scripts",
+  "validate-style-dna.mjs"
+);
+
+const builderValidator = path.join(
+  root,
+  "skills",
+  "reference-to-astro",
+  "scripts",
+  "validate-inputs.mjs"
+);
+
+const brandExamples = [
   "--dna",
   path.join(root, "skills", "brand-dna-scanner", "examples", "BRAND_DNA.example.json"),
   "--evidence",
   path.join(root, "skills", "brand-dna-scanner", "examples", "BRAND_EVIDENCE.example.json")
+];
+
+const webFixtures = (directory) => [
+  "--style",
+  path.join(root, "tests", directory, "STYLE_DNA.json"),
+  "--evidence",
+  path.join(root, "tests", directory, "REFERENCE_EVIDENCE.json")
+];
+
+runNode("Brand DNA example rejected by its own validator", [
+  brandValidator,
+  ...brandExamples
 ]);
 
-runNode("Reference-system fixture validation failed", [
-  path.join(root, "skills", "reference-to-astro", "scripts", "validate-inputs.mjs"),
-  "--style",
-  path.join(root, "tests", "reference-system", "STYLE_DNA.json"),
-  "--evidence",
-  path.join(root, "tests", "reference-system", "REFERENCE_EVIDENCE.json"),
+runNode("Scan artifacts fixture rejected by reference-scanner", [
+  scannerValidator,
+  ...webFixtures("reference-system")
+]);
+
+runNode("Reference-system fixture rejected by reference-to-astro", [
+  builderValidator,
+  ...webFixtures("reference-system"),
   "--content",
   path.join(root, "tests", "reference-system", "CONTENT_MANIFEST.json")
+]);
+
+// The gates are the product. These fixtures must fail, and must fail only
+// because of the gates: in lenient mode they are well-formed.
+const rejectedBrand = [
+  "--dna",
+  path.join(root, "tests", "rejected", "BRAND_DNA.json"),
+  "--evidence",
+  path.join(root, "tests", "rejected", "BRAND_EVIDENCE.json")
+];
+
+runNode(
+  "Unsupported Brand DNA fixture was accepted: the brand gates are not working",
+  [brandValidator, ...rejectedBrand],
+  { expect: "fail" }
+);
+
+runNode("Rejected Brand DNA fixture is malformed beyond the gates", [
+  brandValidator,
+  ...rejectedBrand,
+  "--lenient"
+]);
+
+runNode(
+  "Unsupported STYLE_DNA fixture was accepted: the web gates are not working",
+  [scannerValidator, ...webFixtures("rejected")],
+  { expect: "fail" }
+);
+
+runNode("Rejected STYLE_DNA fixture is malformed beyond the gates", [
+  scannerValidator,
+  ...webFixtures("rejected"),
+  "--lenient"
 ]);
 
 if (failures.length) {

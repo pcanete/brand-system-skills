@@ -114,88 +114,9 @@
     "fallback": null
   },
   "constraints": {
-    "must_preserve": [
-      "editorial positioning over conventional ecommerce language",
-      "photography as primary narrative material",
-      "strong relationship between typography and image sequencing",
-      "inquiry CTA as recurring business priority",
-      "process narrative as part of product value"
-    ],
-    "may_adapt": [
-      "literal gallery image count",
-      "product imagery",
-      "inquiry pricing"
-    ],
-    "must_not_introduce": [
-      "generic ecommerce product-grid aesthetic",
-      "dashboard-like interaction patterns",
-      "dense conventional product cards"
-    ]
+    "must_preserve": [],
+    "may_adapt": [],
+    "must_not_introduce": []
   },
-  "observations": [
-    {
-      "path": "experience.load.progress_indicator",
-      "value": "percentage",
-      "mode": "exact",
-      "confidence": 0.95,
-      "salience": 0.72,
-      "evidence_refs": [
-        "synthetic-load-indicator"
-      ],
-      "source": "website structure",
-      "notes": ""
-    },
-    {
-      "path": "interaction.filtering.gallery",
-      "value": [
-        "Context",
-        "Detail",
-        "System"
-      ],
-      "mode": "exact",
-      "confidence": 0.99,
-      "salience": 0.77,
-      "evidence_refs": [
-        "synthetic-gallery-filter"
-      ],
-      "source": "gallery structure",
-      "notes": ""
-    },
-    {
-      "path": "interaction.direct_manipulation.product",
-      "value": "drag-based spatial inspection",
-      "mode": "inferred",
-      "confidence": 0.72,
-      "salience": 0.92,
-      "evidence_refs": [
-        "synthetic-product-drag"
-      ],
-      "source": "product interaction instruction",
-      "notes": "Rendering technology remains unknown."
-    },
-    {
-      "path": "media.sequences.object_process",
-      "value": "explicitly ordered three-step transformation sequence",
-      "mode": "exact",
-      "confidence": 0.99,
-      "salience": 0.95,
-      "evidence_refs": [
-        "synthetic-media-sequence"
-      ],
-      "source": "page content order",
-      "notes": ""
-    },
-    {
-      "path": "media.interactive_scenes.product_viewer",
-      "value": "drag-inspected product scene",
-      "mode": "inferred",
-      "confidence": 0.72,
-      "salience": 0.92,
-      "evidence_refs": [
-        "synthetic-product-drag"
-      ],
-      "source": "product interaction instruction",
-      "notes": "Rendering technology remains unknown."
-    }
-  ]
+  "observations": []
 }

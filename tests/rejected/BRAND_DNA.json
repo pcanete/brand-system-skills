@@ -68,7 +68,6 @@
       "distinctiveness": 0.76,
       "ownership_confidence": 0.68,
       "evidence_refs": [
-        "ev-web-home",
         "ev-campaign-01"
       ]
     }
@@ -119,73 +118,12 @@
       "consistency": 0.88,
       "distinctiveness": 0.76,
       "evidence_refs": [
-        "ev-web-home",
         "ev-campaign-01"
       ],
-      "notes": ""
-    },
-    {
-      "path": "core.essence",
-      "value": "Technical precision presented as cultural confidence",
-      "mode": "derived",
-      "confidence": 0.72,
-      "salience": 0.85,
-      "recurrence": 0.7,
-      "consistency": 0.8,
-      "distinctiveness": 0.6,
-      "evidence_refs": [
-        "ev-web-copy",
-        "ev-campaign-copy"
-      ],
-      "notes": "Inferred from language across two channels; not a declared statement."
-    },
-    {
-      "path": "verbal.tone.register",
-      "value": "short declarative claims without superlatives",
-      "mode": "exact",
-      "confidence": 0.88,
-      "salience": 0.8,
-      "recurrence": 0.75,
-      "consistency": 0.82,
-      "distinctiveness": 0.55,
-      "evidence_refs": [
-        "ev-web-copy",
-        "ev-campaign-copy"
-      ],
-      "notes": "Register is shared; distinctiveness is category-average."
-    },
-    {
-      "path": "photography.subject_treatment",
-      "value": "single object, hard directional light, neutral ground",
-      "mode": "exact",
-      "confidence": 0.9,
-      "salience": 0.86,
-      "recurrence": 0.7,
-      "consistency": 0.78,
-      "distinctiveness": 0.7,
-      "evidence_refs": [
-        "ev-web-photography",
-        "ev-social-photography"
-      ],
-      "notes": ""
-    },
-    {
-      "path": "web_experience.navigation.header",
-      "value": "persistent minimal header with one primary action",
-      "mode": "exact",
-      "confidence": 0.9,
-      "salience": 0.62,
-      "recurrence": 0.3,
-      "consistency": 0.5,
-      "distinctiveness": 0.3,
-      "evidence_refs": [
-        "ev-web-navigation"
-      ],
-      "notes": "Website only. Channel-specific: a single source cannot establish recurrence."
+      "notes": "One campaign, declared as brand core."
     }
   ],
   "limitations": [
-    "Synthetic example. No motion, product or environmental material was inventoried.",
-    "Web experience rests on a single source, so it stays channel-specific."
+    "Deliberately unsupported fixture. The validator must reject it."
   ]
 }

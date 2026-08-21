@@ -63,9 +63,49 @@ Do not universalize.
 
 Temporary.
 
+## Relationship graph
+
+The most important synthesis step: connect strategic principles to actual
+execution. Do not output a disconnected checklist.
+
+Example:
+
+PRINCIPLE:
+Precision with cultural confidence.
+
+VERBAL:
+Short authoritative claims.
+
+TYPOGRAPHY:
+Tight, controlled display system.
+
+LAYOUT:
+Strict grid with deliberate exceptions.
+
+PHOTOGRAPHY:
+Technical objects treated as sculptural subjects.
+
+MOTION:
+Controlled and inertial rather than playful.
+
 ## Recognition model
 
 Rank strongest distinctive assets.
+
+Determine:
+
+- minimum recognizable asset set
+- strongest three assets
+- strongest five assets
+- generic category assets
+- weakly owned assets
+- potentially proprietary combinations
+
+Recognition often does not depend on the logo alone. It may depend on:
+
+specific type proportion
++ unusual crop style
++ one accent color
 
 ## Confidence
 

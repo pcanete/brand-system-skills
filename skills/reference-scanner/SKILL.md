@@ -1,9 +1,9 @@
 ---
 name: reference-scanner
-description: Analyzes reference websites and converts their visual system, layout logic, typography, media treatment, responsive behavior, interactions, motion language, page transitions, and WebGL characteristics into structured STYLE_DNA and REFERENCE_EVIDENCE artifacts for high-fidelity website reconstruction.
+description: Analyzes a reference website as a visual and behavioral system and records it as evidence another agent can build from. Covers layout, typography, media, responsive transformation, interaction, motion, page transitions and WebGL, producing STYLE_DNA and REFERENCE_EVIDENCE. Use when a site has been chosen as a reference and its logic has to be captured, documented or handed to an implementer. Not for extracting a brand's identity across channels — that is brand-dna-scanner — and not for building the result.
 license: MIT
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # Reference Scanner
@@ -42,6 +42,13 @@ REFERENCE_EVIDENCE records what was actually observed.
 STYLE_REPORT is the human-readable interpretation.
 
 Never present an inferred behavior as directly observed.
+
+Both contracts have schemas: `schemas/style-dna.schema.json` and
+`schemas/reference-evidence.schema.json`. Write against them from the start
+rather than reshaping the output at the end.
+
+`assets/scan-profile.example.json` shows how to declare the scan up front:
+routes, viewports, states and the capabilities actually available.
 
 ## Capability detection
 
@@ -419,9 +426,29 @@ remains unobserved.
 
 ## Phase 17 — Output validation
 
-Validate required structure against available schemas.
+STYLE_DNA must not contradict REFERENCE_EVIDENCE. Verify it before handing the
+artifacts to anyone:
 
-STYLE_DNA must not contradict REFERENCE_EVIDENCE.
+```bash
+node scripts/validate-style-dna.mjs \
+  --style STYLE_DNA.json --evidence REFERENCE_EVIDENCE.json
+```
+
+Install the validator's dependencies once with `npm install` in the skill
+directory.
+
+Beyond schema shape, the validator enforces what this skill claims to stand
+for:
+
+- an observation recorded as `exact` or `derived` carries `evidence_refs`
+- declared coverage is backed by observations and by recorded samples —
+  a motion coverage of 0.8 with no motion samples is rejected
+- claims the contract itself marks as salient and confident appear in
+  `observations`, where they can be traced
+
+A rejection is information, not an obstacle. Either record the missing
+evidence, or lower the claim to what was actually seen. `--lenient` checks
+shape only; it is for work in progress, not for shipping.
 
 ## Final response
 

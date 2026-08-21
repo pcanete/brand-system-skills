@@ -1,6 +1,12 @@
 {
   "version": "1.0",
   "base_url": "http://127.0.0.1:4321",
+  "load_settle_ms": 3000,
+  "reduced_motion_viewport": "mobile",
+  "ignore_console": [
+    "favicon.ico",
+    "ERR_BLOCKED_BY_CLIENT"
+  ],
   "viewports": [
     {
       "id": "desktop-large",
