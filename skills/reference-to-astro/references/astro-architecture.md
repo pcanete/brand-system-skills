@@ -48,6 +48,29 @@ First evaluate native View Transitions.
 Use ClientRouter when navigation interception, persistence, or more advanced
 transition control is required.
 
+With ClientRouter, three things change and each breaks something if ignored:
+
+- **Scripts.** Bundled module scripts run once, not per navigation. Initialize
+  behavior inside an `astro:page-load` handler — it fires on first load and on
+  every navigation afterwards. `data-astro-rerun` forces an inline script to
+  re-execute.
+- **Teardown.** Use `astro:before-swap` to kill animations, observers and
+  animation frames belonging to the outgoing page. Without it, every navigation
+  leaves another live listener set behind.
+- **Persistence.** `transition:persist` keeps an element and its state across
+  navigation — a playing video, a WebGL canvas, an audio player. Anything
+  persisted must be excluded from teardown.
+
+Match elements across routes with `transition:name`, and choose behavior with
+`transition:animate`. The router announces route changes to assistive
+technology and disables its own animations under `prefers-reduced-motion`; a
+custom transition has to do both itself.
+
+Do not convert the site into an SPA by default. Reach for ClientRouter because
+the reference's navigation continuity requires it — persistent media, an
+uninterrupted background, preserved scroll — not because transitions are
+desirable in general.
+
 ## Assets
 
 Prefer Astro asset handling for local imagery where appropriate.

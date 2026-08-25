@@ -3,7 +3,7 @@ name: reference-to-astro
 description: Builds a website in Astro from an analyzed reference. Consumes STYLE_DNA, CONTENT_MANIFEST and BUILD_BRIEF, and reconstructs the reference's layout, typography, media, responsive, interaction and motion language using the client's own content. Use when reference contracts exist and the site has to be built, extended or verified. Not for inventing a visual direction from scratch, and not for analyzing a reference — that is reference-scanner.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # Reference-to-Astro
@@ -358,7 +358,13 @@ Use timelines for choreography.
 
 Use scroll tooling only for evidenced scroll behavior.
 
-Respect `prefers-reduced-motion`.
+For anything scroll-linked — scrubbed timelines, pinned scenes, frame
+sequences, smooth scroll, and their teardown across client-side navigation —
+read `references/scroll-scenes.md`.
+
+Respect `prefers-reduced-motion`. Reduced does not mean removed: every motion
+category has a defined reduced state, listed in
+`references/accessibility-performance.md`.
 
 ### Phase 7 — WebGL
 
@@ -378,6 +384,11 @@ Use Astro ClientRouter only when additional client-side navigation,
 persistence, or transition control is required.
 
 Do not convert the site into a SPA by default.
+
+Client-side navigation changes how scripts run, what has to be torn down, and
+what survives a swap. `references/astro-architecture.md` states the three
+rules; ignoring them produces a site that behaves correctly on first load and
+degrades with every navigation after it.
 
 ### Phase 9 — Accessibility and performance
 
