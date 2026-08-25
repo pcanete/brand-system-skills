@@ -43,6 +43,8 @@ Use CSS for:
 - basic hover transitions
 - simple opacity
 - simple transform state changes
+- scroll-linked effects that are allowed to fail silently, via
+  `animation-timeline`
 
 Use GSAP for:
 
@@ -54,11 +56,20 @@ Use GSAP for:
 - dynamic values
 - interruptible sequences
 
+Since GSAP 3.13 the whole toolset, including formerly Club-only plugins such as
+ScrollSmoother, is free for commercial use. Availability is no longer a reason
+to settle for a weaker implementation — and not a reason to reach for GSAP
+where CSS already reproduces the behavior.
+
 ## Scroll
 
 Differentiate triggered from linked.
 
 Do not infer scrub merely because animation happens during scrolling.
+
+Implementation — scrub, pinning, frame sequences, smooth scroll, lifecycle and
+responsive rebuilding — is in `references/scroll-scenes.md`. Read it before
+building any scroll-linked behavior.
 
 ## Timing
 

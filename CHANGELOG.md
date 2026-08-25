@@ -2,6 +2,51 @@
 
 ## Unreleased
 
+`brand-dna-scanner` 0.2.0 · `reference-scanner` 0.4.0 · `reference-to-astro` 0.5.0
+
+### Implementation knowledge for the builder
+
+`reference-to-astro` named the behaviors it had to reproduce — scroll scenes,
+scrubbing, pinning, canvas renderers, page transitions — without ever saying
+how any of them are built. An agent following the skill knew what to look for
+and had to improvise the rest.
+
+New `references/scroll-scenes.md` covers the gap: classifying triggered vs
+linked vs scene before implementing, ScrollTrigger configuration for scrub,
+pinning and snapping, the ancestor `transform` that silently breaks a pin, the
+full scroll-scrubbed frame-sequence pipeline with its memory budget and video
+fallback, CSS `animation-timeline` as progressive enhancement with its current
+support boundary, when smooth scroll is evidence and what it breaks when it is
+not, teardown across client-side navigation, and a defined reduced state for
+every kind of scroll motion.
+
+Expanded with the same standard:
+
+- **`media-strategy.md`** — reserving the box against layout shift, LCP and
+  loading priority, autoplay constraints, pausing off-screen video, font
+  loading and metric-adjusted fallbacks, and measuring only after
+  `document.fonts.ready`.
+- **`webgl-policy.md`** — colour management, which is why a correctly loaded
+  model looks dark: output colour space, tone mapping, per-texture colour
+  space, and environment lighting. Plus payload compression, pixel-ratio caps,
+  context loss and disposal.
+- **`accessibility-performance.md`** — a reduced state per motion category
+  rather than "durations to zero", the interaction highly art-directed
+  references routinely omit (focus, escape, focus return, discrete equivalents
+  for drag), and the three performance failures that break fidelity itself.
+- **`responsive-reconstruction.md`** — `svh`/`lvh`/`dvh` and the mobile URL bar,
+  and gating on capability (`hover`, `pointer`) instead of width.
+- **`astro-architecture.md`** — what client-side navigation changes: scripts
+  that do not re-run, teardown on swap, and what `transition:persist` protects.
+
+Every API named here was verified against current documentation rather than
+recalled: GSAP 3.13+ (the whole toolset now free for commercial use),
+ScrollTrigger, Astro's ClientRouter lifecycle, three.js `toneMapping` and
+`outputColorSpace`, Lenis, and the browser support boundary for CSS
+scroll-driven animations as of mid-2026.
+
+---
+
 `brand-dna-scanner` 0.2.0 · `reference-scanner` 0.4.0 · `reference-to-astro` 0.4.0
 
 Contracts are unchanged: Brand DNA stays `0.1.x` and the web schemas stay
