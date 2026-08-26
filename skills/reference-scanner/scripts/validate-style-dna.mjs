@@ -22,6 +22,7 @@ import {
   reportGroups,
   verifyWebContracts
 } from "./lib/web-contracts.mjs";
+import { checkBehaviorAuditQuality } from "./lib/behavior-gates.mjs";
 
 const cwd = process.cwd();
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -72,6 +73,18 @@ async function main() {
   }
 
   if (reportGroups(verifyWebContracts(style, evidence, { strict }))) {
+    failed = true;
+  }
+
+  if (
+    strict &&
+    reportGroups([
+      {
+        label: "Behavior audits are temporal and cross-device",
+        issues: checkBehaviorAuditQuality(evidence)
+      }
+    ])
+  ) {
     failed = true;
   }
 

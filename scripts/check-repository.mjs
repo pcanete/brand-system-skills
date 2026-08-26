@@ -255,6 +255,14 @@ const scannerValidator = path.join(
   "validate-style-dna.mjs"
 );
 
+const scannerBehaviorTests = path.join(
+  root,
+  "skills",
+  "reference-scanner",
+  "scripts",
+  "test-behavior-gates.mjs"
+);
+
 const builderValidator = path.join(
   root,
   "skills",
@@ -286,6 +294,8 @@ runNode("Scan artifacts fixture rejected by reference-scanner", [
   scannerValidator,
   ...webFixtures("reference-system")
 ]);
+
+runNode("Reference scanner behavior gate tests failed", [scannerBehaviorTests]);
 
 runNode("Reference-system fixture rejected by reference-to-astro", [
   builderValidator,

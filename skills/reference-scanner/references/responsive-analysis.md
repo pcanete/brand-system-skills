@@ -125,6 +125,10 @@ intentionally preserves it.
 
 Inspect desktop and mobile separately.
 
+Repeat open, close, nested navigation, outside dismissal, escape/back behavior,
+scroll lock and focus/tap behavior when available. A mobile menu is not merely
+the desktop menu at a narrower width.
+
 ## Layout rhythm
 
 Mobile may compress or intentionally preserve extreme whitespace.
@@ -171,6 +175,20 @@ Record whether targets become:
 - separated
 - persistent
 - simplified
+
+## Cross-device behavior matrix
+
+For every high-salience interactive family, record:
+
+- desktop viewport and actual pointer/keyboard input tested
+- mobile viewport and actual tap/swipe/drag input tested
+- invariant states and responsive substitutions
+- motion removed, reduced or replaced
+- controls or information that only existed on hover
+- orientation-specific behavior when salient
+
+Viewport resizing alone does not prove mobile interaction. If touch emulation
+or a mobile browser is unavailable, record the limitation and lower confidence.
 
 ## Synthesis
 

@@ -47,6 +47,9 @@ A meaningful interaction should support:
 - evidence_refs
 - notes
 
+Also record viewport, device/input context and timestamped states in a
+`behavior_audits` entry when the behavior unfolds over time.
+
 ## Hover analysis
 
 Inspect independently:
@@ -68,6 +71,25 @@ Inspect independently:
 - parents
 
 Do not inspect only the hovered element.
+
+## Typographic microinteractions
+
+When letters appear to change, test the text content and the rendered motion
+separately. Classify the effect as one or more of:
+
+- character-content mutation
+- character translation
+- clip or mask reveal
+- duplicate-layer swap
+- glyph substitution
+- variable-font or font-feature change
+- opacity/filter change
+- no change observed
+- unknown
+
+Capture initial text, early/middle/final text, reverse text, per-character
+geometry when available, and affected sibling layers. A split DOM span is not
+evidence that the characters themselves mutate.
 
 ## Hover family detection
 
@@ -99,6 +121,18 @@ Record:
 - content reveal
 - close behavior
 - interruption behavior
+
+Test desktop and mobile menu implementations independently, including scroll
+lock, tap targets, nested navigation, back/close behavior and focus restoration
+when capabilities permit.
+
+## Scroll-reactive headers
+
+Record top state, the last state below the trigger, the first state above it,
+settled state and reverse state. Measure height, position, background,
+foreground, border, logo/nav/CTA variants and transition timing. Continue into
+contrasting page sections to determine whether the header reacts to scroll
+distance, section context, direction, velocity or a combination.
 
 ## Cursor systems
 

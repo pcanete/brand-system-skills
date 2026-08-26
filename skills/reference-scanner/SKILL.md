@@ -1,9 +1,9 @@
 ---
 name: reference-scanner
-description: Analyzes a reference website as a visual and behavioral system and records it as evidence another agent can build from. Covers layout, typography, media, responsive transformation, interaction, motion, page transitions and WebGL, producing STYLE_DNA and REFERENCE_EVIDENCE. Use when a site has been chosen as a reference and its logic has to be captured, documented or handed to an implementer. Not for extracting a brand's identity across channels — that is brand-dna-scanner — and not for building the result.
+description: Analyzes a reference website as a visual and behavioral system and records evidence another agent can build from. Covers layout, typography, media, desktop and mobile interaction, responsive transformation, motion, page transitions and WebGL, producing STYLE_DNA and REFERENCE_EVIDENCE. Use when a chosen reference site's visual logic or detailed behavior must be captured, documented or handed to an implementer. Not for cross-channel brand identity extraction or for building the result.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # Reference Scanner
@@ -41,11 +41,20 @@ REFERENCE_EVIDENCE records what was actually observed.
 
 STYLE_REPORT is the human-readable interpretation.
 
+For STANDARD and FORENSIC scans, STYLE_REPORT must include a concise behavior
+matrix showing which desktop/mobile inputs were tested, the activation model,
+important thresholds or timing/velocity profiles, responsive substitutions and
+remaining unknowns.
+
 Never present an inferred behavior as directly observed.
 
 Both contracts have schemas: `schemas/style-dna.schema.json` and
 `schemas/reference-evidence.schema.json`. Write against them from the start
 rather than reshaping the output at the end.
+
+For STANDARD and FORENSIC scans, record `behavior_audits` in
+REFERENCE_EVIDENCE. These are temporal, input-specific tests of important
+behavior, not prose summaries.
 
 `assets/scan-profile.example.json` shows how to declare the scan up front:
 routes, viewports, states and the capabilities actually available.
@@ -127,6 +136,8 @@ Inspect:
 - video/media behavior
 - WebGL/canvas behavior
 - repeated motion samples
+- detailed desktop and mobile behavior audits
+- input substitution across pointer, keyboard and touch
 - capability fallbacks
 
 Default to FORENSIC when the reference is highly animated, experimental,
@@ -295,6 +306,7 @@ Do not reuse third-party reference assets unless explicitly authorized.
 ## Phase 8 — Interaction
 
 Read `references/interaction-analysis.md`.
+For STANDARD or FORENSIC scans also read `references/behavior-forensics.md`.
 
 Inspect representative:
 
@@ -311,6 +323,10 @@ Inspect representative:
 - cursor transformations
 - link transitions
 - media interaction
+
+For high-salience interactions, distinguish changes to character content from
+translation, clipping, layering, glyph substitution and font-feature changes.
+Never describe text as "changing" from a before/after screenshot alone.
 
 ## Phase 9 — Motion
 
@@ -330,6 +346,10 @@ Classify animation as:
 For complex long-form regions, represent coordinated behavior as scroll scenes
 rather than isolated animation fragments.
 
+Do not assign a single speed to a marquee, ticker or scroll-reactive element
+until idle, active and reverse samples establish whether it is autonomous,
+scroll-linked, velocity-coupled, inertial or state-driven.
+
 ## Phase 10 — Scroll behavior
 
 Inspect:
@@ -347,6 +367,11 @@ Inspect:
 - progressive masking
 - header behavior
 
+For scroll-reactive headers, probe immediately below and above the activation
+threshold, then reverse direction. Record geometry, colors, content changes,
+timing, easing, section-context changes and whether the header hides, compacts
+or only restyles.
+
 ## Phase 11 — WebGL detection
 
 Read `references/webgl-detection.md`.
@@ -361,6 +386,10 @@ explain available evidence.
 Read `references/responsive-analysis.md`.
 
 Compare the same conceptual component across viewport classes.
+
+Desktop and mobile are separate behavioral targets. Re-run important menus,
+headers, carousels, media controls and text microinteractions with the input
+available on each device; do not extrapolate hover to touch.
 
 Classify changes as:
 
@@ -424,6 +453,9 @@ Report separate coverage for:
 A FORENSIC scan must not call itself complete when high-salience behavior
 remains unobserved.
 
+It must also fail completion when desktop and mobile behavior were not both
+tested, or when a high-salience temporal claim rests on a single sample.
+
 ## Phase 17 — Output validation
 
 STYLE_DNA must not contradict REFERENCE_EVIDENCE. Verify it before handing the
@@ -437,6 +469,12 @@ node scripts/validate-style-dna.mjs \
 Install the validator's dependencies once with `npm install` in the skill
 directory.
 
+After changing the behavioral contract or gates, run:
+
+```bash
+node scripts/test-behavior-gates.mjs
+```
+
 Beyond schema shape, the validator enforces what this skill claims to stand
 for:
 
@@ -445,6 +483,8 @@ for:
   a motion coverage of 0.8 with no motion samples is rejected
 - claims the contract itself marks as salient and confident appear in
   `observations`, where they can be traced
+- STANDARD and FORENSIC behavioral claims satisfy the temporal and
+  cross-device gates in `behavior_audits`
 
 A rejection is information, not an obstacle. Either record the missing
 evidence, or lower the claim to what was actually seen. `--lenient` checks

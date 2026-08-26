@@ -104,7 +104,7 @@ Analiza una web de referencia como un sistema visual y conductual. Registra el c
 Produce:
 
 - `STYLE_DNA.json`: contrato reproducible del sistema web;
-- `REFERENCE_EVIDENCE.json`: observaciones y procedencia;
+- `REFERENCE_EVIDENCE.json`: observaciones, procedencia y auditorías temporales de comportamiento;
 - `STYLE_REPORT.md`: explicación legible de los hallazgos;
 - capturas, inventarios y artefactos auxiliares cuando el análisis lo requiere.
 
@@ -301,8 +301,8 @@ Cada skill sigue versionado semántico de forma independiente:
 | Skill | Versión actual | Contrato compatible |
 | --- | ---: | --- |
 | `brand-dna-scanner` | `0.2.0` | Brand DNA `0.1.x` |
-| `reference-scanner` | `0.4.0` | Web reference schemas `0.3.x` |
-| `reference-to-astro` | `0.5.0` | Web reference schemas `0.3.x` |
+| `reference-scanner` | `0.5.0` | Web reference schemas `0.4.x` |
+| `reference-to-astro` | `0.5.0` | Web reference schemas `0.3.x–0.4.x` |
 
 Para actualizar una copia del repositorio:
 

@@ -75,6 +75,9 @@ Reduce confidence when:
 - the observation depends on external commentary
 - technology is guessed from visual appearance
 - responsive behavior is extrapolated
+- only pointer or only touch behavior was tested
+- timing comes from tool waits rather than timestamped browser states
+- a motion classification lacks an idle or reverse test
 
 ## Salience
 
