@@ -39,6 +39,9 @@ Possible capabilities:
 - script_inspection
 - canvas_detection
 - performance_observation
+- temporal_sampling
+- touch_emulation
+- reduced_motion_emulation
 
 Never generate evidence requiring unavailable capabilities.
 
@@ -162,6 +165,10 @@ Identify elements reacting to:
 
 Cluster equivalent interaction families.
 
+Create a device-input matrix for every high-salience family. Record which of
+pointer, keyboard, touch, wheel/trackpad, drag and swipe were actually tested
+at each viewport.
+
 ## 12. Interaction sampling
 
 For high-salience interactions capture:
@@ -171,6 +178,13 @@ ACTION
 DURING when possible
 AFTER
 REVERSE when possible
+
+For temporal behavior, BEFORE and AFTER alone are insufficient. Capture
+timestamped EARLY, MIDDLE and LATE states, or record why temporal sampling was
+unavailable.
+
+Store the test as a `behavior_audits` entry and link its captures or existing
+interaction/motion evidence through `evidence_refs`.
 
 ## 13. Scroll segmentation
 
@@ -200,6 +214,21 @@ Prioritize:
 
 Observe important motion repeatedly when possible.
 
+Classify the activation model before describing speed:
+
+- autonomous
+- scroll-triggered
+- scroll-linked
+- velocity-coupled
+- inertial
+- state-driven
+- continuous
+- unknown
+
+For moving tracks, sample idle, positive input, settled state and reverse
+input. Report sample count, elapsed time, displacement, direction, velocity
+range, acceleration/deceleration and loop seam when measurable.
+
 ## 15. Responsive comparison
 
 For each region ask:
@@ -212,6 +241,9 @@ For each region ask:
 - what becomes touch-oriented?
 - what loses motion?
 - what changes cropping?
+
+Repeat the behavior, not only the screenshot. Desktop and mobile evidence must
+show the actual input used and the resulting state sequence.
 
 ## 16. Technology separation
 
@@ -262,6 +294,11 @@ A FORENSIC scan should not be marked complete if:
 - significant WebGL behavior remains unidentified
 - major transitions were inaccessible
 - motion claims exceed evidence
+- desktop and mobile high-salience behavior were not both exercised
+- a high-salience temporal behavior lacks at least five timestamped states
+- a scroll-reactive threshold was not probed on both sides and in reverse
+- a moving track was labeled continuous without an idle/input dependency test
+- a text microinteraction was called a character change without a text probe
 
 ## 22. Final artifacts
 
