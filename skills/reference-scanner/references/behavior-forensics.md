@@ -89,6 +89,12 @@ and inspect a loop boundary. Use repeated page-timestamped samples to calculate
 displacement and a velocity profile. Distinguish steady speed from transient
 peak and scroll catch-up.
 
+Set `moving_track: true` only for a continuous or shared track whose velocity
+profile is itself part of the behavior, such as a marquee, ticker or
+scroll-coupled gallery. A clipped reveal, color progression or finite card
+interpolation may be scroll-linked without being a moving track; audit its
+state progression and reversal instead of inventing a velocity profile.
+
 ### Text-effect probe
 
 Capture actual text at multiple frames and compare it with per-character
@@ -107,6 +113,20 @@ equivalent.
 Re-run high-salience behavior with native inputs for each device class. Record
 same, reduced, removed, replaced and touch-substituted behavior. Treat missing
 mobile evidence as a limitation, not as proof of equivalence.
+
+Do not stop at whether the same text, image or card remains visible. Compare:
+
+- activation model and input dependency
+- movement axis, direction and amplitude
+- independent actor motion versus a shared moving track
+- reveal mechanism, clipping and opacity
+- sequencing, staggering and reversibility
+- normal-flow, sticky, pinned and absolute positioning roles
+
+If the content is preserved but any of these mechanics changes materially,
+classify and document it as a responsive behavior replacement. For example,
+independent vertical parallax becoming one horizontal image track is a
+replacement, not merely motion reduction.
 
 ## 8. Evidence contract
 

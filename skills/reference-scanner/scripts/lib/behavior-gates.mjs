@@ -127,7 +127,8 @@ export function checkBehaviorAuditQuality(evidence) {
     if (
       mode === "forensic" &&
       salient &&
-      ["continuous-motion", "scroll-linked"].includes(audit.behavior_kind)
+      (audit.behavior_kind === "continuous-motion" ||
+        (audit.behavior_kind === "scroll-linked" && audit.moving_track === true))
     ) {
       const profile = audit.velocity_profile || {};
       if (audit.idle_tested !== true) {

@@ -3,7 +3,7 @@ name: reference-scanner
 description: Analyzes a reference website as a visual and behavioral system and records evidence another agent can build from. Covers layout, typography, media, desktop and mobile interaction, responsive transformation, motion, page transitions and WebGL, producing STYLE_DNA and REFERENCE_EVIDENCE. Use when a chosen reference site's visual logic or detailed behavior must be captured, documented or handed to an implementer. Not for cross-channel brand identity extraction or for building the result.
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.6.0"
 ---
 
 # Reference Scanner
@@ -75,6 +75,9 @@ Possible capabilities include:
 - keyboard interaction
 - scroll automation
 - video/screen recording
+- local video metadata/decode
+- browser video playback
+- timestamped frame sampling
 - source/network inspection
 - JavaScript inspection
 - canvas/WebGL inspection
@@ -199,6 +202,10 @@ Record scan scope.
 
 Define routes, viewports, and states requiring evidence.
 
+Treat user-supplied annotated captures as intent evidence, not merely another
+screenshot. An annotation can identify the composition or behavior the user
+wants preserved even when the live page exposes several possible states.
+
 At minimum for STANDARD or FORENSIC evaluate representative:
 
 - large desktop
@@ -285,6 +292,11 @@ Record anatomy, states, visual rules, responsive behavior, and interaction.
 
 ## Phase 7 — Media
 
+When a supplied reference is a video or screen recording, read
+`references/video-analysis.md`. Do not declare the video unreadable after one
+decoder fails: follow the decoder fallback ladder, record metadata, sample
+timestamped frames and analyze temporal grammar.
+
 Analyze:
 
 - image aspect ratios
@@ -327,6 +339,11 @@ Inspect representative:
 For high-salience interactions, distinguish changes to character content from
 translation, clipping, layering, glyph substitution and font-feature changes.
 Never describe text as "changing" from a before/after screenshot alone.
+
+For every high-salience family, include a state matrix covering initial,
+activation, early, middle, settled and reverse/close states where applicable.
+Menus and typographic microinteractions cannot be marked covered from only
+closed/open or before/after captures.
 
 ## Phase 9 — Motion
 
@@ -404,6 +421,12 @@ Classify changes as:
 - motion reduction
 - layout mode change
 
+When the same content or assets remain present across viewports, do not assume
+the behavior is invariant. Compare activation model, movement axis, amplitude,
+direction, sequencing and whether actors move independently or as one shared
+track. Record a mechanism change as a responsive replacement even when the
+visible content is unchanged.
+
 ## Phase 13 — Page transitions
 
 When observable inspect:
@@ -455,6 +478,10 @@ remains unobserved.
 
 It must also fail completion when desktop and mobile behavior were not both
 tested, or when a high-salience temporal claim rests on a single sample.
+
+It must fail when a supplied reference video was not decoded through either a
+media tool or browser playback, unless both paths were attempted and the
+limitation is explicit.
 
 ## Phase 17 — Output validation
 

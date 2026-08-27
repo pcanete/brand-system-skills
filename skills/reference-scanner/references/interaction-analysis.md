@@ -50,6 +50,23 @@ A meaningful interaction should support:
 Also record viewport, device/input context and timestamped states in a
 `behavior_audits` entry when the behavior unfolds over time.
 
+## Required state matrix
+
+For each high-salience interaction family, record:
+
+| State | Input/time | Text | Geometry | Color/surface | Motion/media |
+| --- | --- | --- | --- | --- | --- |
+| Initial | none | observed | observed | observed | observed |
+| Activation | pointer/click/key/scroll | observed | observed | observed | observed |
+| Early | timestamp | observed | observed | observed | observed |
+| Middle | timestamp | observed | observed | observed | observed |
+| Settled | timestamp | observed | observed | observed | observed |
+| Reverse/close | input + timestamp | observed | observed | observed | observed |
+
+Use `unknown` when a cell was not observed. Do not collapse this matrix into
+before/after screenshots for menus, letter effects, moving tracks or other
+time-dependent behavior.
+
 ## Hover analysis
 
 Inspect independently:

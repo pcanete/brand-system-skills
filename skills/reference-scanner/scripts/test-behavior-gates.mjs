@@ -98,6 +98,33 @@ const valid = {
 
 assert.deepEqual(checkBehaviorAuditQuality(valid), []);
 
+const finiteScrollReveal = audit(
+  "finite-scroll-reveal",
+  "desktop",
+  "scroll-linked",
+  {
+    moving_track: false,
+    classification: {
+      activation_model: "scroll-linked",
+      reversible: true
+    }
+  }
+);
+assert.deepEqual(
+  checkBehaviorAuditQuality({ ...valid, behavior_audits: [finiteScrollReveal, valid.behavior_audits[1]] }),
+  []
+);
+
+const missingTrackProfile = {
+  ...finiteScrollReveal,
+  id: "moving-track-without-profile",
+  moving_track: true
+};
+assert.match(
+  checkBehaviorAuditQuality({ ...valid, behavior_audits: [missingTrackProfile, valid.behavior_audits[1]] }).join("\n"),
+  /velocity_profile\.sample_count/
+);
+
 const evidenceSchema = JSON.parse(
   fs.readFileSync(
     path.resolve(scriptDir, "../schemas/reference-evidence.schema.json"),
