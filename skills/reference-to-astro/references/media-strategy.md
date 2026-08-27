@@ -38,6 +38,9 @@ composition.
 
 ## Video
 
+When video is evidence for an effect rather than a production asset, read
+`reference-video.md` before choosing an implementation.
+
 - Autoplay only survives when the video is `muted` and `playsinline`. A
   background video that requires a click is not the observed behavior.
 - Always supply a `poster` matching the first frame, so the section is composed

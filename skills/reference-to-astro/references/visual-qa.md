@@ -40,6 +40,48 @@ Compare:
 - image scale
 - cropping
 
+### Blocking composition gate
+
+Do not continue to typography, motion, or surface polish while the primary
+composition fails.
+
+At every required viewport:
+
+1. identify the dominant regions from the reference, such as headline, copy,
+   media, navigation and deliberate empty space;
+2. compare their visual mass, alignment and separation against the reference;
+3. fail the pass when unrelated regions collide, content is unintentionally
+   clipped, a dominant element invades another region, or intended whitespace
+   collapses;
+4. adapt line breaks, measures, grid ratios or section height and repeat the
+   capture.
+
+For large text, do not trust the bounding box of a block or grid item as proof
+that its letters fit. A block can remain inside its column while nowrap text
+paints outside it. Measure the painted text itself — for example, the
+`Range.getBoundingClientRect()` of each text line — and compare that boundary
+with the adjacent region. Record the minimum separation at the tested desktop
+viewports. On stacked layouts, measure vertical separation instead.
+
+A clean console, a successful build and the absence of document-level
+horizontal overflow do not pass this gate.
+
+## Design critique gate
+
+After geometry passes, inspect the rendered page as a composition rather than a
+set of correct components:
+
+- What is perceived first, second and third?
+- Do dominant and secondary masses retain the reference relationship?
+- Is text legible against the actual moving media, not only one favorable frame?
+- Does negative space frame the hierarchy or merely remain unused?
+- Do alignment anchors and intentional asymmetry still feel deliberate?
+- Does the reading path reach the primary action without competing focal points?
+- Did adapted copy preserve the hierarchy, or did fitting it flatten the design?
+
+Record a concise verdict and the most important correction. Do not approve a
+page whose parts are individually accurate but compositionally incoherent.
+
 ## Pass B — Typography
 
 Compare:

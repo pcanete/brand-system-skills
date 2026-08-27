@@ -42,6 +42,10 @@ Possible capabilities:
 - temporal_sampling
 - touch_emulation
 - reduced_motion_emulation
+- local_video_metadata
+- local_video_decode
+- browser_video_playback
+- timestamped_frame_sampling
 
 Never generate evidence requiring unavailable capabilities.
 
@@ -101,6 +105,9 @@ For important routes capture:
 - hero
 - key media
 - footer
+
+User annotations are evidence of desired emphasis. Preserve the unannotated
+source separately, then record what the annotation selects, rejects or moves.
 
 ## 8. Structural inventory
 
@@ -168,6 +175,17 @@ Cluster equivalent interaction families.
 Create a device-input matrix for every high-salience family. Record which of
 pointer, keyboard, touch, wheel/trackpad, drag and swipe were actually tested
 at each viewport.
+
+Create a state matrix for those same families:
+
+- initial
+- activation
+- early
+- middle
+- settled
+- reverse or closing
+- responsive substitute
+- reduced-motion substitute
 
 ## 12. Interaction sampling
 
@@ -299,6 +317,8 @@ A FORENSIC scan should not be marked complete if:
 - a scroll-reactive threshold was not probed on both sides and in reverse
 - a moving track was labeled continuous without an idle/input dependency test
 - a text microinteraction was called a character change without a text probe
+- a supplied video reference was abandoned after only one decode path failed
+- a high-salience menu or text effect lacks a state matrix
 
 ## 22. Final artifacts
 

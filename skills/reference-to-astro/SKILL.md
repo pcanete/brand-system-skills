@@ -3,7 +3,7 @@ name: reference-to-astro
 description: Builds a website in Astro from an analyzed reference. Consumes STYLE_DNA, CONTENT_MANIFEST and BUILD_BRIEF, and reconstructs the reference's layout, typography, media, responsive, interaction and motion language using the client's own content. Use when reference contracts exist and the site has to be built, extended or verified. Not for inventing a visual direction from scratch, and not for analyzing a reference — that is reference-scanner.
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.6.0"
 ---
 
 # Reference-to-Astro
@@ -27,6 +27,12 @@ Locate and read:
 
 Also read `REFERENCE_EVIDENCE.json` or reference screenshots/videos when
 available.
+
+Annotated screenshots carry explicit user intent. When an annotation selects a
+target composition or calls out a mismatch, it overrides weaker inferred
+geometry from the unannotated page while preserving supplied content.
+
+When a reference video is supplied, read `references/reference-video.md`.
 
 If an input is unavailable, do not fabricate certainty.
 
@@ -294,6 +300,11 @@ Create an internal map for:
 - responsive transformations
 - uncertain observations requiring QA
 
+Read `references/design-composition.md` and create a composition brief for
+each high-salience section before styling it. The brief identifies dominant and
+secondary masses, alignment anchors, reading path, intended empty space,
+figure-ground treatment, media focal point and responsive transformation.
+
 Do not begin with animation.
 
 ### Phase 3 — Structural build
@@ -346,9 +357,18 @@ Implement evidenced:
 
 Touch must have an intentional equivalent for pointer-dependent behavior.
 
+Use the scanner's state matrix as a completeness checklist. Implement and test
+initial, activation, intermediate, settled and reverse/close states for
+high-salience menus, text effects and moving media. A correct open state does
+not compensate for a missing transition or reverse state.
+
 ### Phase 6 — Motion
 
 Read `references/motion-system.md`.
+
+When motion comes from supplied video evidence, also read
+`references/reference-video.md`. Translate the observed motion grammar rather
+than substituting a generic carousel, crossfade or marquee.
 
 If GSAP is required, inspect the installed version and use its official
 documentation for any API whose current behavior is uncertain. Do not assume
@@ -421,6 +441,13 @@ every console or page error. It does not decide whether the result matches the
 reference. That comparison is yours: open the captures against the reference
 and judge them in the order below.
 
+Composition is a blocking gate, not a subjective final polish. For each major
+viewport, verify that primary visual regions remain distinct, intended
+whitespace survives, and painted content does not collide, clip, or cross into
+another region without reference evidence. Measure actual painted text bounds
+when large typography is involved; CSS grid or block boxes alone can conceal
+glyph overflow. Follow the composition gate in `references/visual-qa.md`.
+
 Then run the passes the tooling cannot do for you:
 
 - desktop, tablet and mobile comparison against the reference
@@ -428,6 +455,8 @@ Then run the passes the tooling cannot do for you:
 - motion pass
 - reduced-motion pass
 - keyboard pass
+- design critique pass from `references/design-composition.md`
+- temporal comparison against supplied reference videos
 
 Fix significant mismatches and repeat.
 
@@ -459,6 +488,9 @@ Complete only when:
 - primary routes work
 - primary interactions work
 - desktop/mobile layouts were inspected
+- the composition gate passed at every major viewport
+- high-salience interaction state matrices are represented and tested
+- supplied reference videos were decoded or their two-path failure documented
 - reduced motion is supported where motion exists
 - major STYLE_DNA rules are represented
 - unresolved low-confidence assumptions are documented

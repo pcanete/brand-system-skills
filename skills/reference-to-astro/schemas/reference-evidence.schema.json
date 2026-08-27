@@ -409,6 +409,7 @@
         "text_probe": { "type": "object" },
         "reverse_tested": { "type": "boolean" },
         "idle_tested": { "type": "boolean" },
+        "moving_track": { "type": "boolean" },
         "touch_tested": { "type": "boolean" },
         "keyboard_tested": { "type": "boolean" },
         "reduced_motion_tested": { "type": "boolean" },

@@ -301,8 +301,8 @@ Cada skill sigue versionado semántico de forma independiente:
 | Skill | Versión actual | Contrato compatible |
 | --- | ---: | --- |
 | `brand-dna-scanner` | `0.2.0` | Brand DNA `0.1.x` |
-| `reference-scanner` | `0.5.0` | Web reference schemas `0.4.x` |
-| `reference-to-astro` | `0.5.0` | Web reference schemas `0.3.x–0.4.x` |
+| `reference-scanner` | `0.6.0` | Web reference schemas `0.4.x` |
+| `reference-to-astro` | `0.6.0` | Web reference schemas `0.3.x–0.4.x` |
 
 Para actualizar una copia del repositorio:
 
