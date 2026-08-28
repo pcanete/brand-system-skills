@@ -196,6 +196,43 @@
       ],
       "source": "product interaction instruction",
       "notes": "Rendering technology remains unknown."
+    },
+    {
+      "path": "interaction.fullscreen_media",
+      "value": "gallery media opens fullscreen",
+      "mode": "exact",
+      "confidence": 0.99,
+      "salience": 0.7,
+      "evidence_refs": [
+        "synthetic-fullscreen-media"
+      ],
+      "source": "gallery structure",
+      "notes": ""
+    },
+    {
+      "path": "art_direction.summary",
+      "value": "editorial narrative framing of a configurable object",
+      "mode": "derived",
+      "confidence": 0.8,
+      "salience": 0.85,
+      "evidence_refs": [
+        "synthetic-editorial-register",
+        "synthetic-media-sequence"
+      ],
+      "source": "section composition",
+      "notes": "Derived from section order and sequence roles, not from a stated positioning."
+    },
+    {
+      "path": "content_behavior.primary_journey",
+      "value": "inquiry",
+      "mode": "exact",
+      "confidence": 0.9,
+      "salience": 0.65,
+      "evidence_refs": [
+        "synthetic-inquiry-journey"
+      ],
+      "source": "call-to-action inventory",
+      "notes": ""
     }
   ]
 }

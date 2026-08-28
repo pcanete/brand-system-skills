@@ -3,7 +3,7 @@ name: brand-dna-scanner
 description: Extracts an evidence-backed Brand DNA from a brand's own material — website, guidelines, campaigns, social, photography, video, packaging, product, UI and copy — separating lasting identity from category convention, campaign styling and one-off execution. Produces BRAND_DNA, BRAND_EVIDENCE, BRAND_REPORT, BRAND_RULES and a reusable BRAND_PROMPT. Use when a brand's rules have to be captured, audited, or handed to whoever makes new work. Not for analyzing one reference website's layout and behavior — that is reference-scanner.
 license: MIT
 metadata:
-  version: "0.2.0"
+  version: "0.3.0"
 ---
 
 # Brand DNA Scanner
@@ -564,6 +564,11 @@ Beyond schema shape, the validator enforces what this skill exists to protect:
 - declared coverage is backed by observations in that dimension
 - claims the contract itself marks as salient and confident appear in
   `observations`, where they can be traced
+- **every channel that asserts something carries an evidence-backed
+  observation.** Describing the photography commits you to saying where you
+  saw it. This gate ignores confidence, salience and coverage: those are
+  numbers you write about your own work, and personality is the easiest thing
+  in a brand to project without evidence
 
 A rejection is information, not an obstacle. There are two honest answers to
 one: record the missing evidence, or lower the claim to what the material

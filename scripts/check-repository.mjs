@@ -195,7 +195,8 @@ function digest(file) {
 const duplicated = [
   ["schemas", "style-dna.schema.json"],
   ["schemas", "reference-evidence.schema.json"],
-  ["scripts/lib", "web-contracts.mjs"]
+  ["scripts/lib", "web-contracts.mjs"],
+  ["scripts/lib", "behavior-gates.mjs"]
 ];
 
 for (const [folder, filename] of duplicated) {
@@ -334,6 +335,41 @@ runNode(
 runNode("Rejected STYLE_DNA fixture is malformed beyond the gates", [
   scannerValidator,
   ...webFixtures("rejected"),
+  "--lenient"
+]);
+
+// The evasive fixture makes no false statement and breaks no schema. Every
+// claim in it is concrete, every self-reported score is modest, and no
+// evidence exists anywhere. It passed every gate until the gates stopped
+// reading the author own scores.
+runNode(
+  "Evasive STYLE_DNA fixture was accepted: the gates are reading self-reported scores again",
+  [scannerValidator, ...webFixtures("rejected-evasive")],
+  { expect: "fail" }
+);
+
+runNode("Evasive STYLE_DNA fixture is malformed beyond the gates", [
+  scannerValidator,
+  ...webFixtures("rejected-evasive"),
+  "--lenient"
+]);
+
+const evasiveBrand = [
+  "--dna",
+  path.join(root, "tests", "rejected-evasive", "BRAND_DNA.json"),
+  "--evidence",
+  path.join(root, "tests", "rejected-evasive", "BRAND_EVIDENCE.json")
+];
+
+runNode(
+  "Evasive Brand DNA fixture was accepted: the gates are reading self-reported scores again",
+  [brandValidator, ...evasiveBrand],
+  { expect: "fail" }
+);
+
+runNode("Evasive Brand DNA fixture is malformed beyond the gates", [
+  brandValidator,
+  ...evasiveBrand,
   "--lenient"
 ]);
 

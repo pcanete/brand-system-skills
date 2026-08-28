@@ -195,9 +195,9 @@ export function checkSalientClaimsIndexed(dna) {
     if (
       !Array.isArray(node) &&
       typeof node.confidence === "number" &&
-      typeof node.salience === "number" &&
       node.confidence >= SUPPORT_THRESHOLD &&
-      node.salience >= SUPPORT_THRESHOLD &&
+      (typeof node.salience !== "number" ||
+        node.salience >= SUPPORT_THRESHOLD) &&
       prefix
     ) {
       claims.push({ prefix, id: node.id || null });
@@ -230,6 +230,103 @@ export function checkSalientClaimsIndexed(dna) {
           claim.id ? ` ('${claim.id}')` : ""
         }: salient claim missing from observations`
     );
+}
+
+// Blocks that assert something observed about the brand. Everything else is
+// metadata, synthesis, or the observation index itself.
+const CLAIM_BLOCKS = [
+  "core",
+  "positioning",
+  "personality",
+  "verbal",
+  "semantic_territory",
+  "visual",
+  "photography",
+  "illustration",
+  "iconography",
+  "cgi_3d",
+  "motion",
+  "web_experience",
+  "ui",
+  "content",
+  "storytelling",
+  "social",
+  "campaigns",
+  "product_packaging",
+  "environmental",
+  "sonic",
+  "behavior",
+  "temporal",
+  "competitive"
+];
+
+const META_KEYS = new Set([
+  "confidence",
+  "salience",
+  "recurrence",
+  "consistency",
+  "distinctiveness",
+  "ownership_confidence",
+  "mode",
+  "notes",
+  "id",
+  "source",
+  "evidence_refs"
+]);
+
+const NON_CLAIMS = new Set(["unknown", "none", "n/a", "not observed", ""]);
+
+function assertsSomething(node) {
+  if (node === null || node === undefined) return false;
+
+  if (Array.isArray(node)) return node.some(assertsSomething);
+
+  if (typeof node === "object") {
+    return Object.entries(node).some(
+      ([key, value]) => !META_KEYS.has(key) && assertsSomething(value)
+    );
+  }
+
+  if (typeof node === "string") {
+    return !NON_CLAIMS.has(node.trim().toLowerCase());
+  }
+
+  if (typeof node === "number") return true;
+
+  return node === true;
+}
+
+// GATE 6 — Claimed channels are backed.
+//
+// Every gate that reads a self-reported score — confidence, salience,
+// coverage — can be satisfied by reporting a lower one. This gate ignores the
+// numbers: if a channel asserts anything, that channel needs at least one
+// observation carrying evidence. Describe the photography and you have to say
+// where you saw it.
+export function checkClaimedChannelsBacked(dna) {
+  const issues = [];
+
+  const backed = (dna.observations || []).filter(
+    (observation) => (observation.evidence_refs || []).length > 0
+  );
+
+  for (const block of CLAIM_BLOCKS) {
+    if (!(block in dna)) continue;
+    if (!assertsSomething(dna[block])) continue;
+
+    const covered = backed.some((observation) => {
+      const path = observation.path || "";
+      return path === block || path.startsWith(`${block}.`);
+    });
+
+    if (!covered) {
+      issues.push(
+        `${block}: asserts findings with no evidence-backed observation behind them`
+      );
+    }
+  }
+
+  return issues;
 }
 
 // GATE 5 — Recurrence is earned.
@@ -302,6 +399,11 @@ export function verifyBrandContracts(dna, evidence, { strict = true } = {}) {
     {
       label: "Salient claims are indexed as observations",
       issues: checkSalientClaimsIndexed(dna),
+      strictOnly: true
+    },
+    {
+      label: "Claimed channels are backed by evidence",
+      issues: checkClaimedChannelsBacked(dna),
       strictOnly: true
     },
     {

@@ -22,6 +22,7 @@ import {
   reportGroups,
   verifyWebContracts
 } from "./lib/web-contracts.mjs";
+import { checkBehaviorAuditQuality } from "./lib/behavior-gates.mjs";
 
 const cwd = process.cwd();
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
@@ -121,6 +122,13 @@ async function main() {
 
   const groups = [
     ...verifyWebContracts(style, evidence, { strict }),
+    // The builder verifies what it receives. A scan that promised behavior
+    // forensics and delivered prose is caught here, not after the site is
+    // built on it.
+    {
+      label: "Behavior audits are temporal and cross-device",
+      issues: strict ? checkBehaviorAuditQuality(evidence) : []
+    },
     {
       label: "Asset ids are unique",
       issues: checkAssetIds(content)
