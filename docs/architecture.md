@@ -17,6 +17,13 @@ Analyzes multiple brand touchpoints and produces:
 Its output can inform websites, campaigns, presentations, social content, and
 other production systems.
 
+### brand-manual-builder
+
+Consumes `BRAND_DNA.json`, `BRAND_EVIDENCE.json` and a review composition
+contract. It renders a standalone visual manual and records an explicit human
+approval checkpoint. It does not discover new Brand DNA or silently promote
+inferences; source paths and evidence references remain traceable.
+
 ### reference-scanner
 
 Analyzes one reference website as a visual and behavioral system. It produces
@@ -36,6 +43,7 @@ become an Astro implementation.
 ## Contract ownership
 
 - Brand contracts belong to `brand-dna-scanner`.
+- The manual composition and review contract belongs to `brand-manual-builder`.
 - Web reference contracts are authored by `reference-scanner`.
 - `reference-to-astro` carries exact copies of the web contracts so it remains
   independently installable.

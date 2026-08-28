@@ -75,6 +75,7 @@ for (const file of files.filter((item) => item.endsWith(".mjs"))) {
 
 const skillNames = [
   "brand-dna-scanner",
+  "brand-manual-builder",
   "reference-scanner",
   "reference-to-astro"
 ];
@@ -249,6 +250,22 @@ const brandValidator = path.join(
   "validate-brand-dna.mjs"
 );
 
+const manualValidator = path.join(
+  root,
+  "skills",
+  "brand-manual-builder",
+  "scripts",
+  "validate-manual.mjs"
+);
+
+const manualBuilder = path.join(
+  root,
+  "skills",
+  "brand-manual-builder",
+  "scripts",
+  "build-manual.mjs"
+);
+
 const scannerValidator = path.join(
   root,
   "skills",
@@ -299,6 +316,44 @@ runNode("Brand DNA example rejected by its own validator", [
   brandValidator,
   ...brandExamples
 ]);
+
+const manualExample = [
+  "--dna",
+  path.join(root, "skills", "brand-dna-scanner", "examples", "BRAND_DNA.example.json"),
+  "--evidence",
+  path.join(root, "skills", "brand-dna-scanner", "examples", "BRAND_EVIDENCE.example.json"),
+  "--spec",
+  path.join(root, "skills", "brand-manual-builder", "assets", "BRAND_MANUAL_SPEC.example.json")
+];
+
+runNode("Draft brand manual rejected in review mode", [
+  manualValidator,
+  ...manualExample
+], { expect: "fail" });
+
+runNode("Draft brand manual rejected in preparation mode", [
+  manualValidator,
+  ...manualExample,
+  "--allow-draft"
+]);
+
+const manualBuildRoot = fs.mkdtempSync(path.join(os.tmpdir(), "brand-manual-build-"));
+runNode("Brand manual example failed to render", [
+  manualBuilder,
+  ...manualExample,
+  "--out",
+  manualBuildRoot
+]);
+
+if (!fs.existsSync(path.join(manualBuildRoot, "index.html"))) {
+  fail("Brand manual builder produced no index.html");
+}
+
+if (!fs.existsSync(path.join(manualBuildRoot, "BRAND_MANUAL.json"))) {
+  fail("Brand manual builder produced no BRAND_MANUAL.json");
+}
+
+fs.rmSync(manualBuildRoot, { recursive: true, force: true });
 
 runNode("Scan artifacts fixture rejected by reference-scanner", [
   scannerValidator,

@@ -4,7 +4,7 @@
 
 Una marca no es solamente una paleta. Una web no es solamente una captura de pantalla. Y reconstruir una referencia no debería significar copiar su código ni confundir su identidad con la del cliente.
 
-`brand-system-skills` organiza ese trabajo en tres capacidades independientes y compatibles: extraer el ADN de una marca, analizar el sistema visual y conductual de una web de referencia, y convertir esos contratos en un sitio Astro con contenido y materiales reales.
+`brand-system-skills` organiza ese trabajo en cuatro capacidades independientes y compatibles: extraer el ADN de una marca, convertirlo en un checkpoint visual aprobable, analizar el sistema visual y conductual de una web de referencia, y convertir esos contratos en un sitio Astro con contenido y materiales reales.
 
 El repositorio está pensado para diseñadores, desarrolladores, equipos de marca y agentes de IA que necesitan trabajar con más criterio que una indicación como «hacelo parecido a esto».
 
@@ -23,16 +23,21 @@ Sin un método, esas señales terminan convertidas en decisiones arbitrarias. Es
 
 El objetivo no es automatizar el gusto. Es hacer visible el razonamiento para que la dirección creativa, la producción y la validación puedan trabajar sobre una misma base.
 
-## Las tres capas
+## Las cuatro capas
 
 | Capa | Skill | Pregunta que responde | Salida principal |
 | --- | --- | --- | --- |
 | Identidad | `brand-dna-scanner` | ¿Qué hace reconocible y consistente a esta marca? | `BRAND_DNA.json` y evidencia asociada |
+| Checkpoint de marca | `brand-manual-builder` | ¿Cómo se ve y qué debe aprobar una persona antes de producir? | Manual de identidad web navegable |
 | Expresión web | `reference-scanner` | ¿Cómo funciona visualmente esta web de referencia? | `STYLE_DNA.json` y evidencia asociada |
 | Implementación | `reference-to-astro` | ¿Cómo se reconstruye ese sistema con el contenido del cliente? | Proyecto Astro verificado |
 
 ```text
 Fuentes de marca ──> brand-dna-scanner ──> BRAND_DNA
+                                              │
+                                              v
+                                    brand-manual-builder
+                                      revisión + aprobación
                                               │
 Web de referencia ─> reference-scanner ─> STYLE_DNA
                                               │
@@ -104,7 +109,19 @@ Produce:
 
 Puede alimentar webs, presentaciones, campañas, contenido social, guiones, prompts visuales y sistemas de diseño. Su foco no es describir una pieza aislada, sino encontrar los patrones que sobreviven entre canales.
 
-### 2. `reference-scanner`
+### 2. `brand-manual-builder`
+
+Convierte un `BRAND_DNA` respaldado por evidencia en un manual estático, navegable y responsive para revisión humana. Mantiene visibles la cobertura, las fuentes y las limitaciones, y registra la aprobación sin modificar el contrato original.
+
+Produce:
+
+- `BRAND_MANUAL_SPEC.json`: composición, tema, trazabilidad y checklist;
+- `brand-manual/index.html`: checkpoint visual autónomo;
+- `brand-manual/BRAND_MANUAL.json`: manifiesto generado y estado de revisión.
+
+No descubre nuevas reglas ni reemplaza al escáner: hace visible lo ya sustentado.
+
+### 3. `reference-scanner`
 
 Analiza una web de referencia como un sistema visual y conductual. Registra el comportamiento de escritorio y móvil, la estructura de las páginas, la tipografía, el color, los medios, el movimiento, las interacciones y las relaciones espaciales.
 
@@ -117,7 +134,7 @@ Produce:
 
 Puede trabajar como skill independiente, y verifica su propia salida antes de entregarla. Si existe un `BRAND_DNA`, lo usa como contexto de interpretación sin promover automáticamente una conducta web a regla central de marca.
 
-### 3. `reference-to-astro`
+### 4. `reference-to-astro`
 
 Construye una implementación Astro a partir de los contratos de referencia, un manifiesto de contenido, los materiales entregados, un brief de producción y un `SITE_BLUEPRINT` aprobado.
 
@@ -139,13 +156,14 @@ Su meta no es entregar una maqueta estática, sino una base web mantenible y ver
 
 1. **Reunir fuentes.** Web, manuales, campañas, redes, contenido, fotografías, videos y la referencia elegida.
 2. **Escanear la marca.** Ejecutar `brand-dna-scanner` y revisar evidencia, conflictos e inferencias.
-3. **Aprobar el núcleo.** Validar tono, principios, códigos visuales, límites y activos permitidos.
-4. **Escanear la referencia.** Ejecutar `reference-scanner` en las páginas, estados y viewports relevantes.
-5. **Separar marca y canal.** Decidir qué pertenece al cliente, qué pertenece al lenguaje web y qué no debe trasladarse.
-6. **Preparar el build brief.** Declarar objetivo, funcionalidades, activos y restricciones.
-7. **Aprobar SITE_BLUEPRINT.** Mapear contenido, secciones, composición, responsive, comportamiento y criterios de aceptación.
-8. **Construir con Astro.** Ejecutar `reference-to-astro` sobre el blueprint aprobado.
-9. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
+3. **Visualizar y aprobar la marca.** Generar el manual navegable con `brand-manual-builder` y resolver su checklist.
+4. **Aprobar el núcleo.** Validar tono, principios, códigos visuales, límites y activos permitidos.
+5. **Escanear la referencia.** Ejecutar `reference-scanner` en las páginas, estados y viewports relevantes.
+6. **Separar marca y canal.** Decidir qué pertenece al cliente, qué pertenece al lenguaje web y qué no debe trasladarse.
+7. **Preparar el build brief.** Declarar objetivo, funcionalidades, activos y restricciones.
+8. **Aprobar SITE_BLUEPRINT.** Mapear contenido, secciones, composición, responsive, comportamiento y criterios de aceptación.
+9. **Construir con Astro.** Ejecutar `reference-to-astro` sobre el blueprint aprobado.
+10. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
 
 Cada paso que produce un contrato termina con su validador. Un contrato rechazado no se fuerza: se completa la evidencia o se baja la afirmación.
 
@@ -175,17 +193,18 @@ También es posible utilizar solamente una capa. Por ejemplo, `brand-dna-scanner
 
 ## Instalación
 
-Los tres skills funcionan igual en **Claude** y en **Codex**: un `SKILL.md` con
+Los cuatro skills funcionan igual en **Claude** y en **Codex**: un `SKILL.md` con
 su frontmatter, sus referencias, sus contratos y sus validadores. Cambia dónde
 se copia el directorio.
 
 Skills disponibles:
 
 - [brand-dna-scanner](https://github.com/pcanete/brand-system-skills/tree/main/skills/brand-dna-scanner)
+- [brand-manual-builder](https://github.com/pcanete/brand-system-skills/tree/main/skills/brand-manual-builder)
 - [reference-scanner](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-scanner)
 - [reference-to-astro](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-to-astro)
 
-Instala los tres para el flujo completo de marca a web, o solamente el que corresponda a una tarea puntual.
+Instala los cuatro para el flujo completo de marca a web, o solamente el que corresponda a una tarea puntual.
 
 ### En Claude
 
@@ -227,6 +246,11 @@ su sitio, brand book y campañas. Separa evidencia, inferencias y conflictos.
 ```
 
 ```text
+Usa brand-manual-builder para convertir este BRAND_DNA en un manual visual
+navegable. Mostrámelo como checkpoint y no lo apruebes por mí.
+```
+
+```text
 Usa reference-scanner para analizar esta web en desktop y mobile.
 Necesito su sistema de layout, tipografía, movimiento e interacciones.
 ```
@@ -249,6 +273,11 @@ brand-system-skills/
 │   │   ├── schemas/
 │   │   ├── scripts/
 │   │   ├── examples/
+│   │   └── references/
+│   ├── brand-manual-builder/
+│   │   ├── SKILL.md
+│   │   ├── schemas/
+│   │   ├── scripts/
 │   │   └── references/
 │   ├── reference-scanner/
 │   │   ├── SKILL.md
@@ -286,6 +315,10 @@ npm ci --prefix skills/brand-dna-scanner
 ```
 
 ```bash
+npm ci --prefix skills/brand-manual-builder
+```
+
+```bash
 npm ci --prefix skills/reference-scanner
 ```
 
@@ -312,6 +345,7 @@ Cada skill sigue versionado semántico de forma independiente:
 | Skill | Versión actual | Contrato compatible |
 | --- | ---: | --- |
 | `brand-dna-scanner` | `0.4.0` | Brand DNA `0.1.x` |
+| `brand-manual-builder` | `0.1.0` | Brand Manual Spec `0.1` |
 | `reference-scanner` | `0.7.0` | Web reference schemas `0.4.x` |
 | `reference-to-astro` | `1.0.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0` |
 
