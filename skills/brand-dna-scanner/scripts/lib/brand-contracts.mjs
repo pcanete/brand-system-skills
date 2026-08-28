@@ -329,6 +329,54 @@ export function checkClaimedChannelsBacked(dna) {
   return issues;
 }
 
+// GATE 7 — Derived material is not observation.
+//
+// In a brand with any history, much of the available material is already a
+// distillation of an earlier brand document: a voice guide generated from a
+// dossier, a palette copied out of a manual. A scan that treats those as
+// evidence recovers the document it came from and looks brilliant without
+// having observed anything. It is the most flattering way for this skill to
+// fail, which is why it needs a gate rather than a warning.
+export function checkDerivedNotTreatedAsObservation(dna, evidence) {
+  const known = evidenceIndex(evidence);
+  const derived = new Set(
+    (evidence.sources || [])
+      .filter((source) => source.authority === "derived-internal")
+      .map((source) => source.id)
+  );
+
+  if (!derived.size) return [];
+
+  const issues = [];
+
+  for (const observation of dna.observations || []) {
+    if (observation.mode !== "exact" && observation.mode !== "derived") continue;
+
+    const refs = observation.evidence_refs || [];
+    if (!refs.length) continue;
+
+    const sources = new Set();
+
+    for (const ref of refs) {
+      for (const source of known.get(ref)?.source_refs || []) {
+        sources.add(source);
+      }
+    }
+
+    if (!sources.size) continue;
+
+    if ([...sources].every((source) => derived.has(source))) {
+      issues.push(
+        `${observation.path}: recorded as '${observation.mode}' but every source behind ` +
+          "it is derived-internal — this restates an earlier document rather than " +
+          "observing the brand"
+      );
+    }
+  }
+
+  return issues;
+}
+
 // GATE 5 — Recurrence is earned.
 // This is the skill's founding rule in executable form: one spectacular
 // execution is not Brand DNA. Anything claimed as recurrent must trace back
@@ -404,6 +452,11 @@ export function verifyBrandContracts(dna, evidence, { strict = true } = {}) {
     {
       label: "Claimed channels are backed by evidence",
       issues: checkClaimedChannelsBacked(dna),
+      strictOnly: true
+    },
+    {
+      label: "Derived material is not treated as observation",
+      issues: checkDerivedNotTreatedAsObservation(dna, evidence),
       strictOnly: true
     },
     {

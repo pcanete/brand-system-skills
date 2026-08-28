@@ -18,12 +18,16 @@
     },
     "brand": {
       "type": "object",
-      "required": ["name"],
+      "required": [
+        "name"
+      ],
       "additionalProperties": true
     },
     "scan": {
       "type": "object",
-      "required": ["mode"],
+      "required": [
+        "mode"
+      ],
       "properties": {
         "mode": {
           "enum": [
@@ -81,22 +85,37 @@
           "type": "string"
         },
         "url": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "path": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "channel": {
           "type": "string"
         },
         "date": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "campaign": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "locale": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "authority": {
           "enum": [
@@ -107,8 +126,10 @@
             "product",
             "third-party",
             "archive",
+            "derived-internal",
             "inferred"
-          ]
+          ],
+          "description": "derived-internal: material already distilled from an earlier brand document (a voice guide generated from a dossier, tokens copied out of a manual). It restates the source it came from and is not an observation of the brand."
         },
         "status": {
           "enum": [
@@ -141,7 +162,10 @@
           }
         },
         "artifact": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
           "type": "string"

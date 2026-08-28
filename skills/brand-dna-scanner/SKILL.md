@@ -3,7 +3,7 @@ name: brand-dna-scanner
 description: Extracts an evidence-backed Brand DNA from a brand's own material — website, guidelines, campaigns, social, photography, video, packaging, product, UI and copy — separating lasting identity from category convention, campaign styling and one-off execution. Produces BRAND_DNA, BRAND_EVIDENCE, BRAND_REPORT, BRAND_RULES and a reusable BRAND_PROMPT. Use when a brand's rules have to be captured, audited, or handed to whoever makes new work. Not for analyzing one reference website's layout and behavior — that is reference-scanner.
 license: MIT
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # Brand DNA Scanner
@@ -48,6 +48,7 @@ the end.
 | `BRAND_EVIDENCE.json` | `schemas/brand-evidence.schema.json` |
 | `BRAND_REPORT.md` | `assets/BRAND_REPORT.template.md` |
 | `BRAND_RULES.md` | `assets/BRAND_RULES.template.md` |
+| `BRAND_RULES.json` | `schemas/brand-rules.schema.json`, example in `assets/BRAND_RULES.example.json` |
 | `BRAND_PROMPT.md` | `assets/BRAND_PROMPT.template.md` |
 
 `assets/SCAN_PROFILE.example.json` shows how to declare the scan up front:
@@ -57,6 +58,63 @@ sources, channels, mode and the capabilities actually available.
 are a small worked pair. Read them before writing your own: they show what
 "supported" looks like, including a claim deliberately kept channel-specific
 because a single source cannot establish recurrence.
+
+## Rules that can be checked
+
+`BRAND_RULES.md` is the human read. `BRAND_RULES.json` is the same rules in a
+form a machine can test a piece against, and it is what makes the DNA
+operational instead of archival.
+
+Each rule carries a statement, the evidence it was derived from, and a
+`detect` block that is either a pattern or an explicit `manual` question.
+That split is the point. A rule like "never open with a rhetorical question"
+is checkable; a rule like "the turn must implicate the reader" is not, and
+marking it `manual` means it gets reported as needing judgement rather than
+silently passing.
+
+```bash
+node scripts/check-piece.mjs --piece caption.md --rules BRAND_RULES.json
+```
+
+Without this, brand compliance is checked by whoever wrote the piece, against
+rules they are also interpreting, and that check always passes.
+
+Only write a rule the evidence supports. A brand rule with no observation
+behind it is an opinion with a rule number.
+
+## Derived material is not evidence
+
+In any brand with history, much of the available material is already a
+distillation of an earlier brand document: a voice guide generated from a
+dossier, a palette copied out of a manual, an editorial POV canonised from a
+strategy deck.
+
+Those files restate the document they came from. Scanning them recovers that
+document and produces a Brand DNA that looks impressively accurate while
+having observed nothing.
+
+Record such sources with authority `derived-internal`. An observation whose
+evidence traces only to derived-internal sources cannot be `exact` or
+`derived`, and the validator enforces it.
+
+The tell is usually in the file itself: a header saying what it was generated
+from, a note naming a section of another document. Look for it before treating
+anything internal as a touchpoint.
+
+## What a scan of published work can and cannot reach
+
+Published pieces carry the expressive layer: voice, verbal positioning, content
+mechanics, visual system, distinctive assets.
+
+They rarely carry the strategic layer: who the competitor actually is, who the
+audience actually is, the business model, the time horizon. Those are decided,
+not expressed, and no amount of forensic reading of campaigns will recover
+them.
+
+Say so in `limitations` rather than inferring them. If the objective needs the
+strategic layer, the scan needs declarative material — a manual, an interview,
+a strategy document — and that requirement belongs in the source inventory,
+not in a guess.
 
 ## Evidence-first behavior
 
@@ -478,6 +536,12 @@ Detect:
 Contradiction is evidence.
 
 Do not average contradictions away.
+
+A contradiction is also a finding about a channel. Record it in
+`contradictions` **and** as an observation of the channel it was found in.
+Otherwise the channel reads as uninspected: the coverage gate counts
+observations, and a contradiction filed only under `contradictions` leaves the
+strongest thing you learned about that channel outside the index.
 
 ## Phase 17 — Temporal analysis
 

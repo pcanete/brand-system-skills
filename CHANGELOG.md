@@ -2,6 +2,57 @@
 
 ## Unreleased
 
+`brand-dna-scanner` 0.4.0
+
+Everything here comes from the first real run of the skill: a STANDARD scan of
+a live brand, against its own published website, carousel, video and commercial
+material, with the existing brand dossier held back and only opened afterwards
+to compare. Five of these could not have been found by reading the code.
+
+### Rules that can be checked
+
+`BRAND_RULES.md` was prose, which meant brand compliance was verified by
+whoever wrote the piece, against rules they were also interpreting. In the run
+that produced this release, the observed workflow was an agent filling in its
+own checklist with its own ticks — including on the rules that require
+judgement.
+
+`BRAND_RULES.json` is the same rules in checkable form: statement, the evidence
+it was derived from, and a `detect` block that is either a pattern or an
+explicit `manual` question. `scripts/check-piece.mjs` runs a finished piece
+against them.
+
+The split is the design. A rule like "never open with a rhetorical question" is
+a pattern. A rule like "the turn must implicate the reader" is not, and marking
+it `manual` means it is reported as needing judgement rather than passing in
+silence.
+
+### Derived material is not evidence
+
+The most flattering way for this skill to fail: in a brand with history, much
+of the internal material is already a distillation of an earlier brand document
+— a voice guide generated from a dossier, a palette copied out of a manual.
+Scanning those recovers the document and produces a Brand DNA that looks
+accurate while having observed nothing.
+
+New authority value `derived-internal`, and a gate: an observation whose
+evidence traces only to derived-internal sources cannot be `exact` or
+`derived`.
+
+### Also from the run
+
+- **The observable ceiling, now stated.** Published work carries the expressive
+  layer — voice, verbal positioning, content mechanics. It rarely carries the
+  strategic layer: competitor, audience, business model, horizon. Those are
+  decided, not expressed. The skill now says so instead of letting a scan
+  quietly under-deliver.
+- **A contradiction is also an observation of its channel.** The skill said
+  contradictions are evidence, but the coverage gate counts observations, so a
+  contradiction filed only under `contradictions` left the channel reading as
+  uninspected — after being the most closely inspected thing in the scan.
+- **`scanned_at` accepts a date.** It required a full `date-time`. A scan
+  records the day it happened.
+
 `brand-dna-scanner` 0.3.0 · `reference-scanner` 0.7.0 · `reference-to-astro` 0.7.0
 
 ### The gates were evadable
