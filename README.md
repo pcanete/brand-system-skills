@@ -77,9 +77,12 @@ Rechaza un contrato bien armado pero sin sustento:
 - una observación registrada como `exact` o `derived` sin ninguna evidencia detrás;
 - una cobertura declarada que el escaneo no ganó —`motion: 0.8` sin una sola muestra de movimiento—;
 - una afirmación que el propio contrato marca como saliente y confiable pero que no aparece en `observations`, donde podría rastrearse;
-- en marca, un activo declarado **recurrente** que se apoya en una sola fuente. La recurrencia significa literalmente que algo aparece más de una vez: exigir dos fuentes distintas es lo que impide que una campaña espectacular se convierta en ADN.
+- en marca, un activo declarado **recurrente** que se apoya en una sola fuente. La recurrencia significa literalmente que algo aparece más de una vez: exigir dos fuentes distintas es lo que impide que una campaña espectacular se convierta en ADN;
+- **cualquier bloque que afirme algo sin una observación respaldada detrás.** Describir la tipografía obliga a decir dónde se la vio.
 
-Frente a un rechazo hay dos respuestas honestas: registrar la evidencia que falta, o bajar la afirmación a lo que el material realmente sostiene. El modo `--lenient` verifica solo la forma y existe para trabajo en curso, no para entregar.
+Esa última compuerta existe porque las otras eran evadibles. Todas leían números que el propio autor escribe sobre su trabajo —confianza, saliencia, cobertura—, y cualquier control que lea esos números se satisface escribiendo uno más bajo. Un contrato que afirmaba una tipografía exacta y una grilla de doce columnas pasaba entero declarándose inseguro. **Bajar un score no es bajar una afirmación:** `family: "Söhne"` afirma lo mismo con 0.55 que con 0.99. Por eso la última compuerta ignora los números y mira lo que el documento dice.
+
+Frente a un rechazo hay dos respuestas honestas: registrar la evidencia que falta, o no hacer la afirmación. El modo `--lenient` verifica solo la forma y existe para trabajo en curso, no para entregar.
 
 ## Los skills
 
@@ -300,9 +303,9 @@ Cada skill sigue versionado semántico de forma independiente:
 
 | Skill | Versión actual | Contrato compatible |
 | --- | ---: | --- |
-| `brand-dna-scanner` | `0.2.0` | Brand DNA `0.1.x` |
-| `reference-scanner` | `0.6.0` | Web reference schemas `0.4.x` |
-| `reference-to-astro` | `0.6.0` | Web reference schemas `0.3.x–0.4.x` |
+| `brand-dna-scanner` | `0.3.0` | Brand DNA `0.1.x` |
+| `reference-scanner` | `0.7.0` | Web reference schemas `0.4.x` |
+| `reference-to-astro` | `0.7.0` | Web reference schemas `0.3.x–0.4.x` |
 
 Para actualizar una copia del repositorio:
 

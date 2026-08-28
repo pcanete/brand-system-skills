@@ -3,7 +3,7 @@ name: reference-to-astro
 description: Builds a website in Astro from an analyzed reference. Consumes STYLE_DNA, CONTENT_MANIFEST and BUILD_BRIEF, and reconstructs the reference's layout, typography, media, responsive, interaction and motion language using the client's own content. Use when reference contracts exist and the site has to be built, extended or verified. Not for inventing a visual direction from scratch, and not for analyzing a reference — that is reference-scanner.
 license: MIT
 metadata:
-  version: "0.6.0"
+  version: "0.7.0"
 ---
 
 # Reference-to-Astro
@@ -80,8 +80,14 @@ node scripts/validate-inputs.mjs \
 ```
 
 The validator rejects contracts that are well-formed but unsupported: claims
-recorded as observed with no evidence behind them, coverage that the scan did
-not earn, salient claims missing from `observations`.
+recorded as observed with no evidence behind them, coverage the scan did not
+earn, salient claims missing from `observations`, blocks that assert findings
+with no evidence-backed observation behind them, and behavior audits that a
+STANDARD or FORENSIC scan promised and did not deliver.
+
+A contract can be entirely well-formed, modest in every self-reported score,
+and still assert an exact typeface and a twelve-column grid that nobody ever
+observed. That is the case this gate exists for.
 
 If it fails, do not start building. Return to whoever produced the contract
 with the specific gaps. Building on an unsupported contract produces a site

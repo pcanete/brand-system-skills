@@ -90,18 +90,6 @@
       "kind": "media-sequence",
       "value": "Three-step object transformation sequence presented in explicit order.",
       "confidence": 0.99
-    },
-    {
-      "id": "synthetic-fullscreen-media",
-      "kind": "fullscreen-media",
-      "value": "Media opens to a fullscreen view from the gallery.",
-      "confidence": 0.99
-    },
-    {
-      "id": "synthetic-editorial-register",
-      "kind": "page-composition",
-      "value": "Sections alternate long-form editorial copy with full-width image sequences; product is introduced through process rather than specification.",
-      "confidence": 0.8
     }
   ],
   "technology_hypotheses": [
@@ -115,14 +103,7 @@
       ]
     }
   ],
-  "content_sources": [
-    {
-      "id": "synthetic-inquiry-journey",
-      "kind": "primary-cta",
-      "value": "Every section terminates in an inquiry call to action; no cart or checkout exists.",
-      "confidence": 0.9
-    }
-  ],
+  "content_sources": [],
   "accessibility_observations": [
     {
       "id": "synthetic-accessibility-target",
@@ -133,20 +114,17 @@
     }
   ],
   "coverage": {
-    "visual": 0.4,
-    "typography": 0.3,
-    "layout": 0.4,
-    "media": 0.65,
-    "interaction": 0.45,
-    "motion": 0.15,
-    "responsive": 0.05,
-    "transition": 0.05,
-    "webgl": 0.1
+    "visual": 0.55,
+    "typography": 0.55,
+    "layout": 0.55,
+    "media": 0.55,
+    "interaction": 0.55,
+    "motion": 0.55,
+    "responsive": 0.55,
+    "transition": 0.55,
+    "webgl": 0.55
   },
   "limitations": [
-    "No direct browser runtime interaction capture in this checkpoint.",
-    "No multi-viewport evidence.",
-    "No temporal motion recording.",
-    "Direct manipulation rendering technology remains unknown."
+    "Deliberately evasive fixture. The validator must reject it."
   ]
 }

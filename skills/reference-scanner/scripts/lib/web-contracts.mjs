@@ -208,12 +208,14 @@ export function checkSalientClaimsIndexed(style) {
   const walk = (node, prefix) => {
     if (!node || typeof node !== "object") return;
 
+    // A missing salience does not excuse a claim. Omitting a field must never
+    // be cheaper than declaring one, or the gate teaches authors to write less.
     if (
       !Array.isArray(node) &&
       typeof node.confidence === "number" &&
-      typeof node.salience === "number" &&
       node.confidence >= SUPPORT_THRESHOLD &&
-      node.salience >= SUPPORT_THRESHOLD &&
+      (typeof node.salience !== "number" ||
+        node.salience >= SUPPORT_THRESHOLD) &&
       prefix
     ) {
       claims.push({ prefix, id: node.id || null });
@@ -251,6 +253,96 @@ export function checkSalientClaimsIndexed(style) {
   return issues;
 }
 
+// Blocks that describe the reference. Everything else in STYLE_DNA is
+// metadata, synthesis or the observation index itself.
+const CLAIM_BLOCKS = [
+  "art_direction",
+  "tokens",
+  "layout",
+  "typography",
+  "components",
+  "media",
+  "interaction",
+  "motion",
+  "experience",
+  "content_behavior",
+  "responsive",
+  "webgl"
+];
+
+// Keys that describe a claim rather than assert anything about the reference.
+const META_KEYS = new Set([
+  "confidence",
+  "salience",
+  "mode",
+  "notes",
+  "id",
+  "source",
+  "evidence_refs",
+  "semantic_role"
+]);
+
+// Saying "unknown" is not a claim. It is the honest alternative to one.
+const NON_CLAIMS = new Set(["unknown", "none", "n/a", "not observed", ""]);
+
+function assertsSomething(node) {
+  if (node === null || node === undefined) return false;
+
+  if (Array.isArray(node)) return node.some(assertsSomething);
+
+  if (typeof node === "object") {
+    return Object.entries(node).some(
+      ([key, value]) => !META_KEYS.has(key) && assertsSomething(value)
+    );
+  }
+
+  if (typeof node === "string") {
+    return !NON_CLAIMS.has(node.trim().toLowerCase());
+  }
+
+  if (typeof node === "number") return true;
+
+  return node === true;
+}
+
+// GATE 5 — Claimed areas are backed.
+//
+// The gates above all read numbers the author wrote about their own work:
+// confidence, salience, coverage. Anything driven by a self-reported score can
+// be satisfied by reporting a lower score, which is why they were evadable —
+// a contract asserting an exact typeface and a 12-column grid passed simply by
+// declaring itself uncertain.
+//
+// This gate ignores the numbers. If a block asserts anything about the
+// reference, that area needs at least one observation carrying evidence. The
+// only ways through are to record where the claim came from, or to not make
+// it.
+export function checkClaimedAreasBacked(style) {
+  const issues = [];
+
+  const backed = (style.observations || []).filter(
+    (observation) => (observation.evidence_refs || []).length > 0
+  );
+
+  for (const block of CLAIM_BLOCKS) {
+    if (!(block in style)) continue;
+    if (!assertsSomething(style[block])) continue;
+
+    const covered = backed.some((observation) => {
+      const path = observation.path || "";
+      return path === block || path.startsWith(`${block}.`);
+    });
+
+    if (!covered) {
+      issues.push(
+        `${block}: asserts findings with no evidence-backed observation behind them`
+      );
+    }
+  }
+
+  return issues;
+}
+
 export function verifyWebContracts(style, evidence, { strict = true } = {}) {
   const groups = [
     {
@@ -276,6 +368,11 @@ export function verifyWebContracts(style, evidence, { strict = true } = {}) {
     {
       label: "Salient claims are indexed as observations",
       issues: checkSalientClaimsIndexed(style),
+      strictOnly: true
+    },
+    {
+      label: "Claimed areas are backed by evidence",
+      issues: checkClaimedAreasBacked(style),
       strictOnly: true
     }
   ];

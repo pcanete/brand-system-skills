@@ -55,7 +55,16 @@ satisfy without saying anything true.
 **Support** — the gates. Observations recorded as observed carry evidence;
 declared coverage is backed by what the scan recorded; claims the contract
 itself marks as salient appear in `observations`; in brand, recurrence traces
-back to at least two distinct sources.
+back to at least two distinct sources; and every block that asserts anything
+has an evidence-backed observation behind it.
+
+That last gate exists because the others shared a flaw: each read a number the
+author wrote about their own work. Any gate driven by a self-reported score is
+satisfied by reporting a lower score, and omitting the field entirely was
+cheaper still. A contract asserting an exact typeface, a twelve-column grid and
+a named easing curve passed every gate by declaring itself uncertain. The fix
+was to stop reading the scores and start reading the claims:
+`tests/rejected-evasive/` holds that contract, and it must keep failing.
 
 The split matters because the failure mode of an agent writing these contracts
 is not malformed JSON. It is a well-formed document full of confident claims

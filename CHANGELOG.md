@@ -2,6 +2,55 @@
 
 ## Unreleased
 
+`brand-dna-scanner` 0.3.0 · `reference-scanner` 0.7.0 · `reference-to-astro` 0.7.0
+
+### The gates were evadable
+
+Every gate shipped so far read a number the author wrote about their own work:
+`confidence`, `salience`, `coverage`. A gate driven by a self-reported score is
+satisfied by reporting a lower score — and omitting the field was cheaper
+still, since a missing `salience` excused the claim entirely.
+
+The demonstration is now a permanent fixture. `tests/rejected-evasive/` holds a
+`STYLE_DNA` that breaks no schema and states no falsehood about itself: every
+score is modest, capabilities are declared absent, coverage sits just under the
+threshold. It also asserts an exact typeface with tracking, a twelve-column
+grid, and a named easing curve, with no evidence anywhere. It passed every gate
+in both the scanner and the builder.
+
+**New gate — claimed areas are backed.** If a block asserts anything about the
+reference or the brand, that area needs at least one observation carrying
+evidence. It ignores confidence, salience and coverage entirely. Saying
+`unknown` is not a claim and stays free; the two ways through are recording
+where the claim came from, or not making it.
+
+Lowering a score is not lowering a claim: `family: "Söhne"` asserts the same
+thing at 0.55 as at 0.99. The documentation said there were two honest answers
+to a rejection; only now is the cheap third one closed.
+
+Also: a missing `salience` no longer excuses a claim. Omitting a field must
+never be cheaper than declaring one, or the gates teach authors to write less.
+
+### Behavior gates now apply on both sides
+
+`behavior-gates.mjs` lived only in `reference-scanner`, so the scanner held
+itself to behavior forensics while the builder accepted any
+`REFERENCE_EVIDENCE` without checking. It is now duplicated byte-identically
+into `reference-to-astro`, wired into `validate-inputs.mjs`, and covered by the
+repository's drift check like the other shared contracts.
+
+### Fixtures
+
+Backing the new gate exposed unsupported claims in the repository's own
+fixtures — an art-direction summary, a primary journey, a fullscreen-media
+behavior, and the brand example's personality traits, all asserted with nothing
+recorded behind them. Each now carries its evidence, which is what those
+examples should have shown from the start.
+
+---
+
+## Earlier
+
 `brand-dna-scanner` 0.2.0 · `reference-scanner` 0.4.0 · `reference-to-astro` 0.5.0
 
 ### Implementation knowledge for the builder

@@ -182,6 +182,26 @@
         "ev-web-navigation"
       ],
       "notes": "Website only. Channel-specific: a single source cannot establish recurrence."
+    },
+    {
+      "path": "personality.primary_traits",
+      "value": [
+        "precise",
+        "confident",
+        "restrained",
+        "cultured"
+      ],
+      "mode": "derived",
+      "confidence": 0.7,
+      "salience": 0.75,
+      "recurrence": 0.7,
+      "consistency": 0.78,
+      "distinctiveness": 0.5,
+      "evidence_refs": [
+        "ev-web-copy",
+        "ev-campaign-copy"
+      ],
+      "notes": "Traits are read from language across two channels. Personality is the easiest thing to project onto a brand: without copy behind it, this stays unwritten."
     }
   ],
   "limitations": [
