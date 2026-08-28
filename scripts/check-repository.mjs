@@ -2,6 +2,7 @@
 
 import crypto from "node:crypto";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import process from "node:process";
 import { spawnSync } from "node:child_process";
@@ -286,6 +287,14 @@ const webFixtures = (directory) => [
   path.join(root, "tests", directory, "REFERENCE_EVIDENCE.json")
 ];
 
+const approvedBlueprint = path.join(
+  root,
+  "skills",
+  "reference-to-astro",
+  "assets",
+  "SITE_BLUEPRINT.example.json"
+);
+
 runNode("Brand DNA example rejected by its own validator", [
   brandValidator,
   ...brandExamples
@@ -302,8 +311,51 @@ runNode("Reference-system fixture rejected by reference-to-astro", [
   builderValidator,
   ...webFixtures("reference-system"),
   "--content",
-  path.join(root, "tests", "reference-system", "CONTENT_MANIFEST.json")
+  path.join(root, "tests", "reference-system", "CONTENT_MANIFEST.json"),
+  "--blueprint",
+  approvedBlueprint
 ]);
+
+const blueprintGateRoot = fs.mkdtempSync(
+  path.join(os.tmpdir(), "site-blueprint-gate-")
+);
+const draftBlueprint = path.join(blueprintGateRoot, "SITE_BLUEPRINT.json");
+const draftBlueprintDocument = JSON.parse(read(approvedBlueprint));
+draftBlueprintDocument.approval = {
+  status: "draft",
+  approved_by: null,
+  approved_at: null,
+  notes: "Awaiting human review."
+};
+draftBlueprintDocument.checkpoints.find(
+  (checkpoint) => checkpoint.id === "reference-lab"
+).status = "pending";
+fs.writeFileSync(
+  draftBlueprint,
+  `${JSON.stringify(draftBlueprintDocument, null, 2)}\n`
+);
+
+const blueprintGateArgs = [
+  builderValidator,
+  ...webFixtures("reference-system"),
+  "--content",
+  path.join(root, "tests", "reference-system", "CONTENT_MANIFEST.json"),
+  "--blueprint",
+  draftBlueprint
+];
+
+runNode(
+  "Draft SITE_BLUEPRINT was accepted for construction",
+  blueprintGateArgs,
+  { expect: "fail" }
+);
+
+runNode("Draft SITE_BLUEPRINT cannot be validated as work in progress", [
+  ...blueprintGateArgs,
+  "--lenient"
+]);
+
+fs.rmSync(blueprintGateRoot, { recursive: true, force: true });
 
 // The gates are the product. These fixtures must fail, and must fail only
 // because of the gates: in lenient mode they are well-formed.

@@ -6,7 +6,7 @@ Each skill follows semantic versioning independently.
 | --- | ---: | --- |
 | brand-dna-scanner | 0.4.0 | Brand DNA 0.1.x |
 | reference-scanner | 0.7.0 | Web reference schemas 0.4.x |
-| reference-to-astro | 0.7.0 | Web reference schemas 0.3.x–0.4.x |
+| reference-to-astro | 1.0.0 | Web reference schemas 0.3.x–0.4.x + Site Blueprint 1.0 |
 
 ## Rules
 
@@ -21,4 +21,4 @@ Use release tags such as:
 
 - `brand-dna-scanner-v0.4.0`
 - `reference-scanner-v0.7.0`
-- `reference-to-astro-v0.7.0`
+- `reference-to-astro-v1.0.0`

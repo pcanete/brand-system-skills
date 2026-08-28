@@ -27,8 +27,11 @@ channel-specific unless cross-channel evidence supports promotion to brand core.
 
 ### reference-to-astro
 
-Consumes `STYLE_DNA`, `REFERENCE_EVIDENCE`, `CONTENT_MANIFEST`, and a build brief
-to construct and verify an Astro implementation.
+Consumes `STYLE_DNA`, `REFERENCE_EVIDENCE`, `CONTENT_MANIFEST`, and a build brief.
+Before implementation it produces `SITE_BLUEPRINT.json`: the human-approved
+mapping from real content to evidenced reference patterns, composition,
+responsive behavior and acceptance criteria. Only an approved blueprint may
+become an Astro implementation.
 
 ## Contract ownership
 
@@ -36,6 +39,8 @@ to construct and verify an Astro implementation.
 - Web reference contracts are authored by `reference-scanner`.
 - `reference-to-astro` carries exact copies of the web contracts so it remains
   independently installable.
+- `SITE_BLUEPRINT` belongs to `reference-to-astro`: the scanner cannot map a
+  target site whose content and business objective it does not own.
 - CI fails if shared web schemas drift.
 
 The same applies to verification. `scripts/lib/web-contracts.mjs` holds the

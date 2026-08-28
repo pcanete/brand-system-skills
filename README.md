@@ -38,6 +38,10 @@ Web de referencia ─> reference-scanner ─> STYLE_DNA
                                               │
 Contenido + assets + brief ───────────────────┤
                                               v
+                                      SITE_BLUEPRINT
+                                  revisión + aprobación
+                                              │
+                                              v
                                     reference-to-astro
                                               │
                                               v
@@ -115,12 +119,14 @@ Puede trabajar como skill independiente, y verifica su propia salida antes de en
 
 ### 3. `reference-to-astro`
 
-Construye una implementación Astro a partir de los contratos de referencia, un manifiesto de contenido, los materiales entregados y un brief de producción.
+Construye una implementación Astro a partir de los contratos de referencia, un manifiesto de contenido, los materiales entregados, un brief de producción y un `SITE_BLUEPRINT` aprobado.
 
 El skill:
 
 - traduce reglas visuales a tokens, layouts y componentes;
 - reemplaza el contenido de la referencia por contenido autorizado del cliente;
+- crea primero el blueprint que asigna cada sección real a patrones y evidencia de la referencia;
+- se detiene para aprobación humana antes de escribir la implementación;
 - mantiene responsive, jerarquía, ritmo y comportamiento;
 - implementa movimiento con respeto por `prefers-reduced-motion`;
 - rechaza los contratos de entrada que no estén sostenidos por evidencia, antes de empezar a construir;
@@ -136,9 +142,10 @@ Su meta no es entregar una maqueta estática, sino una base web mantenible y ver
 3. **Aprobar el núcleo.** Validar tono, principios, códigos visuales, límites y activos permitidos.
 4. **Escanear la referencia.** Ejecutar `reference-scanner` en las páginas, estados y viewports relevantes.
 5. **Separar marca y canal.** Decidir qué pertenece al cliente, qué pertenece al lenguaje web y qué no debe trasladarse.
-6. **Preparar el build brief.** Mapear contenido, rutas, componentes, activos y restricciones.
-7. **Construir con Astro.** Ejecutar `reference-to-astro` y producir la implementación.
-8. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
+6. **Preparar el build brief.** Declarar objetivo, funcionalidades, activos y restricciones.
+7. **Aprobar SITE_BLUEPRINT.** Mapear contenido, secciones, composición, responsive, comportamiento y criterios de aceptación.
+8. **Construir con Astro.** Ejecutar `reference-to-astro` sobre el blueprint aprobado.
+9. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
 
 Cada paso que produce un contrato termina con su validador. Un contrato rechazado no se fuerza: se completa la evidencia o se baja la afirmación.
 
@@ -226,7 +233,8 @@ Necesito su sistema de layout, tipografía, movimiento e interacciones.
 
 ```text
 Usa reference-to-astro para construir un sitio Astro con este STYLE_DNA,
-este CONTENT_MANIFEST y los assets del cliente. Verifica el resultado visual.
+este CONTENT_MANIFEST y los assets del cliente. Primero prepara y presenta
+SITE_BLUEPRINT; construye solamente después de mi aprobación y verifica el resultado visual.
 ```
 
 Para mejores resultados, indica fuentes, páginas prioritarias, viewports, restricciones legales, contenido autorizado y el nivel de fidelidad esperado.
@@ -305,7 +313,7 @@ Cada skill sigue versionado semántico de forma independiente:
 | --- | ---: | --- |
 | `brand-dna-scanner` | `0.4.0` | Brand DNA `0.1.x` |
 | `reference-scanner` | `0.7.0` | Web reference schemas `0.4.x` |
-| `reference-to-astro` | `0.7.0` | Web reference schemas `0.3.x–0.4.x` |
+| `reference-to-astro` | `1.0.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0` |
 
 Para actualizar una copia del repositorio:
 
