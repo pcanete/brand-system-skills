@@ -1,6 +1,6 @@
 {
   "name": "brand-dna-scanner",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
   "description": "Evidence-driven Agent Skill for extracting complete Brand DNA",
