@@ -33,6 +33,7 @@ El objetivo no es automatizar el gusto. Es hacer visible el razonamiento para qu
 | Laboratorio | `reference-lab-builder` | ¿Entendimos realmente sus componentes y comportamientos? | Web neutral interactiva y aprobable |
 | Implementación | `reference-to-astro` | ¿Cómo se reconstruye ese sistema con el contenido del cliente? | Proyecto Astro verificado |
 | Ajuste visual | `visual-tuning-kit` | ¿Qué detalles declarados necesita ajustar una persona sobre la implementación? | Valores validados y aprobables |
+| Publicación WordPress | `wordpress-publisher` | ¿Cómo convive la portada compilada con un WordPress existente? | Plugin validado y ZIP instalable |
 
 ```text
 Fuentes de marca ──> brand-dna-scanner ──> BRAND_DNA
@@ -61,6 +62,10 @@ Contenido + assets + brief ─────────────────�
                                               v
                                     visual-tuning-kit
                                  ajuste acotado + aprobación
+                                              │
+                                              v
+                                    wordpress-publisher
+                              plugin de portada + validación
 ```
 
 Las capas se complementan, pero no se confunden. El ADN de marca puede orientar una web, una campaña, una presentación o una pieza social. El ADN visual de una referencia web describe ese canal específico. La implementación consume ambos criterios sin apropiarse de la identidad de terceros.
@@ -193,6 +198,7 @@ aprobación humana y no se incluye en el build de producción.
 10. **Construir con Astro.** Ejecutar `reference-to-astro` sobre el blueprint aprobado.
 11. **Ajustar visualmente.** Usar `visual-tuning-kit` sobre los controles que el proyecto declaró seguros.
 12. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
+13. **Publicar en WordPress, si corresponde.** Usar `wordpress-publisher` para convertir el build validado en un plugin de portada instalable, sin convertir el HTML compilado en fuente editable.
 
 Cada paso que produce un contrato termina con su validador. Un contrato rechazado no se fuerza: se completa la evidencia o se baja la afirmación.
 
@@ -222,7 +228,7 @@ También es posible utilizar solamente una capa. Por ejemplo, `brand-dna-scanner
 
 ## Instalación
 
-Los seis skills funcionan igual en **Claude** y en **Codex**: un `SKILL.md` con
+Los siete skills funcionan igual en **Claude** y en **Codex**: un `SKILL.md` con
 su frontmatter, sus referencias, sus contratos y sus validadores. Cambia dónde
 se copia el directorio.
 
@@ -234,8 +240,9 @@ Skills disponibles:
 - [reference-lab-builder](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-lab-builder)
 - [reference-to-astro](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-to-astro)
 - [visual-tuning-kit](https://github.com/pcanete/brand-system-skills/tree/main/skills/visual-tuning-kit)
+- [wordpress-publisher](https://github.com/pcanete/brand-system-skills/tree/main/skills/wordpress-publisher)
 
-Instala los seis para el flujo completo de marca a web, o solamente el que corresponda a una tarea puntual.
+Instala los siete para el flujo completo de marca a web y WordPress, o solamente el que corresponda a una tarea puntual.
 
 ### En Claude
 
@@ -331,16 +338,20 @@ brand-system-skills/
 │   │   ├── scripts/
 │   │   └── references/
 │   ├── reference-to-astro/
-│       ├── SKILL.md
-│       ├── schemas/
-│       ├── scripts/
-│       └── references/
-│   └── visual-tuning-kit/
+│   │   ├── SKILL.md
+│   │   ├── schemas/
+│   │   ├── scripts/
+│   │   └── references/
+│   ├── visual-tuning-kit/
 │       ├── SKILL.md
 │       ├── schemas/
 │       ├── scripts/
 │       ├── assets/
 │       └── references/
+│   └── wordpress-publisher/
+│       ├── SKILL.md
+│       ├── scripts/
+│       └── assets/
 ├── docs/
 │   ├── architecture.md
 │   ├── installation.md
@@ -407,9 +418,10 @@ Cada skill sigue versionado semántico de forma independiente:
 | `brand-dna-scanner` | `0.4.0` | Brand DNA `0.1.x` |
 | `brand-manual-builder` | `0.1.0` | Brand Manual Spec `0.1` |
 | `reference-scanner` | `0.7.0` | Web reference schemas `0.4.x` |
-| `reference-lab-builder` | `0.1.0` | Reference Lab Spec `0.1` |
-| `reference-to-astro` | `1.0.1` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0` |
-| `visual-tuning-kit` | `0.3.0` | Tuning Schema and Values `0.1` |
+| `reference-lab-builder` | `0.2.0` | Reference Lab Spec `0.1` |
+| `reference-to-astro` | `1.1.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0` |
+| `visual-tuning-kit` | `0.4.0` | Tuning Schema and Values `0.1` |
+| `wordpress-publisher` | `0.1.0` | Plugin de portada y reporte de exportación |
 
 Para actualizar una copia del repositorio:
 

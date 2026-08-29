@@ -3,7 +3,7 @@ name: visual-tuning-kit
 description: Adds a bounded, development-only visual tuning layer to an Astro site so users can adjust declared typography, spacing, grid, alignment, content, section order, and behavior variants without becoming a free-form page builder. Produces validated tuning schema, approved values, and an auditable changeset. Use after an initial Astro implementation exists. Not for reference scanning, initial site generation, production CMS editing, or arbitrary drag-and-drop layout.
 license: MIT
 metadata:
-  version: "0.3.0"
+  version: "0.4.0"
 ---
 
 # Visual Tuning Kit
@@ -42,7 +42,17 @@ selectors, free absolute positioning, or unconstrained drag-and-drop.
 
 ## Workflow
 
-1. Derive controls from the implementation and approved blueprint.
+1. Derive an initial numerical-control draft from CSS custom properties when useful:
+
+```bash
+node scripts/derive-schema.mjs --project /path/to/astro-project \
+  --out TUNING_SCHEMA.json --values-out TUNING_VALUES.json
+```
+
+   Generation never approves values. It stops on contradictory defaults unless
+   `--allow-conflicts` is explicitly used for diagnosis. Review zero-based
+   ranges, labels, control membership and `preview_id`; then derive remaining
+   text, image, order and enumerated controls from the approved blueprint.
 2. Give every control a reason, safe range or option set, and production target.
 3. Validate schema and values:
 
@@ -71,6 +81,21 @@ node scripts/scaffold-tuner.mjs --project /path/to/astro-project \
 node scripts/build-approved-css.mjs --schema TUNING_SCHEMA.json \
   --values TUNING_VALUES.json --out src/styles/tuning-approved.css
 ```
+
+   Audit how much visible page content is bound to the manifest with:
+
+```bash
+node scripts/map-content.mjs --manifest CONTENT_MANIFEST.json \
+  --url http://localhost:4321 --page home --out qa/CONTENT_MAP.json
+```
+
+   Add `data-content-path` when an exact binding is known. The audit prefers
+   that attribute, then stable `data-rta-id`, and only then exact rendered text.
+   Missing and ambiguous values remain report findings; the tool never writes
+   content back or guesses a destination.
+   It uses the project's Playwright installation. When Playwright is already
+   installed in a separate QA skill, pass its directory with
+   `--playwright-root /path/to/that/skill` instead of duplicating it.
 
 7. Open the local site with `?tune=1` and experiment. Unapproved experiments
    stay in local storage.

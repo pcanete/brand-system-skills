@@ -1,0 +1,13 @@
+:root {
+  --hero-offset-y: 0px;
+  --hero-measure: 52ch;
+  --hero-transition: 240ms;
+  --hero-height: 100svh;
+}
+
+.hero {
+  max-width: var(--hero-measure, 52ch);
+  min-height: var(--hero-height, 100svh);
+  transform: translateY(var(--hero-offset-y, 0px));
+  transition-duration: var(--hero-transition, 240ms);
+}

@@ -27,6 +27,17 @@ function walk(directory) {
   return files;
 }
 
+function copyTree(from, to) {
+  fs.mkdirSync(to, { recursive: true });
+  for (const entry of fs.readdirSync(from, { withFileTypes: true })) {
+    const source = path.join(from, entry.name);
+    const target = path.join(to, entry.name);
+    if (entry.isDirectory()) copyTree(source, target);
+    else if (entry.isFile()) fs.copyFileSync(source, target);
+    else fail(`Unsupported fixture entry: ${source}`);
+  }
+}
+
 function relative(file) {
   return path.relative(root, file).replaceAll("\\", "/");
 }
@@ -79,7 +90,8 @@ const skillNames = [
   "reference-scanner",
   "reference-lab-builder",
   "reference-to-astro",
-  "visual-tuning-kit"
+  "visual-tuning-kit",
+  "wordpress-publisher"
 ];
 
 const declaredVersions = new Map();
@@ -235,6 +247,7 @@ if (/benchmark-/i.test(publicFixtureText)) {
 for (const match of publicFixtureText.matchAll(/https?:\/\/[^\s"'`)]+/gi)) {
   const url = match[0];
   const synthetic =
+    /^http:\/\/www\.w3\.org\/(?:2000\/svg|1999\/xlink|1999\/xhtml)$/i.test(url) ||
     /^https?:\/\/([a-z0-9-]+\.)*example\.invalid(\/|$)/i.test(url) ||
     /^http:\/\/localhost(:\d+)?(\/|$)/i.test(url) ||
     /^http:\/\/127\.0\.0\.1(:\d+)?(\/|$)/i.test(url);
@@ -427,10 +440,84 @@ runNode("Reference-system fixture rejected by reference-to-astro", [
   approvedBlueprint
 ]);
 
+const architectureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "content-architecture-"));
+runNode("Content architecture checkpoint failed to render", [
+  path.join(root, "skills", "reference-to-astro", "scripts", "build-content-architecture.mjs"),
+  "--content",
+  path.join(root, "tests", "reference-system", "CONTENT_MANIFEST.json"),
+  "--blueprint",
+  approvedBlueprint,
+  "--out",
+  path.join(architectureRoot, "index.html")
+]);
+if (!fs.existsSync(path.join(architectureRoot, "index.html"))) {
+  fail("Content architecture checkpoint produced no index.html");
+}
+fs.rmSync(architectureRoot, { recursive: true, force: true });
+
 const tuningRoot = path.join(root, "skills", "visual-tuning-kit");
 const tuningValidator = path.join(tuningRoot, "scripts", "validate-tuning.mjs");
+const tuningDeriver = path.join(tuningRoot, "scripts", "derive-schema.mjs");
 const tuningSchema = path.join(tuningRoot, "assets", "TUNING_SCHEMA.example.json");
 const tuningValues = path.join(tuningRoot, "assets", "TUNING_VALUES.example.json");
+
+const derivedTuningRoot = fs.mkdtempSync(path.join(os.tmpdir(), "visual-tuning-derived-"));
+const derivedSchema = path.join(derivedTuningRoot, "TUNING_SCHEMA.json");
+const derivedValues = path.join(derivedTuningRoot, "TUNING_VALUES.json");
+runNode("Visual tuning schema derivation failed", [
+  tuningDeriver,
+  "--project",
+  path.join(root, "tests", "visual-tuning-derive"),
+  "--id",
+  "fixture-home",
+  "--out",
+  derivedSchema,
+  "--values-out",
+  derivedValues
+]);
+
+runNode("Derived visual tuning contracts failed draft validation", [
+  tuningValidator,
+  "--schema",
+  derivedSchema,
+  "--values",
+  derivedValues,
+  "--allow-draft"
+]);
+
+runNode("Derived draft values were accepted as production values", [
+  tuningValidator,
+  "--schema",
+  derivedSchema,
+  "--values",
+  derivedValues
+], { expect: "fail" });
+
+const derivedDocument = JSON.parse(read(derivedSchema));
+const derivedControls = derivedDocument.groups.flatMap((group) => group.controls);
+const zeroControl = derivedControls.find((control) => control.id === "hero-offset-y");
+if (!zeroControl || zeroControl.min === zeroControl.max || zeroControl.default !== 0) {
+  fail("Derived zero-valued control has no usable range");
+}
+
+const durationControl = derivedControls.find((control) => control.id === "hero-transition");
+if (!durationControl || durationControl.unit !== "ms" || durationControl.min < 0) {
+  fail("Derived duration control is missing its non-negative ms contract");
+}
+
+const conflictRoot = path.join(derivedTuningRoot, "conflict-project");
+fs.mkdirSync(path.join(conflictRoot, "src"), { recursive: true });
+fs.writeFileSync(path.join(conflictRoot, "src", "a.css"), ":root{--space-gap:10px;}\n");
+fs.writeFileSync(path.join(conflictRoot, "src", "b.css"), ".x{gap:var(--space-gap,20px);}\n");
+runNode("Contradictory defaults produced an authoritative tuning draft", [
+  tuningDeriver,
+  "--project",
+  conflictRoot,
+  "--out",
+  path.join(conflictRoot, "TUNING_SCHEMA.json")
+], { expect: "fail" });
+
+fs.rmSync(derivedTuningRoot, { recursive: true, force: true });
 
 runNode("Draft tuning values were accepted as production values", [
   tuningValidator,
@@ -452,6 +539,43 @@ runNode("Draft tuning values failed preparation validation", [
 runNode("Visual tuning runtime checks failed", [
   path.join(tuningRoot, "scripts", "test-runtime.mjs")
 ]);
+
+const wordpressRoot = path.join(root, "skills", "wordpress-publisher");
+const wordpressTemp = fs.mkdtempSync(path.join(os.tmpdir(), "wordpress-publisher-"));
+const wordpressProject = path.join(wordpressTemp, "project");
+copyTree(path.join(root, "tests", "wordpress-fixture"), wordpressProject);
+const wordpressExport = path.join(wordpressRoot, "scripts", "export-plugin.mjs");
+const wordpressValidate = path.join(wordpressRoot, "scripts", "validate-plugin.mjs");
+const wordpressPackage = path.join(wordpressRoot, "scripts", "package-plugin.mjs");
+const wordpressPlugin = path.join(wordpressProject, "wordpress", "build", "portada-fixture");
+
+runNode("WordPress fixture export failed", [
+  wordpressExport,
+  "--project",
+  wordpressProject,
+  "--config",
+  "wordpress.config.json"
+]);
+runNode("Exported WordPress fixture failed validation", [
+  wordpressValidate,
+  "--plugin",
+  wordpressPlugin
+]);
+runNode("Validated WordPress fixture failed packaging", [
+  wordpressPackage,
+  "--plugin",
+  wordpressPlugin,
+  "--out",
+  path.join(wordpressTemp, "portada-fixture.zip")
+]);
+
+fs.rmSync(path.join(wordpressPlugin, "dist", "assets", "hero.svg"), { force: true });
+runNode("WordPress validator accepted a package with a missing declared asset", [
+  wordpressValidate,
+  "--plugin",
+  wordpressPlugin
+], { expect: "fail" });
+fs.rmSync(wordpressTemp, { recursive: true, force: true });
 
 const blueprintGateRoot = fs.mkdtempSync(
   path.join(os.tmpdir(), "site-blueprint-gate-")

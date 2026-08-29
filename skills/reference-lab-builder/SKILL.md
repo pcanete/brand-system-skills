@@ -3,7 +3,7 @@ name: reference-lab-builder
 description: Turns evidence-backed STYLE_DNA and REFERENCE_EVIDENCE into a neutral interactive reference lab where typography, components, responsive states, motion, and behaviors can be inspected and approved before target content is applied. Use after reference-scanner and before SITE_BLUEPRINT. Not for scanning the source site, reproducing its content or brand, building the final customer website, or packaging WordPress.
 license: MIT
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # Reference Lab Builder
@@ -41,6 +41,10 @@ Prioritize salient behaviors and those that are difficult to communicate in a
 static report: navigation state, hover labels, scroll-linked changes,
 marquees, reveals, stacking, parallax, filtering, fullscreen media, loading,
 and direct manipulation.
+
+Page-transition and WebGL demos are optional evidence gates, not premium
+decoration. Include them only when the scan records those behaviors and always
+exercise their reverse, capability fallback and reduced-motion state.
 
 Every demo declares:
 

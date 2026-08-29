@@ -54,7 +54,7 @@
           "minProperties": 1
         },
         "min": { "type": "number" }, "max": { "type": "number" }, "step": { "type": "number", "exclusiveMinimum": 0 },
-        "unit": { "enum": ["", "px", "rem", "vw", "vh", "%", "deg", "ch"] },
+        "unit": { "enum": ["", "px", "rem", "em", "vw", "vh", "svh", "dvh", "%", "deg", "ch", "ms", "s"] },
         "options": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/option" } },
         "max_length": { "type": "integer", "minimum": 1, "maximum": 2000 }
       }
