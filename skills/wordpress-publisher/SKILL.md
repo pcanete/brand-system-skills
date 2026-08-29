@@ -3,7 +3,7 @@ name: wordpress-publisher
 description: Convierte un sitio Astro ya construido en un plugin de WordPress que reemplaza únicamente la portada, dejando que WordPress siga atendiendo cuenta, registro, tienda, búsqueda y administración. Genera el paquete, verifica que sea instalable y produce un ZIP. Usar cuando la portada nueva tiene que convivir con un WordPress existente en lugar de reemplazarlo. No usar para publicar un sitio estático completo, que no necesita WordPress en el medio.
 license: MIT
 metadata:
-  version: "0.1.0"
+  version: "0.2.0"
 ---
 
 # WordPress Publisher
@@ -64,26 +64,29 @@ cliente; aislar de menos deja la portada peleando con el tema.
    instalada sin que nadie se entere. El validador rechaza un paquete cuya
    cabecera no declare un `x.y.z` válido.
 
-2. Construir el sitio y exportar:
+2. Ejecutar el circuito completo en un paso:
 
    ```bash
-   npm run build
+   node scripts/publish.mjs --project . --config wordpress.config.json
+   ```
+
+   Esto construye, exporta, verifica y recién entonces genera el ZIP. Si el
+   `dist/` ya fue construido y verificado por el mismo commit, se puede usar
+   `--skip-build`. `--out archivo.zip` cambia el destino.
+
+3. Para diagnóstico también se pueden ejecutar las etapas por separado:
+
+   ```bash
    node scripts/export-plugin.mjs --project . --config wordpress.config.json
-   ```
-
-3. Verificar el paquete **antes** de subirlo:
-
-   ```bash
    node scripts/validate-plugin.mjs --plugin wordpress/build/portada-astro
-   ```
-
-4. Empaquetar:
-
-   ```bash
    node scripts/package-plugin.mjs --plugin wordpress/build/portada-astro
    ```
 
-5. Subir el ZIP desde el panel de WordPress.
+4. Subir manualmente el ZIP desde el panel de WordPress.
+
+El comando nunca instala ni actualiza el plugin remoto: esa frontera evita que
+una credencial o un error de entorno conviertan el empaquetado en una mutación
+de producción.
 
 El empaquetado no usa la herramienta del sistema a propósito. `Compress-Archive`
 en Windows guarda las rutas con barra invertida y el formato ZIP exige barra

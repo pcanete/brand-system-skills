@@ -423,7 +423,7 @@ Cada skill sigue versionado semántico de forma independiente:
 | `reference-lab-builder` | `0.2.1` | Reference Lab Spec `0.1`, con mediciones renderizadas fielmente |
 | `reference-to-astro` | `1.2.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0`, con ceremonia por fidelidad |
 | `visual-tuning-kit` | `0.6.0` | Tuning Schema and Values `0.1`, con aplicación transaccional de contenido aprobado |
-| `wordpress-publisher` | `0.1.0` | Plugin de portada y reporte de exportación |
+| `wordpress-publisher` | `0.2.0` | Plugin de portada, validación y ZIP en un circuito único |
 
 Para actualizar una copia del repositorio:
 

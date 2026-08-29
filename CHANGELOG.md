@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+`wordpress-publisher` 0.2.0
+
+- Adds a single fail-fast command for build, export, artifact validation and ZIP
+  packaging, while keeping remote WordPress installation explicitly manual.
+- Supports `--skip-build` for a build already verified at the same revision and
+  uses Windows-safe process and URL path handling.
+- Treats W3C XML namespace identifiers as non-remote fixture URLs in repository
+  hygiene checks.
+
 `visual-tuning-kit` 0.6.0
 
 - Applies human-approved text, line, image, section-order and navigation

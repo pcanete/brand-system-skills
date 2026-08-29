@@ -247,7 +247,7 @@ if (/benchmark-/i.test(publicFixtureText)) {
 for (const match of publicFixtureText.matchAll(/https?:\/\/[^\s"'`)]+/gi)) {
   const url = match[0];
   const synthetic =
-    /^http:\/\/www\.w3\.org\/(?:2000\/svg|1999\/xlink|1999\/xhtml)$/i.test(url) ||
+    /^https?:\/\/www\.w3\.org\//i.test(url) ||
     /^https?:\/\/([a-z0-9-]+\.)*example\.invalid(\/|$)/i.test(url) ||
     /^http:\/\/localhost(:\d+)?(\/|$)/i.test(url) ||
     /^http:\/\/127\.0\.0\.1(:\d+)?(\/|$)/i.test(url);
@@ -554,30 +554,42 @@ const wordpressRoot = path.join(root, "skills", "wordpress-publisher");
 const wordpressTemp = fs.mkdtempSync(path.join(os.tmpdir(), "wordpress-publisher-"));
 const wordpressProject = path.join(wordpressTemp, "project");
 copyTree(path.join(root, "tests", "wordpress-fixture"), wordpressProject);
-const wordpressExport = path.join(wordpressRoot, "scripts", "export-plugin.mjs");
 const wordpressValidate = path.join(wordpressRoot, "scripts", "validate-plugin.mjs");
-const wordpressPackage = path.join(wordpressRoot, "scripts", "package-plugin.mjs");
+const wordpressPublish = path.join(wordpressRoot, "scripts", "publish.mjs");
 const wordpressPlugin = path.join(wordpressProject, "wordpress", "build", "portada-fixture");
+const wordpressZip = path.join(wordpressTemp, "portada-fixture.zip");
 
-runNode("WordPress fixture export failed", [
-  wordpressExport,
+runNode("One-step WordPress publication failed", [
+  wordpressPublish,
   "--project",
   wordpressProject,
   "--config",
-  "wordpress.config.json"
-]);
-runNode("Exported WordPress fixture failed validation", [
-  wordpressValidate,
-  "--plugin",
-  wordpressPlugin
-]);
-runNode("Validated WordPress fixture failed packaging", [
-  wordpressPackage,
-  "--plugin",
-  wordpressPlugin,
+  "wordpress.config.json",
+  "--skip-build",
   "--out",
-  path.join(wordpressTemp, "portada-fixture.zip")
+  wordpressZip
 ]);
+if (!fs.existsSync(wordpressZip)) fail("One-step WordPress publication did not create its ZIP");
+
+const brokenProject = path.join(wordpressTemp, "broken-project");
+copyTree(path.join(root, "tests", "wordpress-fixture"), brokenProject);
+const brokenIndex = path.join(brokenProject, "dist", "index.html");
+fs.writeFileSync(
+  brokenIndex,
+  read(brokenIndex).replace("</body>", '<img src="/assets/missing.webp" alt="">\n</body>')
+);
+const brokenZip = path.join(wordpressTemp, "broken.zip");
+runNode("One-step WordPress publication accepted a missing build asset", [
+  wordpressPublish,
+  "--project",
+  brokenProject,
+  "--config",
+  "wordpress.config.json",
+  "--skip-build",
+  "--out",
+  brokenZip
+], { expect: "fail" });
+if (fs.existsSync(brokenZip)) fail("Failed WordPress publication still created a ZIP");
 
 fs.rmSync(path.join(wordpressPlugin, "dist", "assets", "hero.svg"), { force: true });
 runNode("WordPress validator accepted a package with a missing declared asset", [
