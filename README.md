@@ -23,7 +23,7 @@ Sin un método, esas señales terminan convertidas en decisiones arbitrarias. Es
 
 El objetivo no es automatizar el gusto. Es hacer visible el razonamiento para que la dirección creativa, la producción y la validación puedan trabajar sobre una misma base.
 
-## Las cinco capas
+## Las seis capas
 
 | Capa | Skill | Pregunta que responde | Salida principal |
 | --- | --- | --- | --- |
@@ -32,6 +32,7 @@ El objetivo no es automatizar el gusto. Es hacer visible el razonamiento para qu
 | Expresión web | `reference-scanner` | ¿Cómo funciona visualmente esta web de referencia? | `STYLE_DNA.json` y evidencia asociada |
 | Laboratorio | `reference-lab-builder` | ¿Entendimos realmente sus componentes y comportamientos? | Web neutral interactiva y aprobable |
 | Implementación | `reference-to-astro` | ¿Cómo se reconstruye ese sistema con el contenido del cliente? | Proyecto Astro verificado |
+| Ajuste visual | `visual-tuning-kit` | ¿Qué detalles declarados necesita ajustar una persona sobre la implementación? | Valores validados y aprobables |
 
 ```text
 Fuentes de marca ──> brand-dna-scanner ──> BRAND_DNA
@@ -56,6 +57,10 @@ Contenido + assets + brief ─────────────────�
                                               │
                                               v
                                   sitio Astro + QA visual
+                                              │
+                                              v
+                                    visual-tuning-kit
+                                 ajuste acotado + aprobación
 ```
 
 Las capas se complementan, pero no se confunden. El ADN de marca puede orientar una web, una campaña, una presentación o una pieza social. El ADN visual de una referencia web describe ese canal específico. La implementación consume ambos criterios sin apropiarse de la identidad de terceros.
@@ -167,6 +172,13 @@ El skill:
 
 Su meta no es entregar una maqueta estática, sino una base web mantenible y verificable.
 
+### 6. `visual-tuning-kit`
+
+Extrae el calibrador como una capa reutilizable de desarrollo. Expone solamente
+controles declarados y acotados para tipografía, espaciado, grilla, alineación,
+texto, variantes y orden de secciones. Guarda borradores auditables, exige
+aprobación humana y no se incluye en el build de producción.
+
 ## Flujo completo de trabajo
 
 1. **Reunir fuentes.** Web, manuales, campañas, redes, contenido, fotografías, videos y la referencia elegida.
@@ -179,7 +191,8 @@ Su meta no es entregar una maqueta estática, sino una base web mantenible y ver
 8. **Preparar el build brief.** Declarar objetivo, funcionalidades, activos y restricciones.
 9. **Aprobar SITE_BLUEPRINT.** Mapear contenido, secciones, composición, responsive, comportamiento y criterios de aceptación.
 10. **Construir con Astro.** Ejecutar `reference-to-astro` sobre el blueprint aprobado.
-11. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
+11. **Ajustar visualmente.** Usar `visual-tuning-kit` sobre los controles que el proyecto declaró seguros.
+12. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
 
 Cada paso que produce un contrato termina con su validador. Un contrato rechazado no se fuerza: se completa la evidencia o se baja la afirmación.
 
@@ -209,7 +222,7 @@ También es posible utilizar solamente una capa. Por ejemplo, `brand-dna-scanner
 
 ## Instalación
 
-Los cinco skills funcionan igual en **Claude** y en **Codex**: un `SKILL.md` con
+Los seis skills funcionan igual en **Claude** y en **Codex**: un `SKILL.md` con
 su frontmatter, sus referencias, sus contratos y sus validadores. Cambia dónde
 se copia el directorio.
 
@@ -220,8 +233,9 @@ Skills disponibles:
 - [reference-scanner](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-scanner)
 - [reference-lab-builder](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-lab-builder)
 - [reference-to-astro](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-to-astro)
+- [visual-tuning-kit](https://github.com/pcanete/brand-system-skills/tree/main/skills/visual-tuning-kit)
 
-Instala los cinco para el flujo completo de marca a web, o solamente el que corresponda a una tarea puntual.
+Instala los seis para el flujo completo de marca a web, o solamente el que corresponda a una tarea puntual.
 
 ### En Claude
 
@@ -283,6 +297,11 @@ este CONTENT_MANIFEST y los assets del cliente. Primero prepara y presenta
 SITE_BLUEPRINT; construye solamente después de mi aprobación y verifica el resultado visual.
 ```
 
+```text
+Usa visual-tuning-kit para declarar y montar controles visuales acotados sobre
+este sitio Astro. No incluyas el panel en producción ni apruebes valores por mí.
+```
+
 Para mejores resultados, indica fuentes, páginas prioritarias, viewports, restricciones legales, contenido autorizado y el nivel de fidelidad esperado.
 
 ## Estructura del repositorio
@@ -311,10 +330,16 @@ brand-system-skills/
 │   │   ├── schemas/
 │   │   ├── scripts/
 │   │   └── references/
-│   └── reference-to-astro/
+│   ├── reference-to-astro/
 │       ├── SKILL.md
 │       ├── schemas/
 │       ├── scripts/
+│       └── references/
+│   └── visual-tuning-kit/
+│       ├── SKILL.md
+│       ├── schemas/
+│       ├── scripts/
+│       ├── assets/
 │       └── references/
 ├── docs/
 │   ├── architecture.md
@@ -358,6 +383,10 @@ npm ci --prefix skills/reference-to-astro
 ```
 
 ```bash
+npm ci --prefix skills/visual-tuning-kit
+```
+
+```bash
 npm test
 ```
 
@@ -380,6 +409,7 @@ Cada skill sigue versionado semántico de forma independiente:
 | `reference-scanner` | `0.7.0` | Web reference schemas `0.4.x` |
 | `reference-lab-builder` | `0.1.0` | Reference Lab Spec `0.1` |
 | `reference-to-astro` | `1.0.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0` |
+| `visual-tuning-kit` | `0.1.0` | Tuning Schema and Values `0.1` |
 
 Para actualizar una copia del repositorio:
 

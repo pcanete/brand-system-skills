@@ -47,6 +47,14 @@ mapping from real content to evidenced reference patterns, composition,
 responsive behavior and acceptance criteria. Only an approved blueprint may
 become an Astro implementation.
 
+### visual-tuning-kit
+
+Consumes an existing Astro implementation plus an explicit tuning schema. It
+adds a bounded development-only review panel for declared tokens, text,
+variants and section order. Saved values remain draft data until a person
+approves them. Production may consume approved values, but never includes the
+panel or its write endpoint.
+
 ## Contract ownership
 
 - Brand contracts belong to `brand-dna-scanner`.
@@ -57,6 +65,8 @@ become an Astro implementation.
   independently installable.
 - `SITE_BLUEPRINT` belongs to `reference-to-astro`: the scanner cannot map a
   target site whose content and business objective it does not own.
+- Tuning schema and value contracts belong to `visual-tuning-kit`; the Astro
+  builder may propose controls but cannot approve the user's choices.
 - CI fails if shared web schemas drift.
 
 The same applies to verification. `scripts/lib/web-contracts.mjs` holds the

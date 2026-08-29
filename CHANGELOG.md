@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+`visual-tuning-kit` 0.1.0
+
+- Extracts the project calibrator into a reusable, Shadow DOM-isolated Astro
+  development tool.
+- Adds bounded controls for tokens, text, variants and fixed-set section order.
+- Saves validated drafts and changesets without granting the agent approval.
+- Keeps the panel and write endpoint out of production; approved values can be
+  consumed through runtime helpers or generated CSS custom properties.
+
 `brand-dna-scanner` 0.4.0
 
 Everything here comes from the first real run of the skill: a STANDARD scan of

@@ -78,7 +78,8 @@ const skillNames = [
   "brand-manual-builder",
   "reference-scanner",
   "reference-lab-builder",
-  "reference-to-astro"
+  "reference-to-astro",
+  "visual-tuning-kit"
 ];
 
 const declaredVersions = new Map();
@@ -424,6 +425,32 @@ runNode("Reference-system fixture rejected by reference-to-astro", [
   path.join(root, "tests", "reference-system", "CONTENT_MANIFEST.json"),
   "--blueprint",
   approvedBlueprint
+]);
+
+const tuningRoot = path.join(root, "skills", "visual-tuning-kit");
+const tuningValidator = path.join(tuningRoot, "scripts", "validate-tuning.mjs");
+const tuningSchema = path.join(tuningRoot, "assets", "TUNING_SCHEMA.example.json");
+const tuningValues = path.join(tuningRoot, "assets", "TUNING_VALUES.example.json");
+
+runNode("Draft tuning values were accepted as production values", [
+  tuningValidator,
+  "--schema",
+  tuningSchema,
+  "--values",
+  tuningValues
+], { expect: "fail" });
+
+runNode("Draft tuning values failed preparation validation", [
+  tuningValidator,
+  "--schema",
+  tuningSchema,
+  "--values",
+  tuningValues,
+  "--allow-draft"
+]);
+
+runNode("Visual tuning runtime checks failed", [
+  path.join(tuningRoot, "scripts", "test-runtime.mjs")
 ]);
 
 const blueprintGateRoot = fs.mkdtempSync(
