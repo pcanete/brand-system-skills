@@ -32,6 +32,13 @@ Analyzes one reference website as a visual and behavioral system. It produces
 Brand DNA may inform interpretation, but website-specific behavior remains
 channel-specific unless cross-channel evidence supports promotion to brand core.
 
+### reference-lab-builder
+
+Consumes `STYLE_DNA.json`, `REFERENCE_EVIDENCE.json` and a declarative lab
+spec. It renders a neutral interactive website that isolates evidenced
+typography, components, responsive states, motion and behavior for human
+approval. It uses invented content and generated geometry, not source assets.
+
 ### reference-to-astro
 
 Consumes `STYLE_DNA`, `REFERENCE_EVIDENCE`, `CONTENT_MANIFEST`, and a build brief.
@@ -45,6 +52,7 @@ become an Astro implementation.
 - Brand contracts belong to `brand-dna-scanner`.
 - The manual composition and review contract belongs to `brand-manual-builder`.
 - Web reference contracts are authored by `reference-scanner`.
+- The neutral demonstration and approval contract belongs to `reference-lab-builder`.
 - `reference-to-astro` carries exact copies of the web contracts so it remains
   independently installable.
 - `SITE_BLUEPRINT` belongs to `reference-to-astro`: the scanner cannot map a

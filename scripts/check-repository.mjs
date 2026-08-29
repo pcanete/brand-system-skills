@@ -77,6 +77,7 @@ const skillNames = [
   "brand-dna-scanner",
   "brand-manual-builder",
   "reference-scanner",
+  "reference-lab-builder",
   "reference-to-astro"
 ];
 
@@ -282,6 +283,22 @@ const scannerBehaviorTests = path.join(
   "test-behavior-gates.mjs"
 );
 
+const labValidator = path.join(
+  root,
+  "skills",
+  "reference-lab-builder",
+  "scripts",
+  "validate-lab.mjs"
+);
+
+const labBuilder = path.join(
+  root,
+  "skills",
+  "reference-lab-builder",
+  "scripts",
+  "build-lab.mjs"
+);
+
 const builderValidator = path.join(
   root,
   "skills",
@@ -361,6 +378,44 @@ runNode("Scan artifacts fixture rejected by reference-scanner", [
 ]);
 
 runNode("Reference scanner behavior gate tests failed", [scannerBehaviorTests]);
+
+const labExample = [
+  "--style",
+  path.join(root, "tests", "reference-system", "STYLE_DNA.json"),
+  "--evidence",
+  path.join(root, "tests", "reference-system", "REFERENCE_EVIDENCE.json"),
+  "--spec",
+  path.join(root, "skills", "reference-lab-builder", "assets", "REFERENCE_LAB_SPEC.example.json")
+];
+
+runNode("Draft reference lab was accepted in approval mode", [
+  labValidator,
+  ...labExample
+], { expect: "fail" });
+
+runNode("Draft reference lab failed preparation validation", [
+  labValidator,
+  ...labExample,
+  "--allow-draft"
+]);
+
+const labBuildRoot = fs.mkdtempSync(path.join(os.tmpdir(), "reference-lab-build-"));
+runNode("Reference lab example failed to render", [
+  labBuilder,
+  ...labExample,
+  "--out",
+  labBuildRoot
+]);
+
+if (!fs.existsSync(path.join(labBuildRoot, "index.html"))) {
+  fail("Reference lab builder produced no index.html");
+}
+
+if (!fs.existsSync(path.join(labBuildRoot, "REFERENCE_LAB.json"))) {
+  fail("Reference lab builder produced no REFERENCE_LAB.json");
+}
+
+fs.rmSync(labBuildRoot, { recursive: true, force: true });
 
 runNode("Reference-system fixture rejected by reference-to-astro", [
   builderValidator,
