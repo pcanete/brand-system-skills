@@ -3,7 +3,7 @@ name: reference-scanner
 description: Analyzes a reference website as a visual and behavioral system and records evidence another agent can build from. Covers layout, typography, media, desktop and mobile interaction, responsive transformation, motion, page transitions and WebGL, producing STYLE_DNA and REFERENCE_EVIDENCE. Use when a chosen reference site's visual logic or detailed behavior must be captured, documented or handed to an implementer. Not for cross-channel brand identity extraction or for building the result.
 license: MIT
 metadata:
-  version: "0.7.0"
+  version: "0.8.0"
 ---
 
 # Reference Scanner
@@ -517,6 +517,8 @@ for:
   This gate ignores confidence, salience and coverage entirely: those are
   numbers you write about your own work, and any gate that reads them can be
   satisfied by writing a smaller one
+- every `observations[].path` resolves to the recorded finding, traversing
+  object keys or array members addressed by `id`
 
 A rejection is information, not an obstacle. Either record the missing
 evidence, or lower the claim to what was actually seen. Lowering a score is

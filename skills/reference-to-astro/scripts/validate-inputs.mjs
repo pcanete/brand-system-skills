@@ -82,7 +82,18 @@ function checkSectionAssets(content) {
   return issues;
 }
 
+function ceremonyFor(blueprint) {
+  const target = blueprint.project?.fidelity_target || "high";
+  return {
+    target,
+    requiresResolvedCheckpoints: target !== "directional",
+    requiresClosedDecisions: target !== "directional",
+    forbidsInferredPatterns: target === "forensic"
+  };
+}
+
 function checkBlueprintCheckpoints(blueprint, { strict }) {
+  const ceremony = ceremonyFor(blueprint);
   const required = new Set([
     "brand-manual",
     "reference-lab",
@@ -101,8 +112,8 @@ function checkBlueprintCheckpoints(blueprint, { strict }) {
       issues.push(`${checkpoint.id}: waived checkpoint requires a reason`);
     }
 
-    if (strict && checkpoint.status === "pending") {
-      issues.push(`${checkpoint.id}: checkpoint is still pending`);
+    if (strict && ceremony.requiresResolvedCheckpoints && checkpoint.status === "pending") {
+      issues.push(`${checkpoint.id}: checkpoint is still pending (fidelity_target '${ceremony.target}')`);
     }
   }
 
@@ -120,10 +131,14 @@ function checkBlueprintApproval(blueprint, { strict }) {
 
   if (!unique(ids)) issues.push("decision ids must be unique");
 
+  const ceremony = ceremonyFor(blueprint);
+
   if (strict) {
-    for (const decision of decisions) {
-      if (decision.status === "open") {
-        issues.push(`${decision.id}: decision is still open`);
+    if (ceremony.requiresClosedDecisions) {
+      for (const decision of decisions) {
+        if (decision.status === "open") {
+          issues.push(`${decision.id}: decision is still open (fidelity_target '${ceremony.target}')`);
+        }
       }
     }
 
@@ -131,6 +146,21 @@ function checkBlueprintApproval(blueprint, { strict }) {
       issues.push(
         `approval.status is '${blueprint.approval?.status || "missing"}', expected 'approved'`
       );
+    }
+  }
+
+  if (strict && ceremony.forbidsInferredPatterns) {
+    for (const [pageId, page] of Object.entries(blueprint.pages || {})) {
+      for (const section of page.sections || []) {
+        for (const pattern of section.reference_patterns || []) {
+          if (pattern.mode === "inferred") {
+            issues.push(
+              `${pageId}/${section.id}: pattern '${pattern.style_path}' is 'inferred', ` +
+              "which a forensic reconstruction cannot build on"
+            );
+          }
+        }
+      }
     }
   }
 
@@ -205,6 +235,23 @@ function checkBlueprintContentCoverage(blueprint, content) {
   return issues;
 }
 
+function nearestPaths(wanted, available) {
+  const parts = String(wanted).split(".");
+  const leaf = parts.at(-1) || "";
+  const scored = [...available]
+    .map((candidate) => {
+      const candidateParts = candidate.split(".");
+      const sharesLeaf = candidateParts.some((segment) => segment.includes(leaf) || leaf.includes(segment));
+      const sharesRoot = candidateParts[0] === parts[0];
+      return { candidate, score: (sharesLeaf ? 2 : 0) + (sharesRoot ? 1 : 0) };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score || a.candidate.localeCompare(b.candidate));
+
+  if (!scored.length) return "";
+  return `\n      nearby observations: ${scored.slice(0, 5).map((item) => item.candidate).join(", ")}`;
+}
+
 function checkBlueprintReferenceIntegrity(blueprint, style, evidence) {
   const issues = [];
   const stylePaths = new Set((style.observations || []).map((item) => item.path));
@@ -216,7 +263,8 @@ function checkBlueprintReferenceIntegrity(blueprint, style, evidence) {
       for (const pattern of section.reference_patterns || []) {
         if (!stylePaths.has(pattern.style_path)) {
           issues.push(
-            `${pageId}/${section.id}: unknown STYLE_DNA path '${pattern.style_path}'`
+            `${pageId}/${section.id}: unknown STYLE_DNA path '${pattern.style_path}'` +
+              nearestPaths(pattern.style_path, stylePaths)
           );
         }
         for (const ref of pattern.evidence_refs || []) {

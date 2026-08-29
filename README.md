@@ -417,9 +417,9 @@ Cada skill sigue versionado semántico de forma independiente:
 | --- | ---: | --- |
 | `brand-dna-scanner` | `0.4.0` | Brand DNA `0.1.x` |
 | `brand-manual-builder` | `0.1.0` | Brand Manual Spec `0.1` |
-| `reference-scanner` | `0.7.0` | Web reference schemas `0.4.x` |
-| `reference-lab-builder` | `0.2.0` | Reference Lab Spec `0.1` |
-| `reference-to-astro` | `1.1.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0` |
+| `reference-scanner` | `0.8.0` | Web reference schemas `0.4.x`, con rutas de observación resolubles |
+| `reference-lab-builder` | `0.2.1` | Reference Lab Spec `0.1`, con mediciones renderizadas fielmente |
+| `reference-to-astro` | `1.2.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0`, con ceremonia por fidelidad |
 | `visual-tuning-kit` | `0.5.1` | Tuning Schema and Values `0.1`, incluida navegación validada y panel móvil en escritorio |
 | `wordpress-publisher` | `0.1.0` | Plugin de portada y reporte de exportación |
 

@@ -6,6 +6,7 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import { resolvePath } from "./lib/contract-path.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
@@ -18,10 +19,6 @@ async function readJson(file) {
   const absolute = path.resolve(process.cwd(), file);
   try { return JSON.parse(await fs.readFile(absolute, "utf8")); }
   catch (error) { throw new Error(`Unable to read JSON: ${absolute}\n${error.message}`); }
-}
-
-function getPath(object, dottedPath) {
-  return dottedPath.split(".").reduce((value, key) => value?.[key], object);
 }
 
 function collectIds(node, ids = new Set()) {
@@ -57,7 +54,8 @@ export async function validateLab({ styleFile, evidenceFile, specFile, allowDraf
     if (demoIds.has(demo.id)) issues.push(`duplicate demo id '${demo.id}'`);
     demoIds.add(demo.id);
     for (const sourcePath of demo.source_paths) {
-      if (getPath(style, sourcePath) === undefined) issues.push(`demo:${demo.id}: unknown STYLE_DNA path '${sourcePath}'`);
+      const resolution = resolvePath(style, sourcePath);
+      if (!resolution.found) issues.push(`demo:${demo.id}: unknown STYLE_DNA path '${sourcePath}' (stops at '${resolution.stoppedAt}')`);
     }
     for (const ref of demo.evidence_refs) {
       if (!evidenceIds.has(ref)) issues.push(`demo:${demo.id}: unknown evidence reference '${ref}'`);
@@ -96,4 +94,3 @@ async function main() {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch((error) => { console.error(error.message); process.exit(1); });
 }
-

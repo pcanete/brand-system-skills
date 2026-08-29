@@ -313,6 +313,14 @@ const labBuilder = path.join(
   "build-lab.mjs"
 );
 
+const labRuntimeTests = path.join(
+  root,
+  "skills",
+  "reference-lab-builder",
+  "scripts",
+  "test-runtime.mjs"
+);
+
 const builderValidator = path.join(
   root,
   "skills",
@@ -420,6 +428,8 @@ runNode("Reference lab example failed to render", [
   "--out",
   labBuildRoot
 ]);
+
+runNode("Reference lab runtime tests failed", [labRuntimeTests]);
 
 if (!fs.existsSync(path.join(labBuildRoot, "index.html"))) {
   fail("Reference lab builder produced no index.html");
@@ -615,6 +625,43 @@ runNode("Draft SITE_BLUEPRINT cannot be validated as work in progress", [
   ...blueprintGateArgs,
   "--lenient"
 ]);
+
+const directionalBlueprint = path.join(blueprintGateRoot, "SITE_BLUEPRINT.directional.json");
+const directionalDocument = JSON.parse(read(approvedBlueprint));
+directionalDocument.project.fidelity_target = "directional";
+directionalDocument.checkpoints.find(
+  (checkpoint) => checkpoint.id === "reference-lab"
+).status = "pending";
+directionalDocument.decisions[0].status = "open";
+fs.writeFileSync(
+  directionalBlueprint,
+  `${JSON.stringify(directionalDocument, null, 2)}\n`
+);
+runNode("Directional blueprint incorrectly required high-fidelity ceremony", [
+  builderValidator,
+  ...webFixtures("reference-system"),
+  "--content",
+  path.join(root, "tests", "reference-system", "CONTENT_MANIFEST.json"),
+  "--blueprint",
+  directionalBlueprint
+]);
+
+const forensicBlueprint = path.join(blueprintGateRoot, "SITE_BLUEPRINT.forensic.json");
+const forensicDocument = JSON.parse(read(approvedBlueprint));
+forensicDocument.project.fidelity_target = "forensic";
+forensicDocument.pages.home.sections[0].reference_patterns[0].mode = "inferred";
+fs.writeFileSync(
+  forensicBlueprint,
+  `${JSON.stringify(forensicDocument, null, 2)}\n`
+);
+runNode("Forensic blueprint accepted an inferred pattern", [
+  builderValidator,
+  ...webFixtures("reference-system"),
+  "--content",
+  path.join(root, "tests", "reference-system", "CONTENT_MANIFEST.json"),
+  "--blueprint",
+  forensicBlueprint
+], { expect: "fail" });
 
 fs.rmSync(blueprintGateRoot, { recursive: true, force: true });
 

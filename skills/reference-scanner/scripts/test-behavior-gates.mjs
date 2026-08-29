@@ -6,7 +6,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { checkBehaviorAuditQuality } from "./lib/behavior-gates.mjs";
-import { createValidator, formatSchemaErrors } from "./lib/web-contracts.mjs";
+import {
+  checkObservationPathsResolve,
+  createValidator,
+  formatSchemaErrors,
+  resolvePath
+} from "./lib/web-contracts.mjs";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -154,5 +159,14 @@ assert.match(issues, /mobile behavior audit/);
 assert.match(issues, /at least 5 samples/);
 assert.match(issues, /below\/above threshold probes/);
 assert.match(issues, /reverse/);
+
+const stylePathFixture = {
+  components: [{ id: "global-header", states: { compact: true } }],
+  observations: [{ path: "components.global-header.states.compact" }]
+};
+assert.equal(resolvePath(stylePathFixture, "components.global-header.states.compact").value, true);
+assert.deepEqual(checkObservationPathsResolve(stylePathFixture), []);
+stylePathFixture.observations[0].path = "components.global_header.states";
+assert.match(checkObservationPathsResolve(stylePathFixture).join("\n"), /does not resolve/);
 
 console.log("Behavior gate tests passed.");

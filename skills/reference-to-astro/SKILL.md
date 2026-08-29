@@ -3,7 +3,7 @@ name: reference-to-astro
 description: Builds a website in Astro from an analyzed reference and an approved SITE_BLUEPRINT that maps client content to evidenced visual, responsive and behavioral patterns. Use when reference contracts and real content must become a verified implementation. Not for inventing a visual direction, scanning the reference, or packaging the result for WordPress.
 license: MIT
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Reference-to-Astro
@@ -87,6 +87,11 @@ node scripts/validate-inputs.mjs \
   --content CONTENT_MANIFEST.json \
   --blueprint SITE_BLUEPRINT.json
 ```
+
+The gate reads `project.fidelity_target`: `directional` may retain recorded
+pending checkpoints and open decisions, `high` requires both resolved, and
+`forensic` additionally rejects inferred reference patterns. Human approval,
+content coverage and evidence integrity remain mandatory at every target.
 
 The validator rejects contracts that are well-formed but unsupported: claims
 recorded as observed with no evidence behind them, coverage the scan did not

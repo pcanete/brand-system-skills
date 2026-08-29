@@ -85,6 +85,47 @@ export function collectEvidenceIds(evidence) {
   return ids;
 }
 
+// Contract paths may traverse object keys or array members addressed by id.
+// This matches how components and sections are represented across the web
+// contracts, for example `components.global-header.states`.
+export function resolvePath(document, dottedPath) {
+  let node = document;
+
+  for (const segment of String(dottedPath).split(".")) {
+    if (node && typeof node === "object" && !Array.isArray(node) && segment in node) {
+      node = node[segment];
+      continue;
+    }
+    if (Array.isArray(node)) {
+      const match = node.find((item) => item && typeof item === "object" && item.id === segment);
+      if (match !== undefined) {
+        node = match;
+        continue;
+      }
+    }
+    return { found: false, stoppedAt: segment };
+  }
+
+  return { found: true, value: node };
+}
+
+// GATE 7 — An observation must point to the finding it indexes. Otherwise
+// downstream skills can cite a label that has no corresponding contract data.
+export function checkObservationPathsResolve(style) {
+  const issues = [];
+
+  for (const observation of style.observations || []) {
+    const { found, stoppedAt } = resolvePath(style, observation.path);
+    if (!found) {
+      issues.push(
+        `${observation.path}: does not resolve in STYLE_DNA (stops at '${stoppedAt}')`
+      );
+    }
+  }
+
+  return issues;
+}
+
 // Referential integrity: every reference points at recorded evidence.
 export function checkEvidenceReferences(style, evidence) {
   const known = collectEvidenceIds(evidence);
@@ -373,6 +414,11 @@ export function verifyWebContracts(style, evidence, { strict = true } = {}) {
     {
       label: "Claimed areas are backed by evidence",
       issues: checkClaimedAreasBacked(style),
+      strictOnly: true
+    },
+    {
+      label: "Observation paths resolve in STYLE_DNA",
+      issues: checkObservationPathsResolve(style),
       strictOnly: true
     }
   ];

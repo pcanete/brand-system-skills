@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+`reference-scanner` 0.8.0 · `reference-lab-builder` 0.2.1 · `reference-to-astro` 1.2.0
+
+- Requires every observation path to resolve to the finding it indexes,
+  including array members addressed by `id`.
+- Renders declared typography sizes, marquee velocity and per-actor parallax
+  ratios in the neutral lab; unmeasured fallbacks identify themselves.
+- Makes `fidelity_target` control checkpoint, open-decision and inferred-pattern
+  ceremony while preserving human approval and evidence gates at every level.
+- Suggests nearby recorded observations when a blueprint cites an unknown path.
+
 `visual-tuning-kit` 0.3.0
 
 - Adds `ch` as a bounded range unit for typographic measure controls such as

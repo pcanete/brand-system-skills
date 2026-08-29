@@ -3,7 +3,7 @@ name: reference-lab-builder
 description: Turns evidence-backed STYLE_DNA and REFERENCE_EVIDENCE into a neutral interactive reference lab where typography, components, responsive states, motion, and behaviors can be inspected and approved before target content is applied. Use after reference-scanner and before SITE_BLUEPRINT. Not for scanning the source site, reproducing its content or brand, building the final customer website, or packaging WordPress.
 license: MIT
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
 ---
 
 # Reference Lab Builder
@@ -76,6 +76,15 @@ node scripts/build-lab.mjs \
 Inspect desktop and mobile widths. Exercise every interaction, keyboard focus,
 scroll behavior, and `prefers-reduced-motion` fallback.
 
+When changing renderer behavior or contract-path resolution, run:
+
+```bash
+node scripts/test-runtime.mjs
+```
+
+The renderer and validator share `scripts/lib/contract-path.mjs`, so source
+paths can traverse object keys or array members addressed by `id` consistently.
+
 ### 4. Stop for approval
 
 Show the user the lab. Record corrections in the spec. The agent must not set
@@ -89,6 +98,9 @@ the `reference-lab` checkpoint consumed by `SITE_BLUEPRINT` decisions.
 - The lab demonstrates behavior; it does not prove technology used by the source.
 - Unknown timing, easing, breakpoint, or rendering technology remains unknown.
 - Adaptive parameters must be labeled adaptive in notes.
+- Measured typography sizes, marquee speed and per-actor parallax ratios must
+  render as declared. Missing measurements use a visibly labeled adaptive
+  fallback rather than masquerading as observed values.
 - Custom JavaScript, raw HTML, and arbitrary CSS are not accepted in the spec.
 - A demo without resolvable evidence is rejected.
 - The final site may combine patterns differently only through an approved blueprint.
