@@ -20,12 +20,12 @@
     const ui = spanish ? {
       all: "Ver todo", intro: "Hacé clic en un elemento marcado. Doble clic para editar texto directamente.",
       selected: "Seleccionado", chooseImage: "Elegí una imagen.", inline: "Doble clic para editar en la página.",
-      noImages: "No hay imágenes disponibles.", reset: "Reset", copy: "Copiar JSON", save: "Guardar borrador",
+      noImages: "No hay imágenes disponibles.", addNav: "Agregar opción", removeNav: "Eliminar", visibleNav: "Visible", newNav: "Nueva opción", reset: "Reset", copy: "Copiar JSON", save: "Guardar borrador",
       copied: "Copiado.", saved: "Borrador guardado", changes: "cambios", saveFailed: "No se pudo guardar.",
     } : {
       all: "Show all", intro: "Click a marked element. Double-click declared text to edit it inline.",
       selected: "Selected", chooseImage: "Choose an image.", inline: "Double-click to edit on the page.",
-      noImages: "No images available.", reset: "Reset", copy: "Copy JSON", save: "Save draft",
+      noImages: "No images available.", addNav: "Add item", removeNav: "Remove", visibleNav: "Visible", newNav: "New item", reset: "Reset", copy: "Copy JSON", save: "Save draft",
       copied: "Copied.", saved: "Draft saved", changes: "changes", saveFailed: "Save failed.",
     };
     const controlsByPreview = new Map();
@@ -61,7 +61,7 @@
     const root = host.attachShadow({ mode: "open" });
     root.innerHTML = `<style>
       :host{position:fixed;z-index:2147483000;top:12px;right:12px;width:min(390px,calc(100vw - 24px));max-height:calc(100svh - 24px);overflow:auto;background:#111;color:#f3f3f3;border:1px solid #444;box-shadow:0 18px 60px #0008;font:11px/1.35 ui-monospace,monospace}
-      *{box-sizing:border-box}header,footer{position:sticky;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;background:#111;border-bottom:1px solid #3a3a3a}header{top:0}footer{bottom:0;border-top:1px solid #3a3a3a;border-bottom:0;flex-wrap:wrap}.toolbar{display:flex;align-items:center;gap:6px}.intro{margin:0;padding:10px 12px;background:#1a1a1a;color:#ddd;border-bottom:1px solid #333}.selection{color:#ff7a63}.group{border-bottom:1px solid #333}.group>summary{display:block;padding:9px 30px 9px 12px;background:#202020;color:#bbb;text-transform:uppercase;cursor:pointer;list-style:none;position:relative}.group>summary::-webkit-details-marker{display:none}.group>summary::after{content:'+';position:absolute;right:12px}.group[open]>summary::after{content:'−'}.control{display:grid;gap:7px;padding:10px 12px;border-top:1px solid #292929}.control[hidden],.group[hidden]{display:none}.label{display:flex;gap:6px}.label output{margin-left:auto;color:#9ee7a7}button,select,input,textarea{font:inherit;color:inherit;background:#171717;border:1px solid #4b4b4b}button{min-height:32px;padding:0 9px;cursor:pointer}button:hover{border-color:#888}button.primary{background:#ff3d1f;border-color:#ff3d1f;color:#fff}select,textarea,input[type=text]{width:100%;min-height:34px;padding:6px}textarea{resize:vertical}input[type=range]{width:100%;accent-color:#ff3d1f}.status{min-height:1.3em;padding:0 12px 10px;color:#9ee7a7}.hint{color:#929292;font-size:10px}.order{display:grid;gap:4px}.asset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:240px;overflow:auto}.asset{position:relative;min-height:78px;padding:0;overflow:hidden}.asset img{display:block;width:100%;height:76px;object-fit:cover}.asset[data-selected=true]{border:2px solid #ff3d1f}.asset span{position:absolute;right:0;bottom:0;left:0;padding:3px;background:#000b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.empty{padding:12px;color:#aaa}@media(max-width:600px){:host{top:6px;right:6px;left:6px;width:auto;max-height:calc(100svh - 12px)}}
+      *{box-sizing:border-box}header,footer{position:sticky;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;background:#111;border-bottom:1px solid #3a3a3a}header{top:0}footer{bottom:0;border-top:1px solid #3a3a3a;border-bottom:0;flex-wrap:wrap}.toolbar{display:flex;align-items:center;gap:6px}.intro{margin:0;padding:10px 12px;background:#1a1a1a;color:#ddd;border-bottom:1px solid #333}.selection{color:#ff7a63}.group{border-bottom:1px solid #333}.group>summary{display:block;padding:9px 30px 9px 12px;background:#202020;color:#bbb;text-transform:uppercase;cursor:pointer;list-style:none;position:relative}.group>summary::-webkit-details-marker{display:none}.group>summary::after{content:'+';position:absolute;right:12px}.group[open]>summary::after{content:'−'}.control{display:grid;gap:7px;padding:10px 12px;border-top:1px solid #292929}.control[hidden],.group[hidden]{display:none}.label{display:flex;gap:6px}.label output{margin-left:auto;color:#9ee7a7}button,select,input,textarea{font:inherit;color:inherit;background:#171717;border:1px solid #4b4b4b}button{min-height:32px;padding:0 9px;cursor:pointer}button:hover{border-color:#888}button.primary{background:#ff3d1f;border-color:#ff3d1f;color:#fff}select,textarea,input[type=text],input[type=url]{width:100%;min-height:34px;padding:6px}textarea{resize:vertical}input[type=range]{width:100%;accent-color:#ff3d1f}.status{min-height:1.3em;padding:0 12px 10px;color:#9ee7a7}.hint{color:#929292;font-size:10px}.order{display:grid;gap:4px}.navigation-editor{display:grid;gap:8px}.nav-item{display:grid;gap:6px;padding:8px;border:1px solid #3a3a3a;background:#171717}.nav-item__fields{display:grid;grid-template-columns:1fr 1.5fr;gap:5px}.nav-item__actions{display:flex;align-items:center;gap:4px}.nav-item__actions label{display:flex;align-items:center;gap:4px;margin-right:auto}.nav-item__actions button{min-height:28px}.asset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:240px;overflow:auto}.asset{position:relative;min-height:78px;padding:0;overflow:hidden}.asset img{display:block;width:100%;height:76px;object-fit:cover}.asset[data-selected=true]{border:2px solid #ff3d1f}.asset span{position:absolute;right:0;bottom:0;left:0;padding:3px;background:#000b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.empty{padding:12px;color:#aaa}@media(max-width:600px){:host{top:6px;right:6px;left:6px;width:auto;max-height:calc(100svh - 12px)}.nav-item__fields{grid-template-columns:1fr}}
     </style>`;
 
     const panel = create("div");
@@ -142,7 +142,7 @@
       section.open = groupIndex === 0;
       section.append(create("summary", group.label));
       for (const control of group.controls) {
-        const wrap = create(control.kind === "section-order" ? "div" : "label", undefined, "control");
+        const wrap = create(["section-order", "navigation"].includes(control.kind) ? "div" : "label", undefined, "control");
         controlNodes.set(control.id, wrap);
         const label = create("span", control.label, "label");
         const output = create("output", "");
@@ -168,6 +168,8 @@
           input.maxLength = control.max_length;
         } else if (control.kind === "image") {
           input = create("div", undefined, "asset-grid");
+        } else if (control.kind === "navigation") {
+          input = create("div", undefined, "navigation-editor");
         } else {
           input = create("div", undefined, "order");
         }
@@ -223,8 +225,87 @@
           if (!input.children.length) input.append(create("p", ui.noImages, "empty"));
         };
 
+        const commitNavigation = (next, rerender = false) => {
+          values[control.id] = next;
+          apply(control, next);
+          store();
+          if (rerender) setInput(next);
+        };
+
+        const renderNavigation = (value) => {
+          input.replaceChildren();
+          value.forEach((item, index) => {
+            const card = create("div", undefined, "nav-item");
+            const fields = create("div", undefined, "nav-item__fields");
+            const labelInput = create("input");
+            labelInput.type = "text";
+            labelInput.value = item.label;
+            labelInput.maxLength = control.max_length || 60;
+            labelInput.placeholder = ui.newNav;
+            const hrefInput = create("input");
+            hrefInput.type = "url";
+            hrefInput.value = item.href;
+            hrefInput.placeholder = "/destino o #seccion";
+            fields.append(labelInput, hrefInput);
+            const actions = create("div", undefined, "nav-item__actions");
+            const visibilityLabel = create("label");
+            const visible = create("input");
+            visible.type = "checkbox";
+            visible.checked = item.visible !== false;
+            visibilityLabel.append(visible, create("span", ui.visibleNav));
+            const target = create("select");
+            target.add(new Option("Misma pestaña", "_self"));
+            target.add(new Option("Nueva pestaña", "_blank"));
+            target.value = item.target || "_self";
+            const up = create("button", "↑");
+            const down = create("button", "↓");
+            const remove = create("button", "×");
+            up.type = down.type = remove.type = "button";
+            up.disabled = index === 0;
+            down.disabled = index === value.length - 1;
+            remove.title = ui.removeNav;
+            const updateItem = () => {
+              const next = value.map((candidate, itemIndex) => itemIndex === index ? {
+                ...candidate,
+                label: labelInput.value,
+                href: hrefInput.value,
+                target: target.value,
+                visible: visible.checked,
+              } : candidate);
+              commitNavigation(next);
+            };
+            labelInput.addEventListener("input", updateItem);
+            hrefInput.addEventListener("input", updateItem);
+            target.addEventListener("change", updateItem);
+            visible.addEventListener("change", updateItem);
+            const move = (to) => {
+              const next = [...value];
+              [next[index], next[to]] = [next[to], next[index]];
+              commitNavigation(next, true);
+            };
+            up.onclick = () => move(index - 1);
+            down.onclick = () => move(index + 1);
+            remove.onclick = () => {
+              if (value.length <= (control.min_items || 1)) return;
+              commitNavigation(value.filter((_, itemIndex) => itemIndex !== index), true);
+            };
+            actions.append(visibilityLabel, target, up, down, remove);
+            card.append(fields, actions);
+            input.append(card);
+          });
+          const add = create("button", ui.addNav);
+          add.type = "button";
+          add.disabled = value.length >= (control.max_items || 12);
+          add.onclick = () => {
+            const suffix = `${Date.now().toString(36)}-${value.length + 1}`;
+            commitNavigation([...value, { id: `nav-${suffix}`, label: ui.newNav, href: "#inicio", target: "_self", visible: true }], true);
+          };
+          input.append(add);
+        };
+
         const setInput = (value) => {
           if (control.kind === "section-order") renderOrder(value);
+          else if (control.kind === "navigation") renderNavigation(value);
           else if (control.kind === "image") renderAssets(value);
           else if (input.type === "checkbox") input.checked = Boolean(value);
           else input.value = Array.isArray(value) ? value.join("\n") : String(value ?? "");
@@ -234,14 +315,14 @@
           if (control.kind === "range") return Number(input.value);
           if (control.kind === "boolean") return input.checked;
           if (control.kind === "text-lines") return input.value.split("\n").map((line) => line.trim()).filter(Boolean);
-          if (["section-order", "image"].includes(control.kind)) return values[control.id];
+          if (["section-order", "image", "navigation"].includes(control.kind)) return values[control.id];
           return input.value;
         };
 
         setInput(values[control.id]);
         apply(control, values[control.id]);
         inputRecords.set(control.id, { control, input, setInput, readInput });
-        if (!["section-order", "image"].includes(control.kind)) {
+        if (!["section-order", "image", "navigation"].includes(control.kind)) {
           input.addEventListener(control.kind === "boolean" || control.kind === "select" ? "change" : "input", () => {
             values[control.id] = readInput();
             apply(control, values[control.id]);

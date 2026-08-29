@@ -34,7 +34,7 @@
       "required": ["id", "kind", "label", "rationale", "default", "target"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
-        "kind": { "enum": ["range", "select", "boolean", "text", "text-lines", "image", "section-order"] },
+        "kind": { "enum": ["range", "select", "boolean", "text", "text-lines", "image", "section-order", "navigation"] },
         "label": { "type": "string", "minLength": 1 },
         "rationale": { "type": "string", "minLength": 1 },
         "default": {},
@@ -56,7 +56,16 @@
         "min": { "type": "number" }, "max": { "type": "number" }, "step": { "type": "number", "exclusiveMinimum": 0 },
         "unit": { "enum": ["", "px", "rem", "em", "vw", "vh", "svh", "dvh", "%", "deg", "ch", "ms", "s"] },
         "options": { "type": "array", "minItems": 2, "uniqueItems": true, "items": { "$ref": "#/$defs/option" } },
-        "max_length": { "type": "integer", "minimum": 1, "maximum": 2000 }
+        "max_length": { "type": "integer", "minimum": 1, "maximum": 2000 },
+        "min_items": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "max_items": { "type": "integer", "minimum": 1, "maximum": 30 },
+        "allowed_hosts": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Za-z0-9.-]+$" }
+        },
+        "allow_hash": { "type": "boolean" },
+        "allow_relative": { "type": "boolean" }
       }
     }
   }

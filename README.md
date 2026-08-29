@@ -420,7 +420,7 @@ Cada skill sigue versionado semántico de forma independiente:
 | `reference-scanner` | `0.7.0` | Web reference schemas `0.4.x` |
 | `reference-lab-builder` | `0.2.0` | Reference Lab Spec `0.1` |
 | `reference-to-astro` | `1.1.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0` |
-| `visual-tuning-kit` | `0.4.0` | Tuning Schema and Values `0.1` |
+| `visual-tuning-kit` | `0.5.0` | Tuning Schema and Values `0.1`, incluida navegación validada |
 | `wordpress-publisher` | `0.1.0` | Plugin de portada y reporte de exportación |
 
 Para actualizar una copia del repositorio:

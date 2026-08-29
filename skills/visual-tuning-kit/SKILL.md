@@ -3,7 +3,7 @@ name: visual-tuning-kit
 description: Adds a bounded, development-only visual tuning layer to an Astro site so users can adjust declared typography, spacing, grid, alignment, content, section order, and behavior variants without becoming a free-form page builder. Produces validated tuning schema, approved values, and an auditable changeset. Use after an initial Astro implementation exists. Not for reference scanning, initial site generation, production CMS editing, or arbitrary drag-and-drop layout.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # Visual Tuning Kit
@@ -35,10 +35,13 @@ Expose only deliberate controls:
 - text and line breaks mapped to a content path;
 - images chosen from a declared folder inside `public/`;
 - section order chosen from a fixed set;
+- navigation items with bounded labels, validated destinations, visibility and order;
 - grid span, alignment and bounded offsets represented as tokens or enums.
 
 Do not expose arbitrary CSS, raw HTML, executable JavaScript, unrestricted
 selectors, free absolute positioning, or unconstrained drag-and-drop.
+Navigation controls must reject unknown protocols and absolute URLs outside
+their declared `allowed_hosts`.
 
 ## Workflow
 

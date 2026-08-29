@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import visualTunerDev from "./visual-tuner-dev.mjs";
+import visualTunerDev, { validNavigation } from "./visual-tuner-dev.mjs";
 import { deriveRange, findAdjustables, RANGE_UNITS } from "./derive-schema.mjs";
 import { collectTexts, summarizeMappings } from "./map-content.mjs";
 import { tunedOrder, tunedText, tunedValue } from "../assets/tuning-runtime.mjs";
@@ -34,6 +34,10 @@ assert.equal(manifestCoverage.texts[2].rta_id, "home.preguntas.items.0.question"
 assert.deepEqual(summarizeMappings([{ matches: 1 }, { matches: 0 }, { matches: 2 }]), {
   declared: 3, linked: 1, missing: 1, ambiguous: 1, coverage: 33
 });
+const navigationControl = { min_items: 1, max_items: 6, max_length: 40, allowed_hosts: ["example.com"], allow_hash: true, allow_relative: true };
+assert.equal(validNavigation(navigationControl, [{ id: "about", label: "About", href: "/about", target: "_self", visible: true }]), true);
+assert.equal(validNavigation(navigationControl, [{ id: "bad", label: "Bad", href: "javascript:alert(1)", target: "_self", visible: true }]), false);
+assert.equal(validNavigation(navigationControl, [{ id: "external", label: "External", href: "https://evil.example/", target: "_blank", visible: true }]), false);
 
 const temp = await fs.mkdtemp(path.join(os.tmpdir(), "visual-tuning-kit-"));
 await fs.mkdir(path.join(temp, "src", "tuning"), { recursive: true });
@@ -60,6 +64,7 @@ const clientSource = chunks.join("");
 assert.match(clientSource, /customElements|visual-tuner/);
 assert.match(clientSource, /schema\.groups\.entries/);
 assert.match(clientSource, /related\.push\(control\)/);
+assert.match(clientSource, /renderNavigation/);
 
 const configChunks = [];
 const configResponse = { headers: {}, setHeader(key, value) { this.headers[key] = value; }, end(value) { configChunks.push(value); } };
