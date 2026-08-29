@@ -13,15 +13,13 @@ await fs.copyFile(new URL("../assets/TUNING_VALUES.example.json", import.meta.ur
 
 const plugin = visualTunerDev({ root: temp });
 assert.equal(plugin.apply, "serve");
-assert.match(plugin.transformIndexHtml("<body></body>"), /__visual-tuner\/client\.js/);
-assert.equal(plugin.transformIndexHtml("<main></main>"), "<main></main>");
 assert.equal(tunedValue({ values: { spacing: 12 } }, "spacing", 4), 12);
 assert.equal(tunedText({ values: { title: ["Uno", "Dos"] } }, "title"), "Uno\nDos");
 assert.deepEqual(tunedOrder({ values: { order: ["b", "a"] } }, "order", ["a", "b"]), ["b", "a"]);
 assert.deepEqual(tunedOrder({ values: { order: ["a", "a"] } }, "order", ["a", "b"]), ["a", "b"]);
 
 const middleware = [];
-plugin.configureServer({ middlewares: { use(prefix, handler) { middleware.push({ prefix, handler }); } } });
+plugin.configureServer({ middlewares: { use(prefix, handler) { middleware.push(typeof prefix === "function" ? { prefix: null, handler: prefix } : { prefix, handler }); } } });
 assert.equal(middleware.length, 1);
 const request = { method: "GET", url: "/__visual-tuner/client.js" };
 const chunks = [];

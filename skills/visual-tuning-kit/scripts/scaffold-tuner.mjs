@@ -21,6 +21,7 @@ const main = async () => {
     "tuning.values.json": arg("--values") || path.resolve(here, "../assets/TUNING_VALUES.example.json"),
     "visual-tuner-dev.mjs": path.resolve(here, "visual-tuner-dev.mjs"),
     "visual-tuner-client.js": path.resolve(here, "../assets/visual-tuner-client.js"),
+    "VisualTunerLoader.astro": path.resolve(here, "../assets/VisualTunerLoader.astro"),
     "tuning-runtime.mjs": path.resolve(here, "../assets/tuning-runtime.mjs")
   };
   for (const [filename, source] of Object.entries(sources)) await fs.copyFile(path.resolve(source), path.join(target, filename));
@@ -28,6 +29,7 @@ const main = async () => {
   console.log("Add this Vite plugin to astro.config.mjs:");
   console.log("import visualTunerDev from './src/tuning/visual-tuner-dev.mjs';");
   console.log("export default defineConfig({ vite: { plugins: [visualTunerDev()] } });");
+  console.log("Import VisualTunerLoader from './src/tuning/VisualTunerLoader.astro' and render it once in the base layout.");
   console.log("Open the development site with ?tune=1. The plugin is serve-only and is excluded from production builds.");
 };
 

@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-`visual-tuning-kit` 0.1.0
+`visual-tuning-kit` 0.1.1
 
 - Extracts the project calibrator into a reusable, Shadow DOM-isolated Astro
   development tool.
@@ -10,6 +10,8 @@
 - Saves validated drafts and changesets without granting the agent approval.
 - Keeps the panel and write endpoint out of production; approved values can be
   consumed through runtime helpers or generated CSS custom properties.
+- Loads explicitly through an Astro component guarded by `import.meta.env.DEV`,
+  avoiding unreliable HTML interception in Astro's development renderer.
 
 `brand-dna-scanner` 0.4.0
 

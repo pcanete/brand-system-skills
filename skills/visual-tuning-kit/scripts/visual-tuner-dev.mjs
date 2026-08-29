@@ -25,7 +25,7 @@ export default function visualTunerDev(options={}) {
   let clientPath=options.client?path.resolve(cwd,options.client):localClient;
   const prefix=options.prefix||"/__visual-tuner";
   const matches=(pathname,suffix)=>pathname===suffix||pathname===`${prefix}${suffix}`;
-  return {name:"visual-tuning-kit",apply:"serve",transformIndexHtml(html){return html.replace("</body>",`<script src="${prefix}/client.js"></script></body>`)},configureServer(server){server.middlewares.use(prefix,async(request,response,next)=>{const url=new URL(request.url,"http://localhost");response.setHeader("Cache-Control","no-store");try{
+  return {name:"visual-tuning-kit",apply:"serve",configureServer(server){server.middlewares.use(prefix,async(request,response,next)=>{const url=new URL(request.url,"http://localhost");response.setHeader("Cache-Control","no-store");try{
     if(request.method==="GET"&&matches(url.pathname,"/client.js")){if(!options.client){try{await access(clientPath)}catch{clientPath=bundledClient}}response.setHeader("Content-Type","text/javascript; charset=utf-8");return response.end(await readFile(clientPath,"utf8"))}
     const schema=JSON.parse(await readFile(schemaPath,"utf8"));const approved=JSON.parse(await readFile(valuesPath,"utf8"));
     if(request.method==="GET"&&matches(url.pathname,"/config")){response.setHeader("Content-Type","application/json; charset=utf-8");return response.end(JSON.stringify({schema,approved}))}

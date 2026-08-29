@@ -3,7 +3,7 @@ name: visual-tuning-kit
 description: Adds a bounded, development-only visual tuning layer to an Astro site so users can adjust declared typography, spacing, grid, alignment, content, section order, and behavior variants without becoming a free-form page builder. Produces validated tuning schema, approved values, and an auditable changeset. Use after an initial Astro implementation exists. Not for reference scanning, initial site generation, production CMS editing, or arbitrary drag-and-drop layout.
 license: MIT
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Visual Tuning Kit
@@ -58,9 +58,11 @@ node scripts/scaffold-tuner.mjs --project /path/to/astro-project \
   --schema TUNING_SCHEMA.json --values TUNING_VALUES.json
 ```
 
-5. Add `visualTunerDev()` to `vite.plugins` in `astro.config.mjs`. The copied
-   `scripts/visual-tuner-dev.mjs` has `apply: "serve"`, injects
-   `assets/visual-tuner-client.js`, and therefore exists only in development.
+5. Add `visualTunerDev()` from `scripts/visual-tuner-dev.mjs` to
+   `vite.plugins` in `astro.config.mjs`, import
+   `assets/VisualTunerLoader.astro` into the base layout and render it once.
+   The plugin has `apply: "serve"`; the loader uses `import.meta.env.DEV` to
+   load `assets/visual-tuner-client.js`. Both are absent from production.
 6. Bind production content with `assets/tuning-runtime.mjs`; generate production
    CSS custom properties only from approved values with:
 
