@@ -421,7 +421,7 @@ Cada skill sigue versionado semántico de forma independiente:
 | `brand-manual-builder` | `0.1.0` | Brand Manual Spec `0.1` |
 | `reference-scanner` | `0.8.0` | Web reference schemas `0.4.x`, con rutas de observación resolubles |
 | `reference-lab-builder` | `0.2.1` | Reference Lab Spec `0.1`, con mediciones renderizadas fielmente |
-| `reference-to-astro` | `1.2.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0`, con ceremonia por fidelidad |
+| `reference-to-astro` | `1.3.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0`, con revisión externa trazable |
 | `visual-tuning-kit` | `0.6.0` | Tuning Schema and Values `0.1`, con aplicación transaccional de contenido aprobado |
 | `wordpress-publisher` | `0.2.0` | Plugin de portada, validación y ZIP en un circuito único |
 

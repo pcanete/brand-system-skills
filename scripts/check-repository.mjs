@@ -465,6 +465,10 @@ if (!fs.existsSync(path.join(architectureRoot, "index.html"))) {
 }
 fs.rmSync(architectureRoot, { recursive: true, force: true });
 
+runNode("External visual editor changeset checks failed", [
+  path.join(root, "skills", "reference-to-astro", "scripts", "test-review-changeset.mjs")
+]);
+
 const tuningRoot = path.join(root, "skills", "visual-tuning-kit");
 const tuningValidator = path.join(tuningRoot, "scripts", "validate-tuning.mjs");
 const tuningDeriver = path.join(tuningRoot, "scripts", "derive-schema.mjs");

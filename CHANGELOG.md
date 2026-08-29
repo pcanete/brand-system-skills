@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+`reference-to-astro` 1.3.0
+
+- Incorporates VvvebJs and other free-form HTML editors as external review
+  surfaces without promoting compiled HTML to Astro source.
+- Produces an anchored revision changeset with JavaScript disabled, separates
+  widespread runtime state, flags ambiguous state-like classes and reports
+  missing, added and duplicate review anchors.
+- Accepts separately exported editor CSS and documents the complete
+  `REVISION_PACKAGE` translation and rebuild workflow.
+
 `wordpress-publisher` 0.2.0
 
 - Adds a single fail-fast command for build, export, artifact validation and ZIP

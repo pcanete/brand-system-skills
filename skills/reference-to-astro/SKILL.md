@@ -3,7 +3,7 @@ name: reference-to-astro
 description: Builds a website in Astro from an analyzed reference and an approved SITE_BLUEPRINT that maps client content to evidenced visual, responsive and behavioral patterns. Use when reference contracts and real content must become a verified implementation. Not for inventing a visual direction, scanning the reference, or packaging the result for WordPress.
 license: MIT
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Reference-to-Astro
@@ -71,6 +71,7 @@ at the points named below.
 | `node scripts/audit-assets.mjs` | once supplied media is wired in |
 | `node scripts/visual-qa.mjs` | during QA, once the site serves |
 | `node scripts/build-content-architecture.mjs` | before implementation, to review routes, content mapping and conversion paths |
+| `node scripts/review-changeset.mjs` | after VvvebJs or another external HTML editor exports a revision |
 
 All four accept `--project <dir>` and write their reports under `qa/` in that
 project. Install their dependencies once with `npm install` inside the skill
@@ -271,6 +272,28 @@ Give every user-reviewable content or structural region a stable semantic
 `data-rta-id`. Read `references/stable-review-anchors.md`. These identifiers
 must survive Astro compilation so a later HTML review can describe changes
 without treating compiled HTML as source.
+
+When the user wants free-form visual editing beyond declared tuner controls,
+read `references/external-visual-editor.md`. VvvebJs may edit a copy of the
+compiled page, but its export is review evidence rather than source. Convert it
+to an anchored changeset before touching Astro:
+
+```bash
+node scripts/review-changeset.mjs \
+  --original REVISION_PACKAGE/original/index.html \
+  --edited REVISION_PACKAGE/edited/index.html \
+  --edited-css REVISION_PACKAGE/edited/editor.css \
+  --out REVISION_PACKAGE/REVISION_CHANGESET.json
+```
+
+The comparison runs with page JavaScript disabled, filters broadly distributed
+runtime state, flags single state-like classes for human judgment, and reports
+missing, added or duplicate anchors. It never applies a change. Translate each
+approved entry back to its owning component, content manifest, token or
+blueprint decision, then rebuild and repeat QA.
+
+Run `scripts/test-review-changeset.mjs` after changing the external-editor
+comparison or runtime-state filtering logic.
 
 ## Design tokens
 
@@ -546,6 +569,7 @@ Complete only when:
 - reduced motion is supported where motion exists
 - major STYLE_DNA rules are represented
 - unresolved low-confidence assumptions are documented
+- any external-editor revision has an approved anchored changeset and was translated back into source before rebuilding
 
 ## Final output
 
