@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+`reference-to-astro` 1.0.1 · `visual-tuning-kit` 0.2.1
+
+- Adds stable semantic `data-rta-id` anchors to the structural build and tuning
+  contracts so compiled HTML revisions can identify content and regions.
+- Keeps edited compiled HTML as review evidence only; approved changes must be
+  translated back into Astro components, content contracts, tokens and the
+  blueprint before rebuilding.
+
 `visual-tuning-kit` 0.2.0
 
 - Extracts the project calibrator into a reusable, Shadow DOM-isolated Astro

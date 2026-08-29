@@ -408,8 +408,8 @@ Cada skill sigue versionado semántico de forma independiente:
 | `brand-manual-builder` | `0.1.0` | Brand Manual Spec `0.1` |
 | `reference-scanner` | `0.7.0` | Web reference schemas `0.4.x` |
 | `reference-lab-builder` | `0.1.0` | Reference Lab Spec `0.1` |
-| `reference-to-astro` | `1.0.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0` |
-| `visual-tuning-kit` | `0.2.0` | Tuning Schema and Values `0.1` |
+| `reference-to-astro` | `1.0.1` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0` |
+| `visual-tuning-kit` | `0.2.1` | Tuning Schema and Values `0.1` |
 
 Para actualizar una copia del repositorio:
 

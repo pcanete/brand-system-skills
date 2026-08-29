@@ -3,7 +3,7 @@ name: visual-tuning-kit
 description: Adds a bounded, development-only visual tuning layer to an Astro site so users can adjust declared typography, spacing, grid, alignment, content, section order, and behavior variants without becoming a free-form page builder. Produces validated tuning schema, approved values, and an auditable changeset. Use after an initial Astro implementation exists. Not for reference scanning, initial site generation, production CMS editing, or arbitrary drag-and-drop layout.
 license: MIT
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
 ---
 
 # Visual Tuning Kit
@@ -78,6 +78,9 @@ node scripts/build-approved-css.mjs --schema TUNING_SCHEMA.json \
    its control, and double-click declared text to edit it inline. Image controls
    list only files from their declared `public/` folder. Section order changes
    only direct children inside the declared container id.
+   Give each declared preview target both its `data-tune-id` and a stable
+   semantic `data-rta-id`. The latter survives compilation for later review
+   packages; it does not make compiled HTML the source of truth.
 8. Saving creates a complete validated `TUNING_VALUES.json` and an auditable
    `TUNING_CHANGESET.json`.
 9. Production consumes approved values but never ships the tuner panel or save endpoint.
@@ -99,6 +102,7 @@ The agent must not mark values approved on the user's behalf.
 - Every value matches a declared control.
 - Every control has a bounded target and rationale.
 - Text controls map to known content paths.
+- Every declared preview target has a unique, stable `data-rta-id`.
 - Image controls map to known content paths and a folder contained by `public/`.
 - Order controls list every allowed section exactly once.
 - The tuner and save endpoint are absent from production output.

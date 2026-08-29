@@ -3,7 +3,7 @@ name: reference-to-astro
 description: Builds a website in Astro from an analyzed reference and an approved SITE_BLUEPRINT that maps client content to evidenced visual, responsive and behavioral patterns. Use when reference contracts and real content must become a verified implementation. Not for inventing a visual direction, scanning the reference, or packaging the result for WordPress.
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Reference-to-Astro
@@ -261,6 +261,11 @@ Do not fragment every wrapper into a component.
 
 Read `references/component-strategy.md`.
 
+Give every user-reviewable content or structural region a stable semantic
+`data-rta-id`. Read `references/stable-review-anchors.md`. These identifiers
+must survive Astro compilation so a later HTML review can describe changes
+without treating compiled HTML as source.
+
 ## Design tokens
 
 Before detailed construction derive reusable implementation tokens from
@@ -340,6 +345,9 @@ Implement:
 - spacing
 - major sections
 - supplied media
+
+Instrument stable review anchors during this phase, before motion and visual
+QA. Do not derive them from generated CSS classes or runtime DOM position.
 
 The static site should already resemble the reference before sophisticated
 motion is added.
