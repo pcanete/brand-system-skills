@@ -182,7 +182,9 @@ Su meta no es entregar una maqueta estática, sino una base web mantenible y ver
 Extrae el calibrador como una capa reutilizable de desarrollo. Expone solamente
 controles declarados y acotados para tipografía, espaciado, grilla, alineación,
 texto, variantes y orden de secciones. Guarda borradores auditables, exige
-aprobación humana y no se incluye en el build de producción.
+aprobación humana y no se incluye en el build de producción. El contenido
+aprobado se aplica de forma transaccional al manifiesto canónico: si una ruta o
+la navegación completa falla, no escribe cambios parciales.
 
 ## Flujo completo de trabajo
 
@@ -420,7 +422,7 @@ Cada skill sigue versionado semántico de forma independiente:
 | `reference-scanner` | `0.8.0` | Web reference schemas `0.4.x`, con rutas de observación resolubles |
 | `reference-lab-builder` | `0.2.1` | Reference Lab Spec `0.1`, con mediciones renderizadas fielmente |
 | `reference-to-astro` | `1.2.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0`, con ceremonia por fidelidad |
-| `visual-tuning-kit` | `0.5.1` | Tuning Schema and Values `0.1`, incluida navegación validada y panel móvil en escritorio |
+| `visual-tuning-kit` | `0.6.0` | Tuning Schema and Values `0.1`, con aplicación transaccional de contenido aprobado |
 | `wordpress-publisher` | `0.1.0` | Plugin de portada y reporte de exportación |
 
 Para actualizar una copia del repositorio:

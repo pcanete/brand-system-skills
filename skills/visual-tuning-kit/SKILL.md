@@ -3,7 +3,7 @@ name: visual-tuning-kit
 description: Adds a bounded, development-only visual tuning layer to an Astro site so users can adjust declared typography, spacing, grid, alignment, content, section order, and behavior variants without becoming a free-form page builder. Produces validated tuning schema, approved values, and an auditable changeset. Use after an initial Astro implementation exists. Not for reference scanning, initial site generation, production CMS editing, or arbitrary drag-and-drop layout.
 license: MIT
 metadata:
-  version: "0.5.1"
+  version: "0.6.0"
 ---
 
 # Visual Tuning Kit
@@ -77,7 +77,7 @@ node scripts/scaffold-tuner.mjs --project /path/to/astro-project \
    `assets/VisualTunerLoader.astro` into the base layout and render it once.
    The plugin has `apply: "serve"`; the loader uses `import.meta.env.DEV` to
    load `assets/visual-tuner-client.js`. Both are absent from production.
-6. Bind production content with `assets/tuning-runtime.mjs`; generate production
+6. Bind preview content with `assets/tuning-runtime.mjs`; generate production
    CSS custom properties only from approved values with:
 
 ```bash
@@ -119,17 +119,37 @@ node scripts/map-content.mjs --manifest CONTENT_MANIFEST.json \
    together.
 8. Saving creates a complete validated `TUNING_VALUES.json` and an auditable
    `TUNING_CHANGESET.json`.
-9. Production consumes approved values but never ships the tuner panel or save endpoint.
+9. After the user approves the proposal, apply every declared content control
+   transactionally to the canonical manifest:
+
+```bash
+node scripts/apply-content.mjs \
+  --schema TUNING_SCHEMA.json \
+  --values TUNING_VALUES.json \
+  --content CONTENT_MANIFEST.json \
+  --out CONTENT_MANIFEST.json
+```
+
+   Use `--dry-run` first when reviewing a new project. The command requires
+   `status: approved`, `approved_by` and `approved_at`; resolves object keys,
+   numeric array members and array members addressed by stable `id`; validates
+   the complete navigation value; and writes nothing if any content path or
+   value fails. Re-running the same approved proposal is idempotent.
+10. Production reads content from `CONTENT_MANIFEST.json`, and approved visual
+    tokens from the generated CSS or other explicit source bindings. It never
+    ships the tuner panel, save endpoint, or a second competing copy of content.
 
 Run `scripts/test-runtime.mjs` when changing the development plugin, client or
 production helpers.
 
 ## Approval and source of truth
 
-`TUNING_VALUES.json` is data, not an invisible code mutation. The project must
-bind CSS controls through custom properties and content controls through stable
-ids or content paths. Approved values may be folded back into source later, but
-that is a separate reviewed change.
+`TUNING_VALUES.json` is a proposal and approval record, not a second production
+CMS. The project must bind CSS controls through custom properties and content
+controls through stable ids or content paths. Once approved, content controls
+are folded transactionally into `CONTENT_MANIFEST.json`; the values file and
+changeset remain audit evidence. Structural or component changes still require
+a separate reviewed source change.
 
 The agent must not mark values approved on the user's behalf.
 
@@ -144,3 +164,4 @@ The agent must not mark values approved on the user's behalf.
 - The tuner and save endpoint are absent from production output.
 - Desktop and mobile values are explicit where behavior differs.
 - The user approved the final values.
+- Approved content was applied without issues and a second application produces no diff.

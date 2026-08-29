@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+`visual-tuning-kit` 0.6.0
+
+- Applies human-approved text, line, image, section-order and navigation
+  controls transactionally to the canonical content manifest.
+- Resolves object keys plus numeric or stable-id array members, enabling FAQ
+  and repeated-content editing without treating compiled HTML as source.
+- Revalidates the complete navigation contract, rolls back every pending
+  change on any failure and makes repeat application idempotent.
+
 `reference-scanner` 0.8.0 · `reference-lab-builder` 0.2.1 · `reference-to-astro` 1.2.0
 
 - Requires every observation path to resolve to the finding it indexes,
