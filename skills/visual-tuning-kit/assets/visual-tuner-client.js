@@ -20,12 +20,12 @@
     const ui = spanish ? {
       all: "Ver todo", intro: "Hacé clic en un elemento marcado. Doble clic para editar texto directamente.",
       selected: "Seleccionado", chooseImage: "Elegí una imagen.", inline: "Doble clic para editar en la página.",
-      noImages: "No hay imágenes disponibles.", addNav: "Agregar opción", removeNav: "Eliminar", visibleNav: "Visible", newNav: "Nueva opción", reset: "Reset", copy: "Copiar JSON", save: "Guardar borrador",
+      noImages: "No hay imágenes disponibles.", addNav: "Agregar opción", removeNav: "Eliminar", visibleNav: "Visible", newNav: "Nueva opción", move: "Mover", reset: "Reset", copy: "Copiar JSON", save: "Guardar borrador",
       copied: "Copiado.", saved: "Borrador guardado", changes: "cambios", saveFailed: "No se pudo guardar.",
     } : {
       all: "Show all", intro: "Click a marked element. Double-click declared text to edit it inline.",
       selected: "Selected", chooseImage: "Choose an image.", inline: "Double-click to edit on the page.",
-      noImages: "No images available.", addNav: "Add item", removeNav: "Remove", visibleNav: "Visible", newNav: "New item", reset: "Reset", copy: "Copy JSON", save: "Save draft",
+      noImages: "No images available.", addNav: "Add item", removeNav: "Remove", visibleNav: "Visible", newNav: "New item", move: "Move", reset: "Reset", copy: "Copy JSON", save: "Save draft",
       copied: "Copied.", saved: "Draft saved", changes: "changes", saveFailed: "Save failed.",
     };
     const controlsByPreview = new Map();
@@ -37,6 +37,7 @@
       controlsByPreview.set(previewId, related);
     }
     const storageKey = `visual-tuner:${schema.id}`;
+    const positionStorageKey = `visual-tuner-position:${schema.id}`;
     const stored = (() => {
       try { return JSON.parse(localStorage.getItem(storageKey) || "{}"); }
       catch { return {}; }
@@ -61,7 +62,7 @@
     const root = host.attachShadow({ mode: "open" });
     root.innerHTML = `<style>
       :host{position:fixed;z-index:2147483000;top:12px;right:12px;width:min(390px,calc(100vw - 24px));max-height:calc(100svh - 24px);overflow:auto;background:#111;color:#f3f3f3;border:1px solid #444;box-shadow:0 18px 60px #0008;font:11px/1.35 ui-monospace,monospace}
-      *{box-sizing:border-box}header,footer{position:sticky;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;background:#111;border-bottom:1px solid #3a3a3a}header{top:0}footer{bottom:0;border-top:1px solid #3a3a3a;border-bottom:0;flex-wrap:wrap}.toolbar{display:flex;align-items:center;gap:6px}.intro{margin:0;padding:10px 12px;background:#1a1a1a;color:#ddd;border-bottom:1px solid #333}.selection{color:#ff7a63}.group{border-bottom:1px solid #333}.group>summary{display:block;padding:9px 30px 9px 12px;background:#202020;color:#bbb;text-transform:uppercase;cursor:pointer;list-style:none;position:relative}.group>summary::-webkit-details-marker{display:none}.group>summary::after{content:'+';position:absolute;right:12px}.group[open]>summary::after{content:'−'}.control{display:grid;gap:7px;padding:10px 12px;border-top:1px solid #292929}.control[hidden],.group[hidden]{display:none}.label{display:flex;gap:6px}.label output{margin-left:auto;color:#9ee7a7}button,select,input,textarea{font:inherit;color:inherit;background:#171717;border:1px solid #4b4b4b}button{min-height:32px;padding:0 9px;cursor:pointer}button:hover{border-color:#888}button.primary{background:#ff3d1f;border-color:#ff3d1f;color:#fff}select,textarea,input[type=text],input[type=url]{width:100%;min-height:34px;padding:6px}textarea{resize:vertical}input[type=range]{width:100%;accent-color:#ff3d1f}.status{min-height:1.3em;padding:0 12px 10px;color:#9ee7a7}.hint{color:#929292;font-size:10px}.order{display:grid;gap:4px}.navigation-editor{display:grid;gap:8px}.nav-item{display:grid;gap:6px;padding:8px;border:1px solid #3a3a3a;background:#171717}.nav-item__fields{display:grid;grid-template-columns:1fr 1.5fr;gap:5px}.nav-item__actions{display:flex;align-items:center;gap:4px}.nav-item__actions label{display:flex;align-items:center;gap:4px;margin-right:auto}.nav-item__actions button{min-height:28px}.asset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:240px;overflow:auto}.asset{position:relative;min-height:78px;padding:0;overflow:hidden}.asset img{display:block;width:100%;height:76px;object-fit:cover}.asset[data-selected=true]{border:2px solid #ff3d1f}.asset span{position:absolute;right:0;bottom:0;left:0;padding:3px;background:#000b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.empty{padding:12px;color:#aaa}@media(max-width:600px){:host{top:6px;right:6px;left:6px;width:auto;max-height:calc(100svh - 12px)}.nav-item__fields{grid-template-columns:1fr}}
+      *{box-sizing:border-box}header,footer{position:sticky;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;background:#111;border-bottom:1px solid #3a3a3a}header{top:0;cursor:grab;user-select:none;touch-action:none}header[data-dragging=true]{cursor:grabbing}header button,header input,header select,header textarea{cursor:pointer}footer{bottom:0;border-top:1px solid #3a3a3a;border-bottom:0;flex-wrap:wrap}.toolbar{display:flex;align-items:center;gap:6px}.intro{margin:0;padding:10px 12px;background:#1a1a1a;color:#ddd;border-bottom:1px solid #333}.selection{color:#ff7a63}.group{border-bottom:1px solid #333}.group>summary{display:block;padding:9px 30px 9px 12px;background:#202020;color:#bbb;text-transform:uppercase;cursor:pointer;list-style:none;position:relative}.group>summary::-webkit-details-marker{display:none}.group>summary::after{content:'+';position:absolute;right:12px}.group[open]>summary::after{content:'−'}.control{display:grid;gap:7px;padding:10px 12px;border-top:1px solid #292929}.control[hidden],.group[hidden]{display:none}.label{display:flex;gap:6px}.label output{margin-left:auto;color:#9ee7a7}button,select,input,textarea{font:inherit;color:inherit;background:#171717;border:1px solid #4b4b4b}button{min-height:32px;padding:0 9px;cursor:pointer}button:hover{border-color:#888}button.primary{background:#ff3d1f;border-color:#ff3d1f;color:#fff}select,textarea,input[type=text],input[type=url]{width:100%;min-height:34px;padding:6px}textarea{resize:vertical}input[type=range]{width:100%;accent-color:#ff3d1f}.status{min-height:1.3em;padding:0 12px 10px;color:#9ee7a7}.hint{color:#929292;font-size:10px}.move-hint{white-space:nowrap}.order{display:grid;gap:4px}.navigation-editor{display:grid;gap:8px}.nav-item{display:grid;gap:6px;padding:8px;border:1px solid #3a3a3a;background:#171717}.nav-item__fields{display:grid;grid-template-columns:1fr 1.5fr;gap:5px}.nav-item__actions{display:flex;align-items:center;gap:4px}.nav-item__actions label{display:flex;align-items:center;gap:4px;margin-right:auto}.nav-item__actions button{min-height:28px}.asset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:240px;overflow:auto}.asset{position:relative;min-height:78px;padding:0;overflow:hidden}.asset img{display:block;width:100%;height:76px;object-fit:cover}.asset[data-selected=true]{border:2px solid #ff3d1f}.asset span{position:absolute;right:0;bottom:0;left:0;padding:3px;background:#000b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.empty{padding:12px;color:#aaa}@media(max-width:600px){:host{top:6px;right:6px;left:6px;width:auto;max-height:calc(100svh - 12px)}header{cursor:default;touch-action:auto}.move-hint{display:none}.nav-item__fields{grid-template-columns:1fr}}
     </style>`;
 
     const panel = create("div");
@@ -70,7 +71,7 @@
     const toolbar = create("div", undefined, "toolbar");
     const showAll = create("button", ui.all);
     showAll.type = "button";
-    toolbar.append(showAll, create("span", "DEV", "hint"));
+    toolbar.append(showAll, create("span", `↕ ${ui.move}`, "hint move-hint"), create("span", "DEV", "hint"));
     header.append(title, toolbar);
     panel.append(header);
     const intro = create("p", ui.intro, "intro");
@@ -341,7 +342,7 @@
     const reset = create("button", ui.reset);
     const copy = create("button", ui.copy);
     const save = create("button", ui.save, "primary");
-    reset.onclick = () => { localStorage.removeItem(storageKey); location.reload(); };
+    reset.onclick = () => { localStorage.removeItem(storageKey); localStorage.removeItem(positionStorageKey); location.reload(); };
     copy.onclick = async () => { await navigator.clipboard.writeText(JSON.stringify({ schema: schema.id, values }, null, 2)); status.textContent = ui.copied; };
     save.onclick = async () => {
       const result = await fetch(`${prefix}/save`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ schema: schema.id, values }) });
@@ -352,6 +353,65 @@
     panel.append(footer, status);
     root.append(panel);
     document.body.append(host);
+
+    const isCompactViewport = () => window.matchMedia("(max-width: 600px)").matches;
+    const clampPosition = (left, top) => {
+      const margin = 6;
+      const rect = host.getBoundingClientRect();
+      return {
+        left: Math.min(Math.max(margin, left), Math.max(margin, window.innerWidth - rect.width - margin)),
+        top: Math.min(Math.max(margin, top), Math.max(margin, window.innerHeight - rect.height - margin)),
+      };
+    };
+    const applyPosition = (position) => {
+      if (!position || isCompactViewport()) return;
+      const next = clampPosition(Number(position.left), Number(position.top));
+      if (!Number.isFinite(next.left) || !Number.isFinite(next.top)) return;
+      host.style.left = `${next.left}px`;
+      host.style.top = `${next.top}px`;
+      host.style.right = "auto";
+    };
+    const readStoredPosition = () => {
+      try { return JSON.parse(localStorage.getItem(positionStorageKey) || "null"); }
+      catch { return null; }
+    };
+    let dragState = null;
+    const finishDrag = (event) => {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      const rect = host.getBoundingClientRect();
+      localStorage.setItem(positionStorageKey, JSON.stringify({ left: rect.left, top: rect.top }));
+      header.dataset.dragging = "false";
+      if (header.hasPointerCapture(event.pointerId)) header.releasePointerCapture(event.pointerId);
+      dragState = null;
+    };
+    header.addEventListener("pointerdown", (event) => {
+      if (isCompactViewport() || event.button !== 0) return;
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest("button,input,select,textarea,a")) return;
+      const rect = host.getBoundingClientRect();
+      dragState = { pointerId: event.pointerId, offsetX: event.clientX - rect.left, offsetY: event.clientY - rect.top };
+      header.dataset.dragging = "true";
+      header.setPointerCapture(event.pointerId);
+      event.preventDefault();
+    });
+    header.addEventListener("pointermove", (event) => {
+      if (!dragState || event.pointerId !== dragState.pointerId) return;
+      applyPosition({ left: event.clientX - dragState.offsetX, top: event.clientY - dragState.offsetY });
+      const rect = host.getBoundingClientRect();
+      localStorage.setItem(positionStorageKey, JSON.stringify({ left: rect.left, top: rect.top }));
+    });
+    header.addEventListener("pointerup", finishDrag);
+    header.addEventListener("pointercancel", finishDrag);
+    window.addEventListener("resize", () => {
+      if (isCompactViewport()) {
+        host.style.removeProperty("left");
+        host.style.removeProperty("top");
+        host.style.removeProperty("right");
+        return;
+      }
+      applyPosition(readStoredPosition() || { left: host.getBoundingClientRect().left, top: host.getBoundingClientRect().top });
+    });
+    applyPosition(readStoredPosition());
 
     document.addEventListener("click", (event) => {
       const element = event.target instanceof Element ? event.target.closest("[data-tune-id]") : null;

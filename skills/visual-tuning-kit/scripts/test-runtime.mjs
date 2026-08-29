@@ -65,6 +65,9 @@ assert.match(clientSource, /customElements|visual-tuner/);
 assert.match(clientSource, /schema\.groups\.entries/);
 assert.match(clientSource, /related\.push\(control\)/);
 assert.match(clientSource, /renderNavigation/);
+assert.match(clientSource, /positionStorageKey/);
+assert.match(clientSource, /setPointerCapture/);
+assert.match(clientSource, /data-dragging/);
 
 const configChunks = [];
 const configResponse = { headers: {}, setHeader(key, value) { this.headers[key] = value; }, end(value) { configChunks.push(value); } };

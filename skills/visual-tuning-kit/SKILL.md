@@ -3,7 +3,7 @@ name: visual-tuning-kit
 description: Adds a bounded, development-only visual tuning layer to an Astro site so users can adjust declared typography, spacing, grid, alignment, content, section order, and behavior variants without becoming a free-form page builder. Produces validated tuning schema, approved values, and an auditable changeset. Use after an initial Astro implementation exists. Not for reference scanning, initial site generation, production CMS editing, or arbitrary drag-and-drop layout.
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 # Visual Tuning Kit
@@ -102,6 +102,9 @@ node scripts/map-content.mjs --manifest CONTENT_MANIFEST.json \
 
 7. Open the local site with `?tune=1` and experiment. Unapproved experiments
    stay in local storage.
+   On desktop, drag the tuner by its header to uncover the page beneath it. Its
+   viewport-bounded position is remembered locally; Reset also restores the
+   default panel position. The panel remains fixed on narrow mobile viewports.
    Elements with `data-tune-id` become contextual targets: click one to isolate
    its control, and double-click declared text to edit it inline. Image controls
    list only files from their declared `public/` folder. Section order changes
