@@ -27,7 +27,10 @@ const request = { method: "GET", url: "/__visual-tuner/client.js" };
 const chunks = [];
 const response = { headers: {}, setHeader(key, value) { this.headers[key] = value; }, end(value) { chunks.push(value); } };
 await middleware[0].handler(request, response, () => {});
-assert.match(chunks.join(""), /customElements|visual-tuner/);
+const clientSource = chunks.join("");
+assert.match(clientSource, /customElements|visual-tuner/);
+assert.match(clientSource, /schema\.groups\.entries/);
+assert.match(clientSource, /related\.push\(control\)/);
 
 const configChunks = [];
 const configResponse = { headers: {}, setHeader(key, value) { this.headers[key] = value; }, end(value) { configChunks.push(value); } };

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+`visual-tuning-kit` 0.3.0
+
+- Adds `ch` as a bounded range unit for typographic measure controls such as
+  title width and editorial line breaking.
+- Keeps large tuning schemas navigable with collapsible groups that open
+  automatically when an element is selected contextually.
+- Lets several bounded controls share a preview target so contextual selection
+  reveals content and relevant composition controls together.
+
 `reference-to-astro` 1.0.1 · `visual-tuning-kit` 0.2.1
 
 - Adds stable semantic `data-rta-id` anchors to the structural build and tuning

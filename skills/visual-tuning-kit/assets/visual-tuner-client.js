@@ -28,11 +28,14 @@
       noImages: "No images available.", reset: "Reset", copy: "Copy JSON", save: "Save draft",
       copied: "Copied.", saved: "Draft saved", changes: "changes", saveFailed: "Save failed.",
     };
-    const controlsByPreview = new Map(
-      controls
-        .filter((control) => control.target?.preview_id)
-        .map((control) => [control.target.preview_id, control]),
-    );
+    const controlsByPreview = new Map();
+    for (const control of controls) {
+      const previewId = control.target?.preview_id;
+      if (!previewId) continue;
+      const related = controlsByPreview.get(previewId) || [];
+      related.push(control);
+      controlsByPreview.set(previewId, related);
+    }
     const storageKey = `visual-tuner:${schema.id}`;
     const stored = (() => {
       try { return JSON.parse(localStorage.getItem(storageKey) || "{}"); }
@@ -58,7 +61,7 @@
     const root = host.attachShadow({ mode: "open" });
     root.innerHTML = `<style>
       :host{position:fixed;z-index:2147483000;top:12px;right:12px;width:min(390px,calc(100vw - 24px));max-height:calc(100svh - 24px);overflow:auto;background:#111;color:#f3f3f3;border:1px solid #444;box-shadow:0 18px 60px #0008;font:11px/1.35 ui-monospace,monospace}
-      *{box-sizing:border-box}header,footer{position:sticky;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;background:#111;border-bottom:1px solid #3a3a3a}header{top:0}footer{bottom:0;border-top:1px solid #3a3a3a;border-bottom:0;flex-wrap:wrap}.toolbar{display:flex;align-items:center;gap:6px}.intro{margin:0;padding:10px 12px;background:#1a1a1a;color:#ddd;border-bottom:1px solid #333}.selection{color:#ff7a63}.group{border-bottom:1px solid #333}.group>strong{display:block;padding:9px 12px;background:#202020;color:#bbb;text-transform:uppercase}.control{display:grid;gap:7px;padding:10px 12px;border-top:1px solid #292929}.control[hidden],.group[hidden]{display:none}.label{display:flex;gap:6px}.label output{margin-left:auto;color:#9ee7a7}button,select,input,textarea{font:inherit;color:inherit;background:#171717;border:1px solid #4b4b4b}button{min-height:32px;padding:0 9px;cursor:pointer}button:hover{border-color:#888}button.primary{background:#ff3d1f;border-color:#ff3d1f;color:#fff}select,textarea,input[type=text]{width:100%;min-height:34px;padding:6px}textarea{resize:vertical}input[type=range]{width:100%;accent-color:#ff3d1f}.status{min-height:1.3em;padding:0 12px 10px;color:#9ee7a7}.hint{color:#929292;font-size:10px}.order{display:grid;gap:4px}.asset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:240px;overflow:auto}.asset{position:relative;min-height:78px;padding:0;overflow:hidden}.asset img{display:block;width:100%;height:76px;object-fit:cover}.asset[data-selected=true]{border:2px solid #ff3d1f}.asset span{position:absolute;right:0;bottom:0;left:0;padding:3px;background:#000b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.empty{padding:12px;color:#aaa}@media(max-width:600px){:host{top:6px;right:6px;left:6px;width:auto;max-height:calc(100svh - 12px)}}
+      *{box-sizing:border-box}header,footer{position:sticky;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;background:#111;border-bottom:1px solid #3a3a3a}header{top:0}footer{bottom:0;border-top:1px solid #3a3a3a;border-bottom:0;flex-wrap:wrap}.toolbar{display:flex;align-items:center;gap:6px}.intro{margin:0;padding:10px 12px;background:#1a1a1a;color:#ddd;border-bottom:1px solid #333}.selection{color:#ff7a63}.group{border-bottom:1px solid #333}.group>summary{display:block;padding:9px 30px 9px 12px;background:#202020;color:#bbb;text-transform:uppercase;cursor:pointer;list-style:none;position:relative}.group>summary::-webkit-details-marker{display:none}.group>summary::after{content:'+';position:absolute;right:12px}.group[open]>summary::after{content:'−'}.control{display:grid;gap:7px;padding:10px 12px;border-top:1px solid #292929}.control[hidden],.group[hidden]{display:none}.label{display:flex;gap:6px}.label output{margin-left:auto;color:#9ee7a7}button,select,input,textarea{font:inherit;color:inherit;background:#171717;border:1px solid #4b4b4b}button{min-height:32px;padding:0 9px;cursor:pointer}button:hover{border-color:#888}button.primary{background:#ff3d1f;border-color:#ff3d1f;color:#fff}select,textarea,input[type=text]{width:100%;min-height:34px;padding:6px}textarea{resize:vertical}input[type=range]{width:100%;accent-color:#ff3d1f}.status{min-height:1.3em;padding:0 12px 10px;color:#9ee7a7}.hint{color:#929292;font-size:10px}.order{display:grid;gap:4px}.asset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-height:240px;overflow:auto}.asset{position:relative;min-height:78px;padding:0;overflow:hidden}.asset img{display:block;width:100%;height:76px;object-fit:cover}.asset[data-selected=true]{border:2px solid #ff3d1f}.asset span{position:absolute;right:0;bottom:0;left:0;padding:3px;background:#000b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.empty{padding:12px;color:#aaa}@media(max-width:600px){:host{top:6px;right:6px;left:6px;width:auto;max-height:calc(100svh - 12px)}}
     </style>`;
 
     const panel = create("div");
@@ -108,31 +111,36 @@
       }
     };
 
-    const selectControl = (control, element) => {
+    const selectControls = (selectedControls, element) => {
+      const selectedIds = new Set(selectedControls.map((control) => control.id));
+      const active = selectedIds.size > 0;
       selectedElement?.removeAttribute("data-tune-selected");
       selectedElement = element || null;
       selectedElement?.setAttribute("data-tune-selected", "true");
       for (const [id, node] of controlNodes) {
-        const hidden = Boolean(control) && id !== control.id;
+        const hidden = active && !selectedIds.has(id);
         node.hidden = hidden;
         node.toggleAttribute("inert", hidden);
         node.setAttribute("aria-hidden", String(hidden));
       }
       root.querySelectorAll(".group").forEach((group) => {
-        group.hidden = Boolean(control) && !group.querySelector(".control:not([hidden])");
+        group.hidden = active && !group.querySelector(".control:not([hidden])");
+        if (active && !group.hidden) group.open = true;
       });
-      intro.textContent = control
-        ? `${ui.selected}: ${control.label}. ${control.kind === "image" ? ui.chooseImage : ui.inline}`
+      const primary = selectedControls[0];
+      intro.textContent = active
+        ? `${ui.selected}: ${selectedControls.map((control) => control.label).join(" · ")}. ${primary.kind === "image" ? ui.chooseImage : ui.inline}`
         : ui.intro;
-      intro.classList.toggle("selection", Boolean(control));
-      controlNodes.get(control?.id)?.scrollIntoView({ block: "nearest" });
+      intro.classList.toggle("selection", active);
+      controlNodes.get(primary?.id)?.scrollIntoView({ block: "nearest" });
     };
 
-    showAll.onclick = () => selectControl(null, null);
+    showAll.onclick = () => selectControls([], null);
 
-    for (const group of schema.groups) {
-      const section = create("section", undefined, "group");
-      section.append(create("strong", group.label));
+    for (const [groupIndex, group] of schema.groups.entries()) {
+      const section = create("details", undefined, "group");
+      section.open = groupIndex === 0;
+      section.append(create("summary", group.label));
       for (const control of group.controls) {
         const wrap = create(control.kind === "section-order" ? "div" : "label", undefined, "control");
         controlNodes.set(control.id, wrap);
@@ -267,17 +275,18 @@
     document.addEventListener("click", (event) => {
       const element = event.target instanceof Element ? event.target.closest("[data-tune-id]") : null;
       if (!element) return;
-      const control = controlsByPreview.get(element.getAttribute("data-tune-id"));
-      if (!control) return;
+      const related = controlsByPreview.get(element.getAttribute("data-tune-id"));
+      if (!related?.length) return;
       event.preventDefault();
       event.stopPropagation();
-      selectControl(control, element);
+      selectControls(related, element);
     }, true);
 
     document.addEventListener("dblclick", (event) => {
       const element = event.target instanceof Element ? event.target.closest("[data-tune-id]") : null;
       if (!element) return;
-      const control = controlsByPreview.get(element.getAttribute("data-tune-id"));
+      const control = controlsByPreview.get(element.getAttribute("data-tune-id"))
+        ?.find((candidate) => ["text", "text-lines"].includes(candidate.kind));
       if (!control || !["text", "text-lines"].includes(control.kind)) return;
       event.preventDefault();
       event.stopPropagation();
