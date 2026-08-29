@@ -34,7 +34,7 @@
       "required": ["id", "kind", "label", "rationale", "default", "target"],
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
-        "kind": { "enum": ["range", "select", "boolean", "text", "text-lines", "section-order"] },
+        "kind": { "enum": ["range", "select", "boolean", "text", "text-lines", "image", "section-order"] },
         "label": { "type": "string", "minLength": 1 },
         "rationale": { "type": "string", "minLength": 1 },
         "default": {},
@@ -45,7 +45,11 @@
             "content_path": { "type": "string", "minLength": 1 },
             "preview_id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
             "class_name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
-            "event_name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[a-z][a-z0-9-]*$" }
+            "event_name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*:[a-z][a-z0-9-]*$" },
+            "render": { "enum": ["lines", "paragraphs"] },
+            "container": { "type": "string", "pattern": "^#[a-z][a-z0-9-]*$" },
+            "asset_folder": { "type": "string", "pattern": "^public(?:/[A-Za-z0-9._-]+)+$" },
+            "public_base": { "type": "string", "pattern": "^/(?:[A-Za-z0-9._-]+/)*[A-Za-z0-9._-]+$" }
           },
           "minProperties": 1
         },
@@ -57,4 +61,3 @@
     }
   }
 }
-

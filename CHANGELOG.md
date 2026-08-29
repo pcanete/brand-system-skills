@@ -2,11 +2,16 @@
 
 ## Unreleased
 
-`visual-tuning-kit` 0.1.1
+`visual-tuning-kit` 0.2.0
 
 - Extracts the project calibrator into a reusable, Shadow DOM-isolated Astro
   development tool.
 - Adds bounded controls for tokens, text, variants and fixed-set section order.
+- Adds contextual element selection, inline editing for declared text, and
+  image choice restricted to authored folders inside `public/`.
+- Applies section order only within an explicit container id and keeps links,
+  arbitrary CSS, filesystem browsing and free dragging outside the editor.
+- Adapts the editor interface to Spanish or English from the document language.
 - Saves validated drafts and changesets without granting the agent approval.
 - Keeps the panel and write endpoint out of production; approved values can be
   consumed through runtime helpers or generated CSS custom properties.

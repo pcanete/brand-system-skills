@@ -3,7 +3,7 @@ name: visual-tuning-kit
 description: Adds a bounded, development-only visual tuning layer to an Astro site so users can adjust declared typography, spacing, grid, alignment, content, section order, and behavior variants without becoming a free-form page builder. Produces validated tuning schema, approved values, and an auditable changeset. Use after an initial Astro implementation exists. Not for reference scanning, initial site generation, production CMS editing, or arbitrary drag-and-drop layout.
 license: MIT
 metadata:
-  version: "0.1.1"
+  version: "0.2.0"
 ---
 
 # Visual Tuning Kit
@@ -33,6 +33,7 @@ Expose only deliberate controls:
 - enumerated variants;
 - boolean inspection or behavior switches;
 - text and line breaks mapped to a content path;
+- images chosen from a declared folder inside `public/`;
 - section order chosen from a fixed set;
 - grid span, alignment and bounded offsets represented as tokens or enums.
 
@@ -73,6 +74,10 @@ node scripts/build-approved-css.mjs --schema TUNING_SCHEMA.json \
 
 7. Open the local site with `?tune=1` and experiment. Unapproved experiments
    stay in local storage.
+   Elements with `data-tune-id` become contextual targets: click one to isolate
+   its control, and double-click declared text to edit it inline. Image controls
+   list only files from their declared `public/` folder. Section order changes
+   only direct children inside the declared container id.
 8. Saving creates a complete validated `TUNING_VALUES.json` and an auditable
    `TUNING_CHANGESET.json`.
 9. Production consumes approved values but never ships the tuner panel or save endpoint.
@@ -94,6 +99,7 @@ The agent must not mark values approved on the user's behalf.
 - Every value matches a declared control.
 - Every control has a bounded target and rationale.
 - Text controls map to known content paths.
+- Image controls map to known content paths and a folder contained by `public/`.
 - Order controls list every allowed section exactly once.
 - The tuner and save endpoint are absent from production output.
 - Desktop and mobile values are explicit where behavior differs.

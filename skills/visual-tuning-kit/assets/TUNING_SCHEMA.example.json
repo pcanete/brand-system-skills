@@ -39,8 +39,21 @@
           "label": "Headline lines",
           "rationale": "Review line breaks while preserving the approved message.",
           "default": ["A precise", "editorial statement"],
-          "target": { "content_path": "pages.home.sections.hero.heading", "preview_id": "hero-title" },
+          "target": { "content_path": "pages.home.sections.hero.heading", "preview_id": "hero-title", "render": "lines" },
           "max_length": 180
+        },
+        {
+          "id": "hero-image",
+          "kind": "image",
+          "label": "Hero image",
+          "rationale": "Choose only an existing asset from the declared project folder.",
+          "default": "/assets/editable/hero-default.webp",
+          "target": {
+            "content_path": "pages.home.sections.hero.image",
+            "preview_id": "hero-image",
+            "asset_folder": "public/assets/editable",
+            "public_base": "/assets/editable"
+          }
         }
       ]
     },
@@ -54,7 +67,7 @@
           "label": "Section order",
           "rationale": "Compare a fixed set of existing sections without creating new layout nodes.",
           "default": ["hero", "story", "proof", "contact"],
-          "target": { "content_path": "pages.home.section_order" },
+          "target": { "content_path": "pages.home.section_order", "container": "#main-content" },
           "options": [
             { "value": "hero", "label": "Hero" },
             { "value": "story", "label": "Story" },
@@ -74,4 +87,3 @@
     }
   ]
 }
-
