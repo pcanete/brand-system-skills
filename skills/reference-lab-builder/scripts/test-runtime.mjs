@@ -1,13 +1,17 @@
 #!/usr/bin/env node
 
 import assert from "node:assert/strict";
-import { demoMarkup } from "./build-lab.mjs";
+import { demoMarkup, renderDemo } from "./build-lab.mjs";
 import { resolvePath } from "./lib/contract-path.mjs";
 
 const marquee = demoMarkup({
   kind: "marquee",
   config: { items: ["One", "Two", "Three"], speed_px_s: 302 }
 });
+
+const demo = {id:"type",title:"Type",note:"",kind:"typography",config:{},source_paths:["typography"],evidence_refs:["capture"]};
+assert.match(renderDemo(demo,{typography:{}},new Set(["capture"])), /Sin observación/);
+assert.match(renderDemo(demo,{typography:{},observations:[{path:"typography",mode:"exact",evidence_refs:["capture"]}]},new Set(["capture"])), /data-support="1\/1"/);
 assert.match(marquee, /data-speed-px-s="302"/);
 assert.match(marquee, /--duration:3\.497s/);
 

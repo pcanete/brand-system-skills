@@ -6,6 +6,7 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import { evidenceIds, checkEvidenceGraph, checkEvidenceFiles, checkBehaviorInventory } from "./lib/evidence-integrity.mjs";
 import { resolvePath } from "./lib/contract-path.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -44,8 +45,9 @@ export async function validateLab({ styleFile, evidenceFile, specFile, allowDraf
     throw new Error(`REFERENCE_LAB_SPEC schema invalid\n${details}`);
   }
 
-  const issues = [];
-  const evidenceIds = collectIds(evidence);
+  const issues = [...checkEvidenceGraph(evidence)];
+  if (!allowDraft) issues.push(...await checkEvidenceFiles(evidence, path.dirname(path.resolve(evidenceFile))), ...checkBehaviorInventory(evidence));
+  const knownEvidenceIds = evidenceIds(evidence);
   const demoIds = new Set();
   const reviewIds = new Set();
   const itemKinds = new Set(["filter", "media-sequence", "marquee"]);
@@ -58,7 +60,7 @@ export async function validateLab({ styleFile, evidenceFile, specFile, allowDraf
       if (!resolution.found) issues.push(`demo:${demo.id}: unknown STYLE_DNA path '${sourcePath}' (stops at '${resolution.stoppedAt}')`);
     }
     for (const ref of demo.evidence_refs) {
-      if (!evidenceIds.has(ref)) issues.push(`demo:${demo.id}: unknown evidence reference '${ref}'`);
+      if (!knownEvidenceIds.has(ref)) issues.push(`demo:${demo.id}: unknown evidence reference '${ref}'`);
     }
     if (itemKinds.has(demo.kind) && (!Array.isArray(demo.config.items) || demo.config.items.length < 2)) {
       issues.push(`demo:${demo.id}: kind '${demo.kind}' requires at least two config.items`);

@@ -12,6 +12,7 @@ import path from "node:path";
 
 import Ajv2020 from "ajv/dist/2020.js";
 import addFormats from "ajv-formats";
+import { evidenceIds, checkEvidenceGraph } from "./evidence-integrity.mjs";
 
 // Shared with the evidence model: 0.60 is the boundary between moderate
 // evidence and weak inference. A claim at or above it must be supported.
@@ -74,15 +75,7 @@ export function createValidator(schemas) {
 }
 
 export function collectEvidenceIds(evidence) {
-  const ids = new Set();
-
-  for (const group of EVIDENCE_COLLECTIONS) {
-    for (const item of evidence[group] || []) {
-      if (item?.id) ids.add(item.id);
-    }
-  }
-
-  return ids;
+  return evidenceIds(evidence);
 }
 
 // Contract paths may traverse object keys or array members addressed by id.
@@ -386,6 +379,7 @@ export function checkClaimedAreasBacked(style) {
 
 export function verifyWebContracts(style, evidence, { strict = true } = {}) {
   const groups = [
+    { label: "Evidence IDs and graph are unambiguous", issues: checkEvidenceGraph(evidence), strictOnly: false },
     {
       label: "Evidence references resolve",
       issues: checkEvidenceReferences(style, evidence),

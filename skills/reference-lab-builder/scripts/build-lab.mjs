@@ -74,9 +74,21 @@ export function demoMarkup(demo) {
   }
 }
 
-function renderDemo(demo, style, evidenceIds) {
-  const source = Object.fromEntries(demo.source_paths.map((sourcePath) => [sourcePath, resolvePath(style, sourcePath).value]));
-  return `<section id="${esc(demo.id)}" class="demo" data-kind="${esc(demo.kind)}" data-duration="${Number(demo.config.duration_ms || 1600)}"><header><div><span class="index">${esc(demo.kind)}</span><h2>${esc(demo.title)}</h2></div><p>${esc(demo.note)}</p></header><div class="stage">${demoMarkup(demo)}</div><details><summary>Source and evidence</summary><pre>${esc(JSON.stringify({ source, evidence_refs: demo.evidence_refs.filter((ref) => evidenceIds.has(ref)) }, null, 2))}</pre></details></section>`;
+export function renderDemo(demo, style, evidenceIds) {
+  const observations = new Map((style.observations || []).map(item => [item.path, item]));
+  const support = demo.source_paths.map(sourcePath => {
+    const observation = observations.get(sourcePath);
+    return { path: sourcePath, value: resolvePath(style, sourcePath).value,
+      observed: Boolean(observation?.evidence_refs?.some(ref => evidenceIds.has(ref))),
+      mode: observation?.mode || "unknown" };
+  });
+  const backed = support.filter(item => item.observed);
+  const badge = backed.length === support.length
+    ? "Observado · " + backed.map(item => item.mode).join(", ")
+    : backed.length ? backed.length + " de " + support.length + " observadas"
+    : "Sin observación que la respalde";
+  const source = Object.fromEntries(support.map(item => [item.path + (item.observed ? " [observado]" : " [dato registrado]"), item.value]));
+  return `<section id="${esc(demo.id)}" class="demo" data-kind="${esc(demo.kind)}" data-support="${backed.length}/${support.length}" data-duration="${Number(demo.config.duration_ms || 1600)}"><header><div><span class="index">${esc(demo.kind)}</span><h2>${esc(demo.title)}</h2></div><div><p>${esc(demo.note)}</p><span class="support">${esc(badge)}</span></div></header><div class="stage">${demoMarkup(demo)}</div><details><summary>Source and evidence</summary><pre>${esc(JSON.stringify({ source, evidence_refs: demo.evidence_refs.filter((ref) => evidenceIds.has(ref)) }, null, 2))}</pre></details></section>`;
 }
 
 function document({ style, evidence, spec }) {
