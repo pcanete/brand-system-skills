@@ -6,11 +6,11 @@ Each skill follows semantic versioning independently.
 | --- | ---: | --- |
 | brand-dna-scanner | 0.4.0 | Brand DNA 0.1.x |
 | brand-manual-builder | 0.1.0 | Brand Manual Spec 0.1 |
-| reference-scanner | 0.8.0 | Web reference schemas 0.4.x |
-| reference-lab-builder | 0.2.1 | Reference Lab Spec 0.1 |
-| reference-to-astro | 1.3.0 | Web reference schemas 0.3.x–0.4.x + Site Blueprint 1.0 |
+| reference-scanner | 1.0.0 | Web reference schemas 0.4.x |
+| reference-lab-builder | 1.0.0 | Reference Lab Spec 0.1 |
+| reference-to-astro | 2.0.0 | Web reference schemas 0.3.x–0.4.x + Site Blueprint 1.0 |
 | visual-tuning-kit | 0.6.0 | Tuning Schema and Values 0.1 |
-| wordpress-publisher | 0.2.0 | Plugin de portada y reporte de exportación |
+| wordpress-publisher | 1.0.0 | Plugin de portada y reporte de exportación |
 
 ## Rules
 

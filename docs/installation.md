@@ -78,3 +78,21 @@ production build.
 Installed copies do not track this repository. After pulling changes, reinstall
 or re-copy the skill directories you use, and re-run `npm install` if the
 validators changed.
+# Dependencias de validación completas
+
+Instalar las dependencias de cada skill que se ejecuta, también manual y laboratorio:
+
+```bash
+npm ci --prefix skills/brand-dna-scanner
+npm ci --prefix skills/brand-manual-builder
+npm ci --prefix skills/reference-scanner
+npm ci --prefix skills/reference-lab-builder
+npm ci --prefix skills/reference-to-astro
+npm ci --prefix skills/visual-tuning-kit
+npm test
+```
+
+WordPress requiere PHP CLI en PATH o PHP_BINARY para validar sintaxis antes
+del ZIP. Para las pruebas visuales: instalar Chromium con Playwright desde
+skills/reference-to-astro y ejecutar scripts/test-qa-assertions.mjs.
+Las nuevas reglas y migración están en [behavior-evidence-release.md](behavior-evidence-release.md).
