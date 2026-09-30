@@ -22,6 +22,7 @@ export async function exportPlugin({ projectRoot, config: raw }) {
     inventory = await auditDist(path.join(projectRoot, 'dist'));
     await auditAssetReferences(path.join(projectRoot, 'dist'), inventory, {
       fullPage: config.mode === 'front-page' || (config.mode === 'page-template' && config.template.layout === 'canvas'),
+      headOwnership: config.headOwnership,
     });
     // Legacy keeps its layout and URL rules. Close traversal and missing CSS
     // asset gaps before its existing writer touches the generated directory.

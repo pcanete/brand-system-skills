@@ -8,7 +8,7 @@ import { assetPath } from './files.mjs';
 // Validate transitive local references, including CSS imports and relative URLs.
 // Full-page keeps its legacy URL mapper; reject forms it cannot rebase instead
 // of shipping a plugin that depends on the installation path of WordPress.
-export async function auditAssetReferences(dist, inventory, { fullPage = false } = {}) {
+export async function auditAssetReferences(dist, inventory, { fullPage = false, headOwnership = 'wordpress' } = {}) {
   const available = new Set(inventory);
   function check(url, from, html = false) {
     if (!url || /^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(url)) return;
@@ -35,7 +35,8 @@ export async function auditAssetReferences(dist, inventory, { fullPage = false }
       function walk(n) {
         const attrs=Object.fromEntries((n.attrs||[]).map(a=>[a.name,a.value]));
         for (const key of ['src','poster','component-url','renderer-url','before-hydration-url']) if(attrs[key]) check(attrs[key],file,true);
-        if(n.tagName==='link' && /^(stylesheet|icon|shortcut icon|modulepreload|preload)$/.test(attrs.rel||'')) check(attrs.href,file,true);
+        const ownedIcon = fullPage && headOwnership === 'wordpress' && /^(icon|shortcut icon)$/.test(attrs.rel||'');
+        if(n.tagName==='link' && !ownedIcon && /^(stylesheet|icon|shortcut icon|modulepreload|preload)$/.test(attrs.rel||'')) check(attrs.href,file,true);
         if(attrs.srcset && !attrs.srcset.includes('data:')) for(const item of attrs.srcset.split(',')) check(item.trim().split(/\s+/)[0],file,true);
         for(const child of n.childNodes||[]) walk(child);
       }

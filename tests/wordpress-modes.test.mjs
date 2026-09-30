@@ -35,8 +35,11 @@ test('cross-file fonts/keyframes are scoped consistently; shortcode does not acc
 });
 test('PHP header strings stay data and legacy report fields survive',async t=>{
   const root=await project(t);
+  const index=path.join(root,'dist/index.html');
+  await writeFile(index,(await readFile(index,'utf8')).replace('</head>','<link rel="icon" href="/favicon.svg"></head>'));
   const {pluginDir,report}=await exportPlugin({projectRoot:root,config:{slug:'demo',name:"Client O'Reilly \\ Design"}});
   assert.deepEqual(await validatePlugin(pluginDir),[]);
+  assert(!(await readFile(path.join(pluginDir,'templates/front-page.php'),'utf8')).includes('/favicon.svg'));
   assert.equal(report.source,'dist/index.html');
   assert.deepEqual(report.wordpressHooks,['wp_head','wp_body_open','wp_footer']);
 });
