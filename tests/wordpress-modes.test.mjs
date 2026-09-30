@@ -66,8 +66,8 @@ async function project(t) {
   await cp(path.join(here,'wordpress-fixture'),root,{recursive:true});
   return root;
 }
-function runtime(pluginDir, scenario) {
-  const result=spawnSync(process.env.PHP_BINARY||'php',['-n',path.join(here,'wordpress-runtime.php'),path.join(pluginDir,path.basename(pluginDir)+'.php'),scenario],{encoding:'utf8'});
+function runtime(pluginDir, scenario, config) {
+  const result=spawnSync(process.env.PHP_BINARY||'php',['-n',path.join(here,'wordpress-runtime.php'),path.join(pluginDir,path.basename(pluginDir)+'.php'),scenario,config.slug,config.mode,config.fnPrefix],{encoding:'utf8'});
   assert.equal(result.status,0,result.stdout+result.stderr);
 }
 test('config keeps legacy defaults and rejects invalid mode/version/paths/header injection',()=>{
@@ -83,8 +83,8 @@ for(const [mode,layout] of [['front-page'],['page-template','canvas'],['page-tem
     const config=resolveConfig({slug:'demo-'+mode,...(mode==='front-page'?{}:{mode}),template:{layout:layout||'canvas',name:"Landing d'ejemplo"}});
     const {pluginDir}=await exportPlugin({projectRoot:root,config});
     assert.deepEqual(await validatePlugin(pluginDir),[]);
-    runtime(pluginDir,mode==='elementor-widgets'?'elementor-absent':mode==='embedded-page'?'embedded':'routes');
-    if(mode==='elementor-widgets') runtime(pluginDir,'elementor-present');
+    runtime(pluginDir,mode==='elementor-widgets'?'elementor-absent':mode==='embedded-page'?'embedded':'routes',config);
+    if(mode==='elementor-widgets') runtime(pluginDir,'elementor-present',config);
     const zip=path.join(root,'result.zip');
     await packagePlugin({pluginDir,outPath:zip});
     const data=await readFile(zip);

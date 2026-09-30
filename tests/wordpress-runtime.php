@@ -41,8 +41,9 @@ function check($condition,$message) { if(!$condition) throw new Exception($messa
 class Manager { public $widgets=array(); public $category; function register($w) { $this->widgets[]=$w; } function add_category($k,$v) { $this->category=$k; } }
 if (strpos($scenario,'elementor')===0 && $scenario!=='elementor-absent') require __DIR__.'/wordpress-elementor-stubs.php';
 require $plugin;
-$manifest=json_decode(file_get_contents(dirname($plugin).'/integration.json'),true);
-$c=$manifest['config'];
+// PHP 7.4 may build JSON as a shared extension disabled by -n. Keep this
+// isolated harness extension-free; the Node caller supplies these known fields.
+$c=array('slug'=>$argv[3], 'mode'=>$argv[4], 'fnPrefix'=>$argv[5]);
 ($GLOBALS['activation'])();
 if ($scenario==='routes') {
   check(filtered('template_include','host.php')==='host.php','Unrelated route intercepted');
