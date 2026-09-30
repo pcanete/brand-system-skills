@@ -33,5 +33,21 @@ jobs:
       - name: Install Astro builder validator dependencies
         run: npm ci --prefix skills/reference-to-astro
 
+      - name: Install remaining skill dependencies
+        run: |
+          npm ci --prefix skills/brand-manual-builder
+          npm ci --prefix skills/reference-lab-builder
+          npm ci --prefix skills/visual-tuning-kit
+          npm ci --prefix skills/wordpress-publisher
+
+      - name: Set up PHP for generated plugins
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          coverage: none
+
+      - name: Install browser for existing runtime tests
+        run: npx --prefix skills/reference-to-astro playwright install --with-deps chromium
+
       - name: Validate repository
         run: npm test

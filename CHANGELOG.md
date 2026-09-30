@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+`wordpress-publisher` 0.3.0
+
+- Keeps mode-less configurations on the original front-page exporter; adds
+  page-template (canvas/theme), isolated embedded-page shortcode, and
+  Elementor domain widgets (editable FAQ and dynamic WooCommerce Product Grid).
+- Adds explicit mode dispatch, parsed HTML/CSS, scoped selectors and animation
+  names, conditional fragment assets, slug-specific registrations, dependency
+  guards, and a scoped WooCommerce CPT query adapter for product filters.
+- Adds artifact inventories, PHP CLI syntax checks and validation before every
+  ZIP. Rejects unsafe paths, symlinks, non-static PHP payloads and unsupported
+  embedded CSS instead of silently producing an unsafe integration.
+- Restores the tracked synthetic WordPress build fixture and adds mode export,
+  ZIP extraction, PHP API-contract and negative tests without removing old tests.
+- Adds installation dependencies (npm ci and PHP CLI). Updates mode selection,
+  staging QA and honest boundaries: multi-build, other domain widgets, automatic
+  design conversion and live WordPress validation are not implied.
+
 `reference-to-astro` 1.3.0
 
 - Incorporates VvvebJs and other free-form HTML editors as external review

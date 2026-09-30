@@ -1,0 +1,9 @@
+.bs-{{slug}} { box-sizing: border-box; color: inherit; font: inherit; }
+.bs-{{slug}} .bs-products { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); gap:1.5rem; }
+.bs-{{slug}} article { border:1px solid currentColor; padding:1rem; }
+.bs-{{slug}} img { max-width:100%; height:auto; }
+.bs-{{slug}} form { display:flex; flex-wrap:wrap; gap:1rem; align-items:end; }
+.bs-{{slug}} label { display:grid; gap:.25rem; }
+.bs-{{slug}} details { border-bottom:1px solid currentColor; padding:1rem 0; }
+.bs-{{slug}} summary { cursor:pointer; font-weight:600; }
+.bs-{{slug}} nav { margin-top:1rem; }

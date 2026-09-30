@@ -121,8 +121,8 @@ function {{fn_prefix}}_activate() {
 		if ( ! file_exists( $path ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 			wp_die(
-				esc_html__( 'El paquete de {{PLUGIN_NAME}} está incompleto. Volvé a generar y subir el ZIP completo.', '{{slug}}' ),
-				esc_html__( 'No se pudo activar {{PLUGIN_NAME}}', '{{slug}}' ),
+				esc_html__( 'El paquete está incompleto. Volvé a generar y subir el ZIP completo.', '{{slug}}' ),
+				esc_html__( 'No se pudo activar el plugin', '{{slug}}' ),
 				array( 'back_link' => true )
 			);
 		}

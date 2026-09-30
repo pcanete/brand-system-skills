@@ -33,7 +33,7 @@ El objetivo no es automatizar el gusto. Es hacer visible el razonamiento para qu
 | Laboratorio | `reference-lab-builder` | ¿Entendimos realmente sus componentes y comportamientos? | Web neutral interactiva y aprobable |
 | Implementación | `reference-to-astro` | ¿Cómo se reconstruye ese sistema con el contenido del cliente? | Proyecto Astro verificado |
 | Ajuste visual | `visual-tuning-kit` | ¿Qué detalles declarados necesita ajustar una persona sobre la implementación? | Valores validados y aprobables |
-| Publicación WordPress | `wordpress-publisher` | ¿Cómo convive la portada compilada con un WordPress existente? | Plugin validado y ZIP instalable |
+| Publicación WordPress | `wordpress-publisher` | ¿Conviene portada, plantilla, experiencia embebida o widget editable? | Plugin validado por modo y ZIP instalable |
 
 ```text
 Fuentes de marca ──> brand-dna-scanner ──> BRAND_DNA
@@ -65,7 +65,7 @@ Contenido + assets + brief ─────────────────�
                                               │
                                               v
                                     wordpress-publisher
-                              plugin de portada + validación
+                          integración por modo + validación
 ```
 
 Las capas se complementan, pero no se confunden. El ADN de marca puede orientar una web, una campaña, una presentación o una pieza social. El ADN visual de una referencia web describe ese canal específico. La implementación consume ambos criterios sin apropiarse de la identidad de terceros.
@@ -200,7 +200,7 @@ la navegación completa falla, no escribe cambios parciales.
 10. **Construir con Astro.** Ejecutar `reference-to-astro` sobre el blueprint aprobado.
 11. **Ajustar visualmente.** Usar `visual-tuning-kit` sobre los controles que el proyecto declaró seguros.
 12. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
-13. **Publicar en WordPress, si corresponde.** Usar `wordpress-publisher` para convertir el build validado en un plugin de portada instalable, sin convertir el HTML compilado en fuente editable.
+13. **Publicar en WordPress, si corresponde.** Usar `wordpress-publisher` para elegir portada, plantilla de página, experiencia embebida o widgets Elementor de dominio. Conservar el build para páginas estables y WordPress/WooCommerce como fuente de datos dinámicos; no convertir automáticamente una landing en widgets.
 
 Cada paso que produce un contrato termina con su validador. Un contrato rechazado no se fuerza: se completa la evidencia o se baja la afirmación.
 
@@ -400,8 +400,12 @@ npm ci --prefix skills/visual-tuning-kit
 ```
 
 ```bash
+npm ci --prefix skills/wordpress-publisher
 npm test
 ```
+
+WordPress Publisher requiere PHP CLI (o `PHP_BINARY`) para validar sintaxis antes
+del ZIP. Su suite específica se ejecuta con `npm run test:wordpress`.
 
 La revisión comprueba estructura, metadatos, archivos requeridos, JSON, coherencia de versiones entre `SKILL.md`, `package.json` y la documentación, sincronización de los contratos compartidos, y que ningún archivo empaquetado quede sin ser mencionado por su skill. Además corre los validadores sobre los ejemplos —que deben pasar— y sobre los fixtures de `tests/rejected/` —que deben ser rechazados—: si un contrato sin sustento pasara, las compuertas dejaron de funcionar. GitHub Actions ejecuta lo mismo en cada cambio.
 
@@ -423,7 +427,7 @@ Cada skill sigue versionado semántico de forma independiente:
 | `reference-lab-builder` | `0.2.1` | Reference Lab Spec `0.1`, con mediciones renderizadas fielmente |
 | `reference-to-astro` | `1.3.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0`, con revisión externa trazable |
 | `visual-tuning-kit` | `0.6.0` | Tuning Schema and Values `0.1`, con aplicación transaccional de contenido aprobado |
-| `wordpress-publisher` | `0.2.0` | Plugin de portada, validación y ZIP en un circuito único |
+| `wordpress-publisher` | `0.3.0` | Cuatro modos de integración; configuración antigua conserva portada |
 
 Para actualizar una copia del repositorio:
 

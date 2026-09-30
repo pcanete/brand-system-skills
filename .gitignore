@@ -1,6 +1,8 @@
 node_modules/
 qa/
 dist/
+!tests/wordpress-fixture/dist/
+!tests/wordpress-fixture/dist/**
 .astro/
 .env
 .env.*
