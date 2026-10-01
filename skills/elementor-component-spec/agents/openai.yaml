@@ -1,0 +1,4 @@
+interface:
+  display_name: "Elementor Component Spec"
+  short_description: "Decide y especifica componentes editables para WordPress"
+  default_prompt: "Usa $elementor-component-spec para decidir qué conservar compilado y especificar las áreas editables, sin ejecutar cambios remotos."

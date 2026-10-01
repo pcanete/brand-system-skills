@@ -1,0 +1,6 @@
+html, body { --accent: #163b68; color: var(--accent); }
+* { box-sizing: border-box; }
+h1, button { font: inherit; }
+@media (min-width: 600px) { main { padding: 2rem; background-image:url('/assets/hero.svg'); } }
+@keyframes enter { from { opacity:0; } to { opacity:1; } }
+main { animation: enter .2s ease; }

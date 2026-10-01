@@ -20,6 +20,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { deflateRawSync } from 'node:zlib';
 import { pathToFileURL } from 'node:url';
+import { validatePlugin } from './validate-plugin.mjs';
 
 function arg(name, fallback) {
   const index = process.argv.indexOf(`--${name}`);
@@ -65,6 +66,10 @@ async function listFiles(root, prefix = '') {
 }
 
 export async function packagePlugin({ pluginDir, outPath }) {
+  const issues = await validatePlugin(pluginDir);
+  if (issues.length) throw new Error('Paquete inválido: ' + issues.join('; '));
+  const relativeOutput = path.relative(path.resolve(pluginDir), path.resolve(outPath));
+  if (!relativeOutput.startsWith('..') && !path.isAbsolute(relativeOutput)) throw new Error('El ZIP debe quedar fuera del plugin');
   const slug = path.basename(pluginDir);
   const files = await listFiles(pluginDir);
 

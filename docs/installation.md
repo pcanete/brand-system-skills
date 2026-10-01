@@ -12,8 +12,10 @@ Available skills:
 - `skills/reference-lab-builder`
 - `skills/reference-to-astro`
 - `skills/visual-tuning-kit`
+- `skills/wordpress-publisher`
+- `skills/elementor-component-spec`
 
-Install all six for the complete brand-to-web workflow. Install only the
+Install all eight for the complete brand-to-web-and-WordPress workflow. Install only the
 relevant one when the task is narrower.
 
 ## Install for Claude
@@ -51,12 +53,23 @@ Same rule: Codex must see each skill as a direct child of `~/.codex/skills`.
 
 ## Script dependencies
 
-All three skills ship a validator that the skill itself is expected to run.
+The skills ship executable helpers and validators that they are expected to run.
 After installing, install its dependencies inside the skill directory:
 
 ```bash
 npm install
 ```
+
+`wordpress-publisher` ships a lockfile: use `npm ci` in its directory.
+It additionally needs PHP CLI 7.4+ for generated-plugin syntax validation;
+set `PHP_BINARY` if PHP is not on PATH. Exported ZIPs contain PHP/CSS/JS
+only: WordPress does not need Node, npm or Astro.
+
+`elementor-component-spec` is independently installable with Node 18+ and
+`npm ci` in its directory; `npm test` runs its own contract tests. It needs
+neither PHP nor a live WordPress to produce/validate specs. Execution is a
+separate workflow: installing the skill does not install Novamira, grant
+credentials or authorize remote writes.
 
 `reference-to-astro` additionally installs Playwright for visual QA, which may
 need a browser binary:

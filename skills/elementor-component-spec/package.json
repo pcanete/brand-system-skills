@@ -1,0 +1,14 @@
+{
+  "name": "elementor-component-spec-skill",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/validate-component-spec.mjs",
+    "test": "node --test scripts/test-component-spec.mjs"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
+}

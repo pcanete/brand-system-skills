@@ -35,10 +35,9 @@ function runBuild(projectRoot) {
 }
 
 export async function publish({ projectRoot, configPath, outPath, skipBuild = false }) {
-  if (!skipBuild) await runBuild(projectRoot);
-
   const raw = JSON.parse(await readFile(configPath, 'utf8'));
   const config = resolveConfig(raw);
+  if (!skipBuild && config.mode !== 'elementor-widgets') await runBuild(projectRoot);
   const { pluginDir, report } = await exportPlugin({ projectRoot, config });
 
   const issues = await validatePlugin(pluginDir);
@@ -62,7 +61,7 @@ async function main() {
     skipBuild: process.argv.includes('--skip-build'),
   });
 
-  console.log('✓ build disponible');
+  console.log(result.report.mode === 'elementor-widgets' ? '✓ widgets de dominio generados (sin build Astro)' : '✓ build disponible');
   console.log('✓ plugin exportado y verificado');
   console.log(`✓ ZIP instalable: ${result.zipPath}`);
   console.log(`${result.packaged.files} archivos, ${(result.packaged.bytes / 1024 / 1024).toFixed(2)} MB`);

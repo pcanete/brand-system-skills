@@ -14,6 +14,8 @@ import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
+import { validateIntegration } from './lib/validate-integration.mjs';
+import { checkPhpSyntax } from './php-syntax.mjs';
 
 function arg(name, fallback) {
   const index = process.argv.indexOf(`--${name}`);
@@ -39,6 +41,15 @@ async function walk(directory, prefix = '') {
 
 export async function validatePlugin(pluginDir) {
   const issues = [];
+  try {
+    const manifest = JSON.parse(await readFile(path.join(pluginDir, 'integration.json'), 'utf8'));
+    issues.push(...await validateIntegration(pluginDir, manifest));
+    issues.push(...await checkPhpSyntax(pluginDir));
+    if (manifest.mode !== 'front-page') return issues;
+  } catch (error) {
+    if (error.code !== 'ENOENT') return [error.message];
+    issues.push(...await checkPhpSyntax(pluginDir));
+  }
   const slug = path.basename(pluginDir);
 
   const mainFile = path.join(pluginDir, `${slug}.php`);
@@ -140,7 +151,7 @@ async function main() {
   console.log('✓ archivos requeridos presentes');
   console.log('✓ sin marcadores sin renderizar');
   console.log('✓ hooks de WordPress intactos');
-  console.log('✓ alcance limitado a la portada');
+  console.log('✓ controles del modo de integración');
   console.log('✓ assets resueltos dentro del paquete');
   console.log('\nPaquete verificado.');
 }

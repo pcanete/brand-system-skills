@@ -1,0 +1,463 @@
+{
+  "schemaVersion": "0.1",
+  "componentName": "Intro editorial",
+  "componentSlug": "editorial-intro",
+  "purpose": "Heading, texto e imagen simples con widgets existentes.",
+  "sourceReference": [
+    {
+      "id": "brief",
+      "kind": "brief",
+      "artifact": "reference.md",
+      "digestMode": "utf8-lf",
+      "sha256": "3b1930b3bfbdd7990fa992f2ae812235e588b20524c2c6bf274bd42412c25b2f",
+      "description": "Brief sintético; no captura ni instalación inspeccionada."
+    }
+  ],
+  "publicationMode": "ELEMENTOR_NATIVE",
+  "decision": {
+    "granularEditing": true,
+    "dynamicContent": false,
+    "reusable": true,
+    "decorativeOnly": false,
+    "rationale": "Widgets existentes suficientes sin pérdida relevante.",
+    "nativeAssessment": {
+      "feasible": true,
+      "preservesFidelity": true,
+      "fragmentation": "low",
+      "editingComplexity": "low",
+      "reason": "Tres bloques independientes del brief, confirmar disponibilidad en destino.",
+      "evidenceRefs": [
+        "brief"
+      ]
+    },
+    "scope": {
+      "regionId": "editorial-intro",
+      "keepCompiledRegions": [],
+      "editableRegions": [
+        "editorial-intro"
+      ]
+    },
+    "compiledIntegration": null,
+    "nativeMapping": [
+      {
+        "widget": "Heading",
+        "role": "Heading",
+        "settings": "Contenido autorizado y tokens aprobados.",
+        "dependencyId": "elementor"
+      },
+      {
+        "widget": "Text Editor",
+        "role": "Text Editor",
+        "settings": "Contenido autorizado y tokens aprobados.",
+        "dependencyId": "elementor"
+      },
+      {
+        "widget": "Image",
+        "role": "Image",
+        "settings": "Contenido autorizado y tokens aprobados.",
+        "dependencyId": "elementor"
+      }
+    ]
+  },
+  "visualRequirements": [
+    {
+      "id": "visual-intro",
+      "statement": "Título, párrafo e imagen con tokens aprobados.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "layoutStructure": [
+    {
+      "id": "layout-intro",
+      "statement": "Tres bloques semánticos independientes.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "responsiveBehavior": [
+    {
+      "viewport": "desktop",
+      "width": 1440,
+      "requirements": [
+        {
+          "id": "desktop-intro",
+          "statement": "Lectura vertical e imagen fluida sin desbordes a 1440px.",
+          "basis": "decision",
+          "evidenceRefs": [
+            "brief"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "tablet",
+      "width": 768,
+      "requirements": [
+        {
+          "id": "tablet-intro",
+          "statement": "Lectura vertical e imagen fluida sin desbordes a 768px.",
+          "basis": "decision",
+          "evidenceRefs": [
+            "brief"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "width": 390,
+      "requirements": [
+        {
+          "id": "mobile-intro",
+          "statement": "Lectura vertical e imagen fluida sin desbordes a 390px.",
+          "basis": "decision",
+          "evidenceRefs": [
+            "brief"
+          ]
+        }
+      ]
+    }
+  ],
+  "editableControls": [
+    {
+      "id": "heading",
+      "label": "Título",
+      "type": "text",
+      "default": "Nuestra propuesta",
+      "responsive": false,
+      "required": true,
+      "dynamic": false,
+      "source": {
+        "kind": "editor",
+        "ref": null
+      },
+      "constraints": {
+        "maxLength": 60
+      }
+    },
+    {
+      "id": "body-text",
+      "label": "Texto",
+      "type": "textarea",
+      "default": "Descripción autorizada de la propuesta.",
+      "responsive": false,
+      "required": true,
+      "dynamic": false,
+      "source": {
+        "kind": "editor",
+        "ref": null
+      },
+      "constraints": {
+        "maxLength": 1200
+      }
+    },
+    {
+      "id": "intro-image",
+      "label": "Imagen",
+      "type": "media",
+      "default": {
+        "id": 0,
+        "url": "",
+        "alt": ""
+      },
+      "responsive": false,
+      "required": false,
+      "dynamic": false,
+      "source": {
+        "kind": "editor",
+        "ref": null
+      },
+      "constraints": {}
+    }
+  ],
+  "dynamicData": [],
+  "dataSources": [],
+  "interactions": [],
+  "states": [
+    {
+      "id": "intro-default",
+      "statement": "Contenido visible sin comportamiento adicional.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "wordpress",
+      "kind": "wordpress",
+      "versionConstraint": "Confirmar versión instalada y compatibilidad en preflight.",
+      "required": true,
+      "fallback": "Guard de carga sin fatal; detener funcionalidad dependiente con aviso administrativo."
+    },
+    {
+      "id": "elementor",
+      "kind": "elementor",
+      "versionConstraint": "Confirmar versión instalada y compatibilidad en preflight.",
+      "required": true,
+      "fallback": "Guard de carga sin fatal; detener funcionalidad dependiente con aviso administrativo."
+    }
+  ],
+  "cssIsolation": {
+    "strategy": "native-scoped",
+    "rootSelector": ".bs-editorial-intro",
+    "forbiddenGlobalSelectors": [
+      "body",
+      "html",
+      "* sin raíz"
+    ],
+    "assetLoading": "on-render"
+  },
+  "javascriptRequirements": {
+    "required": false,
+    "reason": "Sin comportamiento adicional.",
+    "initialization": "Sin JS propio.",
+    "cleanup": "Sin listeners propios.",
+    "reducedMotion": "No añadir animación no aprobada."
+  },
+  "accessibilityRequirements": [
+    {
+      "id": "accessible-intro",
+      "statement": "Heading coherente y alt significativo.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "fallbackBehavior": [
+    {
+      "id": "fallback-intro",
+      "statement": "Conservar texto, no publicar imagen faltante.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "accept-visual-intro",
+      "description": "Verificar Título, párrafo e imagen con tokens aprobados.",
+      "method": "visual-comparison",
+      "expected": "Título, párrafo e imagen con tokens aprobados.",
+      "requirementRefs": [
+        "visual-intro"
+      ]
+    },
+    {
+      "id": "accept-layout-intro",
+      "description": "Verificar Tres bloques semánticos independientes.",
+      "method": "visual-comparison",
+      "expected": "Tres bloques semánticos independientes.",
+      "requirementRefs": [
+        "layout-intro"
+      ]
+    },
+    {
+      "id": "accept-desktop-intro",
+      "description": "Verificar Lectura vertical e imagen fluida sin desbordes a 1440px.",
+      "method": "visual-comparison",
+      "expected": "Lectura vertical e imagen fluida sin desbordes a 1440px.",
+      "requirementRefs": [
+        "desktop-intro"
+      ]
+    },
+    {
+      "id": "accept-tablet-intro",
+      "description": "Verificar Lectura vertical e imagen fluida sin desbordes a 768px.",
+      "method": "visual-comparison",
+      "expected": "Lectura vertical e imagen fluida sin desbordes a 768px.",
+      "requirementRefs": [
+        "tablet-intro"
+      ]
+    },
+    {
+      "id": "accept-mobile-intro",
+      "description": "Verificar Lectura vertical e imagen fluida sin desbordes a 390px.",
+      "method": "visual-comparison",
+      "expected": "Lectura vertical e imagen fluida sin desbordes a 390px.",
+      "requirementRefs": [
+        "mobile-intro"
+      ]
+    },
+    {
+      "id": "accept-heading",
+      "description": "Verificar Título",
+      "method": "inspection",
+      "expected": "Cumple fuente, límites y fallback de heading",
+      "requirementRefs": [
+        "heading"
+      ]
+    },
+    {
+      "id": "accept-intro-default",
+      "description": "Verificar Contenido visible sin comportamiento adicional.",
+      "method": "inspection",
+      "expected": "Contenido visible sin comportamiento adicional.",
+      "requirementRefs": [
+        "intro-default"
+      ]
+    },
+    {
+      "id": "accept-accessible-intro",
+      "description": "Verificar Heading coherente y alt significativo.",
+      "method": "accessibility-test",
+      "expected": "Heading coherente y alt significativo.",
+      "requirementRefs": [
+        "accessible-intro"
+      ]
+    },
+    {
+      "id": "accept-fallback-intro",
+      "description": "Verificar Conservar texto, no publicar imagen faltante.",
+      "method": "inspection",
+      "expected": "Conservar texto, no publicar imagen faltante.",
+      "requirementRefs": [
+        "fallback-intro"
+      ]
+    },
+    {
+      "id": "accept-body-text",
+      "description": "Verificar edición de Texto",
+      "method": "inspection",
+      "expected": "Edición sin romper anatomía ni responsive; asset real autorizado antes de publicar.",
+      "requirementRefs": [
+        "body-text"
+      ]
+    },
+    {
+      "id": "accept-intro-image",
+      "description": "Verificar edición de Imagen",
+      "method": "inspection",
+      "expected": "Edición sin romper anatomía ni responsive; asset real autorizado antes de publicar.",
+      "requirementRefs": [
+        "intro-image"
+      ]
+    }
+  ],
+  "implementationNotes": [
+    "Ejemplo sintético en borrador; no requiere plugin personalizado.",
+    "Media vacío representa un placeholder no publicable; seleccionar asset autorizado en el destino."
+  ],
+  "validationChecklist": [
+    {
+      "id": "check-accept-visual-intro",
+      "criterionRefs": [
+        "accept-visual-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-layout-intro",
+      "criterionRefs": [
+        "accept-layout-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-desktop-intro",
+      "criterionRefs": [
+        "accept-desktop-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-tablet-intro",
+      "criterionRefs": [
+        "accept-tablet-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-mobile-intro",
+      "criterionRefs": [
+        "accept-mobile-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-heading",
+      "criterionRefs": [
+        "accept-heading"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-intro-default",
+      "criterionRefs": [
+        "accept-intro-default"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-accessible-intro",
+      "criterionRefs": [
+        "accept-accessible-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-fallback-intro",
+      "criterionRefs": [
+        "accept-fallback-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-body-text",
+      "criterionRefs": [
+        "accept-body-text"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-intro-image",
+      "criterionRefs": [
+        "accept-intro-image"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    }
+  ],
+  "approval": {
+    "status": "draft",
+    "approvedBy": null,
+    "approvedAt": null,
+    "record": null,
+    "specDigest": null
+  },
+  "executionPolicy": {
+    "executorNeutral": true,
+    "preferredContainer": "existing-native-document",
+    "productionRequiresExplicitApproval": true,
+    "remoteWritesAuthorized": false
+  }
+}

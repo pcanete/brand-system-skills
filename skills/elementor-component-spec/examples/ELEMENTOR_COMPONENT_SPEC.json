@@ -1,0 +1,660 @@
+{
+  "schemaVersion": "0.1",
+  "componentName": "Product Card",
+  "componentSlug": "product-card",
+  "purpose": "Card editable sin fragmentar anatomía ni duplicar datos WooCommerce.",
+  "sourceReference": [
+    {
+      "id": "brief",
+      "kind": "brief",
+      "artifact": "reference.md",
+      "digestMode": "utf8-lf",
+      "sha256": "3b1930b3bfbdd7990fa992f2ae812235e588b20524c2c6bf274bd42412c25b2f",
+      "description": "Brief sintético; no captura ni instalación inspeccionada."
+    }
+  ],
+  "publicationMode": "ELEMENTOR_CUSTOM_WIDGET",
+  "decision": {
+    "granularEditing": true,
+    "dynamicContent": true,
+    "reusable": true,
+    "decorativeOnly": false,
+    "rationale": "Un widget de dominio mantiene juntas las reglas de stock, anatomía y edición.",
+    "nativeAssessment": {
+      "feasible": true,
+      "preservesFidelity": false,
+      "fragmentation": "high",
+      "editingComplexity": "high",
+      "reason": "Evaluación sintética del brief: separar badge y datos dificulta reglas compartidas. Confirmar contra widgets instalados antes de ejecutar.",
+      "evidenceRefs": [
+        "brief"
+      ]
+    },
+    "scope": {
+      "regionId": "product-card",
+      "keepCompiledRegions": [
+        "hero",
+        "footer"
+      ],
+      "editableRegions": [
+        "product-card",
+        "faq"
+      ]
+    },
+    "compiledIntegration": null,
+    "nativeMapping": []
+  },
+  "visualRequirements": [
+    {
+      "id": "visual-card",
+      "statement": "Imagen 4:3, borde 1px, padding 24px y badge superpuesto.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "layoutStructure": [
+    {
+      "id": "layout-card",
+      "statement": "article contiene imagen, badge, título, precio y enlace; un componente de dominio.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "responsiveBehavior": [
+    {
+      "viewport": "desktop",
+      "width": 1440,
+      "requirements": [
+        {
+          "id": "desktop-grid",
+          "statement": "Tres columnas en anfitrión; card fluida sin recorte ni scroll horizontal.",
+          "basis": "decision",
+          "evidenceRefs": [
+            "brief"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "tablet",
+      "width": 768,
+      "requirements": [
+        {
+          "id": "tablet-grid",
+          "statement": "Dos columnas en anfitrión; card fluida sin recorte ni scroll horizontal.",
+          "basis": "decision",
+          "evidenceRefs": [
+            "brief"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "width": 390,
+      "requirements": [
+        {
+          "id": "mobile-grid",
+          "statement": "Una columna en anfitrión; card fluida sin recorte ni scroll horizontal.",
+          "basis": "decision",
+          "evidenceRefs": [
+            "brief"
+          ]
+        }
+      ]
+    }
+  ],
+  "editableControls": [
+    {
+      "id": "product-id",
+      "label": "Producto",
+      "type": "number",
+      "default": 1,
+      "responsive": false,
+      "required": true,
+      "dynamic": false,
+      "source": {
+        "kind": "editor",
+        "ref": null
+      },
+      "constraints": {
+        "min": 1
+      }
+    },
+    {
+      "id": "link-label",
+      "label": "Texto del enlace",
+      "type": "text",
+      "default": "Ver producto",
+      "responsive": false,
+      "required": true,
+      "dynamic": false,
+      "source": {
+        "kind": "editor",
+        "ref": null
+      },
+      "constraints": {
+        "maxLength": 60
+      }
+    }
+  ],
+  "dynamicData": [
+    {
+      "id": "product-title",
+      "sourceId": "catalog",
+      "field": "name",
+      "targetPath": "card.title",
+      "valueType": "string",
+      "escape": "esc_html",
+      "emptyFallback": "No inventar datos; omitir elemento ausente, o card si falta título/enlace.",
+      "missingDependencyFallback": "Omitir card; aviso sólo al editor autorizado.",
+      "required": true
+    },
+    {
+      "id": "product-price",
+      "sourceId": "catalog",
+      "field": "price_html",
+      "targetPath": "card.price",
+      "valueType": "html",
+      "escape": "wp_kses_post",
+      "emptyFallback": "No inventar datos; omitir elemento ausente, o card si falta título/enlace.",
+      "missingDependencyFallback": "Omitir card; aviso sólo al editor autorizado.",
+      "required": true
+    },
+    {
+      "id": "product-stock",
+      "sourceId": "catalog",
+      "field": "stock_status",
+      "targetPath": "card.stock",
+      "valueType": "string",
+      "escape": "esc_html",
+      "emptyFallback": "No inventar datos; omitir elemento ausente, o card si falta título/enlace.",
+      "missingDependencyFallback": "Omitir card; aviso sólo al editor autorizado.",
+      "required": true
+    },
+    {
+      "id": "product-link",
+      "sourceId": "catalog",
+      "field": "permalink",
+      "targetPath": "card.link",
+      "valueType": "url",
+      "escape": "esc_url",
+      "emptyFallback": "No inventar datos; omitir elemento ausente, o card si falta título/enlace.",
+      "missingDependencyFallback": "Omitir card; aviso sólo al editor autorizado.",
+      "required": true
+    },
+    {
+      "id": "product-image",
+      "sourceId": "catalog",
+      "field": "image_id",
+      "targetPath": "card.image",
+      "valueType": "image",
+      "escape": "typed",
+      "emptyFallback": "No inventar datos; omitir elemento ausente, o card si falta título/enlace.",
+      "missingDependencyFallback": "Omitir card; aviso sólo al editor autorizado.",
+      "required": false
+    }
+  ],
+  "dataSources": [
+    {
+      "id": "catalog",
+      "provider": "woocommerce-product",
+      "objectType": "product",
+      "locator": "ID del control product-id mediante API pública WooCommerce; no SQL directo.",
+      "access": "public-read",
+      "dependencyId": "woocommerce",
+      "verification": "pending",
+      "notes": "ID 1 ficticio. Sólo producto público visible; respetar impuestos, moneda, productos variables y contexto."
+    }
+  ],
+  "interactions": [
+    {
+      "id": "focus-link",
+      "trigger": "Tab",
+      "from": "available",
+      "to": "focused",
+      "behavior": "Foco visible sin alterar layout.",
+      "keyboard": "Tab enfoca, Enter navega al producto.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "states": [
+    {
+      "id": "available",
+      "statement": "Producto disponible muestra datos actuales.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    },
+    {
+      "id": "out-of-stock",
+      "statement": "Agotado cambia badge sin inventar precio.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    },
+    {
+      "id": "focused",
+      "statement": "Enlace con anillo de foco visible.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "wordpress",
+      "kind": "wordpress",
+      "versionConstraint": "Confirmar versión instalada y compatibilidad en preflight.",
+      "required": true,
+      "fallback": "Guard de carga sin fatal; detener funcionalidad dependiente con aviso administrativo."
+    },
+    {
+      "id": "elementor",
+      "kind": "elementor",
+      "versionConstraint": "Confirmar versión instalada y compatibilidad en preflight.",
+      "required": true,
+      "fallback": "Guard de carga sin fatal; detener funcionalidad dependiente con aviso administrativo."
+    },
+    {
+      "id": "woocommerce",
+      "kind": "woocommerce",
+      "versionConstraint": "Confirmar versión instalada y compatibilidad en preflight.",
+      "required": true,
+      "fallback": "Guard de carga sin fatal; detener funcionalidad dependiente con aviso administrativo."
+    }
+  ],
+  "cssIsolation": {
+    "strategy": "root-class",
+    "rootSelector": ".bs-product-card",
+    "forbiddenGlobalSelectors": [
+      "body",
+      "html",
+      "* sin raíz"
+    ],
+    "assetLoading": "on-render"
+  },
+  "javascriptRequirements": {
+    "required": false,
+    "reason": "Card y enlace funcionan con HTML y CSS.",
+    "initialization": "Sin JS propio.",
+    "cleanup": "Sin listeners propios.",
+    "reducedMotion": "No añadir animación no aprobada."
+  },
+  "accessibilityRequirements": [
+    {
+      "id": "accessible-card",
+      "statement": "Heading coherente, alt autorizado, contraste y foco visibles; enlace comprensible.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "fallbackBehavior": [
+    {
+      "id": "safe-fallback",
+      "statement": "Producto privado, inexistente o proveedor ausente: no filtrar información; aviso sólo al editor autorizado.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "accept-visual-card",
+      "description": "Verificar Imagen 4:3, borde 1px, padding 24px y badge superpuesto.",
+      "method": "visual-comparison",
+      "expected": "Imagen 4:3, borde 1px, padding 24px y badge superpuesto.",
+      "requirementRefs": [
+        "visual-card"
+      ]
+    },
+    {
+      "id": "accept-layout-card",
+      "description": "Verificar article contiene imagen, badge, título, precio y enlace; un componente de dominio.",
+      "method": "visual-comparison",
+      "expected": "article contiene imagen, badge, título, precio y enlace; un componente de dominio.",
+      "requirementRefs": [
+        "layout-card"
+      ]
+    },
+    {
+      "id": "accept-desktop-grid",
+      "description": "Verificar Tres columnas en anfitrión; card fluida sin recorte ni scroll horizontal.",
+      "method": "visual-comparison",
+      "expected": "Tres columnas en anfitrión; card fluida sin recorte ni scroll horizontal.",
+      "requirementRefs": [
+        "desktop-grid"
+      ]
+    },
+    {
+      "id": "accept-tablet-grid",
+      "description": "Verificar Dos columnas en anfitrión; card fluida sin recorte ni scroll horizontal.",
+      "method": "visual-comparison",
+      "expected": "Dos columnas en anfitrión; card fluida sin recorte ni scroll horizontal.",
+      "requirementRefs": [
+        "tablet-grid"
+      ]
+    },
+    {
+      "id": "accept-mobile-grid",
+      "description": "Verificar Una columna en anfitrión; card fluida sin recorte ni scroll horizontal.",
+      "method": "visual-comparison",
+      "expected": "Una columna en anfitrión; card fluida sin recorte ni scroll horizontal.",
+      "requirementRefs": [
+        "mobile-grid"
+      ]
+    },
+    {
+      "id": "accept-product-id",
+      "description": "Verificar Producto",
+      "method": "inspection",
+      "expected": "Cumple fuente, límites y fallback de product-id",
+      "requirementRefs": [
+        "product-id"
+      ]
+    },
+    {
+      "id": "accept-link-label",
+      "description": "Verificar Texto del enlace",
+      "method": "inspection",
+      "expected": "Cumple fuente, límites y fallback de link-label",
+      "requirementRefs": [
+        "link-label"
+      ]
+    },
+    {
+      "id": "accept-product-title",
+      "description": "Verificar card.title",
+      "method": "data-test",
+      "expected": "Cumple fuente, límites y fallback de product-title",
+      "requirementRefs": [
+        "product-title"
+      ]
+    },
+    {
+      "id": "accept-product-price",
+      "description": "Verificar card.price",
+      "method": "data-test",
+      "expected": "Cumple fuente, límites y fallback de product-price",
+      "requirementRefs": [
+        "product-price"
+      ]
+    },
+    {
+      "id": "accept-product-stock",
+      "description": "Verificar card.stock",
+      "method": "data-test",
+      "expected": "Cumple fuente, límites y fallback de product-stock",
+      "requirementRefs": [
+        "product-stock"
+      ]
+    },
+    {
+      "id": "accept-product-link",
+      "description": "Verificar card.link",
+      "method": "data-test",
+      "expected": "Cumple fuente, límites y fallback de product-link",
+      "requirementRefs": [
+        "product-link"
+      ]
+    },
+    {
+      "id": "accept-product-image",
+      "description": "Verificar card.image",
+      "method": "data-test",
+      "expected": "Cumple fuente, límites y fallback de product-image",
+      "requirementRefs": [
+        "product-image"
+      ]
+    },
+    {
+      "id": "accept-focus-link",
+      "description": "Verificar Foco visible sin alterar layout.",
+      "method": "interaction-test",
+      "expected": "Foco visible sin alterar layout.",
+      "requirementRefs": [
+        "focus-link"
+      ]
+    },
+    {
+      "id": "accept-available",
+      "description": "Verificar Producto disponible muestra datos actuales.",
+      "method": "inspection",
+      "expected": "Producto disponible muestra datos actuales.",
+      "requirementRefs": [
+        "available"
+      ]
+    },
+    {
+      "id": "accept-out-of-stock",
+      "description": "Verificar Agotado cambia badge sin inventar precio.",
+      "method": "inspection",
+      "expected": "Agotado cambia badge sin inventar precio.",
+      "requirementRefs": [
+        "out-of-stock"
+      ]
+    },
+    {
+      "id": "accept-focused",
+      "description": "Verificar Enlace con anillo de foco visible.",
+      "method": "inspection",
+      "expected": "Enlace con anillo de foco visible.",
+      "requirementRefs": [
+        "focused"
+      ]
+    },
+    {
+      "id": "accept-accessible-card",
+      "description": "Verificar Heading coherente, alt autorizado, contraste y foco visibles; enlace comprensible.",
+      "method": "accessibility-test",
+      "expected": "Heading coherente, alt autorizado, contraste y foco visibles; enlace comprensible.",
+      "requirementRefs": [
+        "accessible-card"
+      ]
+    },
+    {
+      "id": "accept-safe-fallback",
+      "description": "Verificar Producto privado, inexistente o proveedor ausente: no filtrar información; aviso sólo al editor autorizado.",
+      "method": "inspection",
+      "expected": "Producto privado, inexistente o proveedor ausente: no filtrar información; aviso sólo al editor autorizado.",
+      "requirementRefs": [
+        "safe-fallback"
+      ]
+    }
+  ],
+  "implementationNotes": [
+    "EJEMPLO SINTÉTICO EN BORRADOR. No es aprobación humana ni WordPress inspeccionado.",
+    "FAQ necesita su propio contrato; hero/footer siguen compilados. Verificar punto de montaje híbrido y assets, no incrustar build completo en un widget.",
+    "Renderizar imagen con APIs de adjuntos WordPress; typed no autoriza HTML crudo."
+  ],
+  "validationChecklist": [
+    {
+      "id": "check-accept-visual-card",
+      "criterionRefs": [
+        "accept-visual-card"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-layout-card",
+      "criterionRefs": [
+        "accept-layout-card"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-desktop-grid",
+      "criterionRefs": [
+        "accept-desktop-grid"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-tablet-grid",
+      "criterionRefs": [
+        "accept-tablet-grid"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-mobile-grid",
+      "criterionRefs": [
+        "accept-mobile-grid"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-product-id",
+      "criterionRefs": [
+        "accept-product-id"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-link-label",
+      "criterionRefs": [
+        "accept-link-label"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-product-title",
+      "criterionRefs": [
+        "accept-product-title"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-product-price",
+      "criterionRefs": [
+        "accept-product-price"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-product-stock",
+      "criterionRefs": [
+        "accept-product-stock"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-product-link",
+      "criterionRefs": [
+        "accept-product-link"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-product-image",
+      "criterionRefs": [
+        "accept-product-image"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-focus-link",
+      "criterionRefs": [
+        "accept-focus-link"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-available",
+      "criterionRefs": [
+        "accept-available"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-out-of-stock",
+      "criterionRefs": [
+        "accept-out-of-stock"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-focused",
+      "criterionRefs": [
+        "accept-focused"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-accessible-card",
+      "criterionRefs": [
+        "accept-accessible-card"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-safe-fallback",
+      "criterionRefs": [
+        "accept-safe-fallback"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    }
+  ],
+  "approval": {
+    "status": "draft",
+    "approvedBy": null,
+    "approvedAt": null,
+    "record": null,
+    "specDigest": null
+  },
+  "executionPolicy": {
+    "executorNeutral": true,
+    "preferredContainer": "project-plugin",
+    "productionRequiresExplicitApproval": true,
+    "remoteWritesAuthorized": false
+  }
+}

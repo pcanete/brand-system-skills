@@ -91,10 +91,24 @@ const skillNames = [
   "reference-lab-builder",
   "reference-to-astro",
   "visual-tuning-kit",
-  "wordpress-publisher"
+  "wordpress-publisher",
+  "elementor-component-spec"
 ];
 
 const declaredVersions = new Map();
+
+const componentSpecRoot = path.join(root, "skills", "elementor-component-spec");
+const componentValidator = path.join(componentSpecRoot, "scripts", "validate-component-spec.mjs");
+const componentEvidence = path.join(componentSpecRoot, "examples");
+for (const name of ["ELEMENTOR_COMPONENT_SPEC", "ELEMENTOR_NATIVE", "COMPILED"]) {
+  runNode("Invalid Elementor component draft: " + name, [
+    componentValidator, "--spec", path.join(componentEvidence, name + ".json"), "--allow-draft"
+  ]);
+}
+runNode("Contradictory Elementor widget decision was accepted", [
+  componentValidator, "--spec", path.join(root, "tests", "rejected", "elementor-component-spec", "ELEMENTOR_COMPONENT_SPEC.json"),
+  "--evidence-root", componentEvidence, "--allow-draft"
+], { expect: "fail" });
 
 for (const name of skillNames) {
   const skillRoot = path.join(root, "skills", name);

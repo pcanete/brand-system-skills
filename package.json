@@ -6,6 +6,8 @@
   "description": "Evidence-driven Brand DNA, reference scanning, and Astro reconstruction skills",
   "scripts": {
     "check": "node scripts/check-repository.mjs",
-    "test": "node scripts/check-repository.mjs"
+    "test": "node scripts/check-repository.mjs && node --test tests/wordpress-modes.test.mjs skills/elementor-component-spec/scripts/test-component-spec.mjs",
+    "test:elementor-spec": "node --test skills/elementor-component-spec/scripts/test-component-spec.mjs",
+    "test:wordpress": "node --test tests/wordpress-modes.test.mjs"
   }
 }

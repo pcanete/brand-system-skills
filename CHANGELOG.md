@@ -2,6 +2,37 @@
 
 ## Unreleased
 
+`elementor-component-spec` 0.1.0 · `wordpress-publisher` 0.3.1
+
+- Separates design criteria, portable Elementor component specification and
+  authorized remote execution. Supports COMPILED, ELEMENTOR_NATIVE and
+  ELEMENTOR_CUSTOM_WIDGET decisions per region without automatic page conversion.
+- Adds strict schema, local evidence hashes, approval revision digest, typed
+  controls, dynamic providers, acceptance coverage, synthetic positive/rejected
+  examples and standalone tests. Validation never grants remote permissions.
+- Adds executor-neutral Novamira preflight/implementation/QA guide and reusable
+  handoff prompt; no connector API or live WordPress validation is invented.
+- Preserves all publisher exporters; routes editorial work through specs and
+  an available executor instead of defaulting to a widget ZIP.
+- Documents architecture, boundaries, five decision cases and installation.
+
+`wordpress-publisher` 0.3.0
+
+- Keeps mode-less configurations on the original front-page exporter; adds
+  page-template (canvas/theme), isolated embedded-page shortcode, and
+  Elementor domain widgets (editable FAQ and dynamic WooCommerce Product Grid).
+- Adds explicit mode dispatch, parsed HTML/CSS, scoped selectors and animation
+  names, conditional fragment assets, slug-specific registrations, dependency
+  guards, and a scoped WooCommerce CPT query adapter for product filters.
+- Adds artifact inventories, PHP CLI syntax checks and validation before every
+  ZIP. Rejects unsafe paths, symlinks, non-static PHP payloads and unsupported
+  embedded CSS instead of silently producing an unsafe integration.
+- Restores the tracked synthetic WordPress build fixture and adds mode export,
+  ZIP extraction, PHP API-contract and negative tests without removing old tests.
+- Adds installation dependencies (npm ci and PHP CLI). Updates mode selection,
+  staging QA and honest boundaries: multi-build, other domain widgets, automatic
+  design conversion and live WordPress validation are not implied.
+
 `reference-to-astro` 1.3.0
 
 - Incorporates VvvebJs and other free-form HTML editors as external review

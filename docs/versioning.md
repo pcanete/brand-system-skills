@@ -10,7 +10,8 @@ Each skill follows semantic versioning independently.
 | reference-lab-builder | 0.2.1 | Reference Lab Spec 0.1 |
 | reference-to-astro | 1.3.0 | Web reference schemas 0.3.x–0.4.x + Site Blueprint 1.0 |
 | visual-tuning-kit | 0.6.0 | Tuning Schema and Values 0.1 |
-| wordpress-publisher | 0.2.0 | Plugin de portada y reporte de exportación |
+| wordpress-publisher | 0.3.1 | Exportadores compatibles; routing editorial a spec y executor |
+| elementor-component-spec | 0.1.0 | Elementor Component Spec 0.1 |
 
 ## Rules
 
@@ -29,4 +30,5 @@ Use release tags such as:
 - `reference-lab-builder-v0.2.1`
 - `reference-to-astro-v1.3.0`
 - `visual-tuning-kit-v0.6.0`
-- `wordpress-publisher-v0.2.0`
+- `wordpress-publisher-v0.3.1`
+- `elementor-component-spec-v0.1.0`

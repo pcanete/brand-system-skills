@@ -1,14 +1,56 @@
 ---
 name: wordpress-publisher
-description: Convierte un sitio Astro ya construido en un plugin de WordPress que reemplaza únicamente la portada, dejando que WordPress siga atendiendo cuenta, registro, tienda, búsqueda y administración. Genera el paquete, verifica que sea instalable y produce un ZIP. Usar cuando la portada nueva tiene que convivir con un WordPress existente en lugar de reemplazarlo. No usar para publicar un sitio estático completo, que no necesita WordPress en el medio.
+description: Empaqueta diseños Astro para WordPress como portada, plantilla o experiencia embebida. Para editabilidad deriva primero a elementor-component-spec y a un executor disponible; conserva exportación ZIP de widgets de dominio como alternativa explícita. Valida artefactos sin instalar en producción ni ejecutar Astro en WordPress.
 license: MIT
 metadata:
-  version: "0.2.0"
+  version: "0.3.1"
 ---
 
 # WordPress Publisher
 
-El último paso: una portada compilada, adentro de un WordPress que sigue vivo.
+El último paso: elegir la integración adecuada dentro de un WordPress que sigue vivo.
+
+## Elegir la integración antes de producir
+
+Si se solicita edición Elementor, usar primero elementor-component-spec para
+decidir COMPILED, ELEMENTOR_NATIVE o ELEMENTOR_CUSTOM_WIDGET. Con Novamira u
+otro executor apto, entregar el contrato aprobado para implementación en el
+destino autorizado; no generar un ZIP de widgets por defecto. El modo histórico
+elementor-widgets sigue disponible como alternativa explícita si falta ese
+executor, con sus límites actuales. No transforma automáticamente el nuevo
+contrato en PHP. Los tres exportadores compilados no cambian.
+
+Determinar con el brief y preguntar sólo lo que falte:
+
+1. ¿Es una página completa o una experiencia insertada?
+2. ¿Necesita edición granular por una persona no técnica?
+3. ¿Necesita datos dinámicos WordPress/WooCommerce?
+4. ¿Se reutiliza en varias páginas?
+5. ¿Debe vivir dentro de Elementor?
+
+Código compilado para fidelidad y libertad visual; Elementor para componentes
+editables, dinámicos o reutilizables. Tener Elementor instalado no es motivo
+suficiente para convertir una página a widgets. Datos dinámicos por sí solos
+tampoco obligan a Elementor: confirmar el requisito editorial.
+
+| Pedido | Modo |
+| --- | --- |
+| A. Rediseñar la home sin tocar WooCommerce | `front-page` |
+| B. Landing Astro en /servicio-x/ | `page-template` |
+| C. Calculadora dentro de una página Elementor | `embedded-page` |
+| D. Shop con filtros editables y productos reales | Primero spec y executor; `elementor-widgets` sólo alternativa explícita |
+| E. Landing terminada que nadie editará | `page-template`, no fragmentarla |
+
+Leer `references/integration-modes.md` para configuración, límites y puesta en
+uso del modo elegido. La configuración sin `mode` conserva `front-page`.
+Antes de usar los comandos, ejecutar `npm ci` dentro de este skill. Node 18+
+y PHP CLI 7.4+ son requisitos; PHP puede seleccionarse con `PHP_BINARY`.
+
+Los widgets incluidos son FAQ y Product Grid con filtros. No prometer Product
+Hero/Gallery/Specs ni fidelidad automática al build: se implementan y verifican
+por proyecto como componentes de dominio, no como micro-widgets.
+
+## Comportamiento conservado: front-page
 
 Es el caso frecuente en un rediseño real. El cliente tiene WordPress con
 cuentas, tienda, formularios y plugins que funcionan. Lo que quiere cambiar es
@@ -18,7 +60,7 @@ la portada aparte parte el dominio en dos.
 Este skill toma el `dist/` de Astro y lo empaqueta como plugin: WordPress
 entrega la portada nueva y conserva todo lo demás intacto.
 
-## Qué toca y qué no
+## Qué toca y qué no en front-page
 
 El plugin interviene **sólo** cuando la petición es la portada pública. Deja
 pasar sin tocar nada: administración, AJAX, feeds, embeds y cualquier otra
@@ -37,7 +79,7 @@ funcionales de WooCommerce.
 Esa distinción es el corazón del asunto. Aislar de más rompe el sitio del
 cliente; aislar de menos deja la portada peleando con el tema.
 
-## Uso
+## Uso de portada (los otros modos conservan estos comandos)
 
 1. Declarar el plugin en `wordpress.config.json`, en la raíz del proyecto:
 
@@ -116,6 +158,43 @@ hay export.
 
 ## Qué verifica el validador
 
+Además del control histórico de portada, el validador verifica el modo en
+`integration.json`, el inventario con hashes y sus archivos PHP mediante
+`scripts/php-syntax.mjs` (`php -n -l`, sin ejecutar el plugin).
+Page-template exige registro, selección acotada y hooks según layout.
+Embedded exige shortcode/fragmento aislado; Elementor, dependencias,
+categoría, registro y controles. `scripts/package-plugin.mjs` también valida:
+no hay un atajo al ZIP cuando falla el artefacto.
+
+Esto comprueba contratos y sintaxis, no una instalación real ni fidelidad
+visual. No llamar "probado en WordPress" a un harness con APIs simuladas.
+
+## Verificación de entrega
+
+Probar en staging la página destino, una página ajena, usuario anónimo y
+autenticado, búsqueda, cuenta, tienda y carrito. Para theme/embedded revisar
+estilos del anfitrión antes/después, shortcode desde Gutenberg y Elementor,
+consola, fuentes, módulos JS, dos instancias y navegación. Para widgets,
+verificar el editor y frontend con/sin Elementor y WooCommerce, productos
+variables, ocultos, precios, paginación, filtros y permisos.
+No instalar, activar ni actualizar un WordPress remoto sin autorización.
+
+El aislamiento de CSS no es un sandbox de JavaScript. Revisar scripts del
+build: selectores sobre document/body, IDs duplicados, ClientRouter, listeners
+y portales pueden afectar al anfitrión. Adaptarlos en Astro y reconstruir;
+no afirmar aislamiento funcional basándose sólo en CSS.
+
+## Organización interna
+
+`scripts/export-plugin.mjs` despacha exportadores por modo. Los módulos de
+`scripts/exporters` conservan portada y separan plantilla, shortcode y widgets.
+`scripts/lib` contiene configuración, HTML/assets, CSS y validación. Las
+plantillas históricas están en `assets/plugin-template`; las de componentes
+en `assets/elementor`. La documentación técnica y los límites están en
+`references/integration-modes.md`.
+
+### Controles históricos conservados para portada
+
 El exportador revisa lo que puede mientras genera. El validador revisa el
 artefacto terminado, que es lo que realmente se instala:
 
@@ -129,7 +208,7 @@ artefacto terminado, que es lo que realmente se instala:
 
 Un paquete incompleto no falla al generarse: falla en la portada del cliente.
 
-## El plugin generado
+## El plugin de portada generado
 
 Se niega a activarse si le falta el build. Es preferible un plugin que no
 enciende a una portada en blanco en producción.

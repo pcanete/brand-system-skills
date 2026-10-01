@@ -1,0 +1,1007 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ELEMENTOR_COMPONENT_SPEC 0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "componentName",
+    "componentSlug",
+    "purpose",
+    "sourceReference",
+    "publicationMode",
+    "decision",
+    "visualRequirements",
+    "layoutStructure",
+    "responsiveBehavior",
+    "editableControls",
+    "dynamicData",
+    "dataSources",
+    "interactions",
+    "states",
+    "dependencies",
+    "cssIsolation",
+    "javascriptRequirements",
+    "accessibilityRequirements",
+    "fallbackBehavior",
+    "acceptanceCriteria",
+    "implementationNotes",
+    "validationChecklist",
+    "approval",
+    "executionPolicy"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "0.1"
+    },
+    "componentName": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "componentSlug": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "sourceReference": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "minItems": 1
+    },
+    "publicationMode": {
+      "enum": [
+        "COMPILED",
+        "ELEMENTOR_NATIVE",
+        "ELEMENTOR_CUSTOM_WIDGET"
+      ]
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "granularEditing",
+        "dynamicContent",
+        "reusable",
+        "decorativeOnly",
+        "rationale",
+        "nativeAssessment",
+        "scope",
+        "compiledIntegration",
+        "nativeMapping"
+      ],
+      "properties": {
+        "granularEditing": {
+          "type": "boolean"
+        },
+        "dynamicContent": {
+          "type": "boolean"
+        },
+        "reusable": {
+          "type": "boolean"
+        },
+        "decorativeOnly": {
+          "type": "boolean"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "nativeAssessment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "feasible",
+            "preservesFidelity",
+            "fragmentation",
+            "editingComplexity",
+            "reason",
+            "evidenceRefs"
+          ],
+          "properties": {
+            "feasible": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "preservesFidelity": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "fragmentation": {
+              "enum": [
+                "low",
+                "high",
+                "unknown"
+              ]
+            },
+            "editingComplexity": {
+              "enum": [
+                "low",
+                "high",
+                "unknown"
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "evidenceRefs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "uniqueItems": true
+            }
+          }
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "regionId",
+            "keepCompiledRegions",
+            "editableRegions"
+          ],
+          "properties": {
+            "regionId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "keepCompiledRegions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "minItems": 0
+            },
+            "editableRegions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "minItems": 0
+            }
+          }
+        },
+        "compiledIntegration": {
+          "enum": [
+            null,
+            "front-page",
+            "page-template",
+            "embedded-page"
+          ]
+        },
+        "nativeMapping": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "widget",
+              "role",
+              "settings",
+              "dependencyId"
+            ],
+            "properties": {
+              "widget": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "role": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "settings": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "dependencyId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              }
+            }
+          },
+          "minItems": 0
+        }
+      }
+    },
+    "visualRequirements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/requirement"
+      },
+      "minItems": 1
+    },
+    "layoutStructure": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/requirement"
+      },
+      "minItems": 1
+    },
+    "responsiveBehavior": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "viewport",
+          "width",
+          "requirements"
+        ],
+        "properties": {
+          "viewport": {
+            "enum": [
+              "desktop",
+              "tablet",
+              "mobile"
+            ]
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 240,
+            "maximum": 7680
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/requirement"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "minItems": 3
+    },
+    "editableControls": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "label",
+          "type",
+          "default",
+          "responsive",
+          "required",
+          "dynamic",
+          "source",
+          "constraints"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "type": {
+            "enum": [
+              "text",
+              "textarea",
+              "richtext",
+              "url",
+              "media",
+              "number",
+              "select",
+              "switcher",
+              "repeater"
+            ]
+          },
+          "default": {},
+          "responsive": {
+            "type": "boolean"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "dynamic": {
+            "type": "boolean"
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "ref"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "editor",
+                  "data-binding"
+                ]
+              },
+              "ref": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          },
+          "constraints": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [],
+            "properties": {
+              "min": {
+                "type": "number"
+              },
+              "max": {
+                "type": "number"
+              },
+              "maxLength": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "options": {
+                "type": "array",
+                "items": {
+                  "type": [
+                    "string",
+                    "number",
+                    "boolean"
+                  ]
+                },
+                "minItems": 1
+              },
+              "allowedHosts": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 0
+              },
+              "maxItems": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        }
+      },
+      "minItems": 0
+    },
+    "dynamicData": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "sourceId",
+          "field",
+          "targetPath",
+          "valueType",
+          "escape",
+          "emptyFallback",
+          "missingDependencyFallback",
+          "required"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "sourceId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "field": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "targetPath": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "valueType": {
+            "enum": [
+              "string",
+              "number",
+              "boolean",
+              "url",
+              "html",
+              "image",
+              "collection"
+            ]
+          },
+          "escape": {
+            "enum": [
+              "esc_html",
+              "esc_attr",
+              "esc_url",
+              "wp_kses_post",
+              "typed"
+            ]
+          },
+          "emptyFallback": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "missingDependencyFallback": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "required": {
+            "type": "boolean"
+          }
+        }
+      },
+      "minItems": 0
+    },
+    "dataSources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "provider",
+          "objectType",
+          "locator",
+          "access",
+          "dependencyId",
+          "verification",
+          "notes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "provider": {
+            "enum": [
+              "wordpress-post",
+              "woocommerce-product",
+              "acf",
+              "jetengine",
+              "custom-field",
+              "taxonomy",
+              "meta-field",
+              "site-setting"
+            ]
+          },
+          "objectType": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "access": {
+            "enum": [
+              "public-read",
+              "capability-checked-read"
+            ]
+          },
+          "dependencyId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "verification": {
+            "enum": [
+              "pending",
+              "verified"
+            ]
+          },
+          "notes": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        }
+      },
+      "minItems": 0
+    },
+    "interactions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "trigger",
+          "from",
+          "to",
+          "behavior",
+          "keyboard",
+          "basis",
+          "evidenceRefs"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "trigger": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "from": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "behavior": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "keyboard": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "basis": {
+            "enum": [
+              "observed",
+              "inferred",
+              "decision"
+            ]
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "uniqueItems": true
+          }
+        }
+      },
+      "minItems": 0
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/requirement"
+      },
+      "minItems": 1
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "versionConstraint",
+          "required",
+          "fallback"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "kind": {
+            "enum": [
+              "wordpress",
+              "elementor",
+              "woocommerce",
+              "acf",
+              "jetengine",
+              "plugin",
+              "library"
+            ]
+          },
+          "versionConstraint": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "fallback": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "cssIsolation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "strategy",
+        "rootSelector",
+        "forbiddenGlobalSelectors",
+        "assetLoading"
+      ],
+      "properties": {
+        "strategy": {
+          "enum": [
+            "root-class",
+            "native-scoped",
+            "compiled"
+          ]
+        },
+        "rootSelector": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "forbiddenGlobalSelectors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1
+        },
+        "assetLoading": {
+          "enum": [
+            "on-render",
+            "compiled-page"
+          ]
+        }
+      }
+    },
+    "javascriptRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "reason",
+        "initialization",
+        "cleanup",
+        "reducedMotion"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "initialization": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "cleanup": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "reducedMotion": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "accessibilityRequirements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/requirement"
+      },
+      "minItems": 1
+    },
+    "fallbackBehavior": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/requirement"
+      },
+      "minItems": 1
+    },
+    "acceptanceCriteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description",
+          "method",
+          "expected",
+          "requirementRefs"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "method": {
+            "enum": [
+              "visual-comparison",
+              "interaction-test",
+              "data-test",
+              "accessibility-test",
+              "inspection"
+            ]
+          },
+          "expected": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "requirementRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "implementationNotes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "minItems": 1
+    },
+    "validationChecklist": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "criterionRefs",
+          "status",
+          "evidenceRefs",
+          "reviewer"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "criterionRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "minItems": 1
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "passed",
+              "failed"
+            ]
+          },
+          "evidenceRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9-]*$"
+            },
+            "uniqueItems": true
+          },
+          "reviewer": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "approvedBy",
+        "approvedAt",
+        "record",
+        "specDigest"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "draft",
+            "approved"
+          ]
+        },
+        "approvedBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "approvedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "record": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "specDigest": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "executionPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "executorNeutral",
+        "preferredContainer",
+        "productionRequiresExplicitApproval",
+        "remoteWritesAuthorized"
+      ],
+      "properties": {
+        "executorNeutral": {
+          "const": true
+        },
+        "preferredContainer": {
+          "enum": [
+            "project-plugin",
+            "existing-native-document",
+            "compiled-build"
+          ]
+        },
+        "productionRequiresExplicitApproval": {
+          "const": true
+        },
+        "remoteWritesAuthorized": {
+          "const": false
+        }
+      }
+    }
+  },
+  "$defs": {
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "statement",
+        "basis",
+        "evidenceRefs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "basis": {
+          "enum": [
+            "observed",
+            "inferred",
+            "decision"
+          ]
+        },
+        "evidenceRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "artifact",
+        "digestMode",
+        "sha256",
+        "description"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "kind": {
+          "enum": [
+            "approved-design",
+            "html",
+            "astro-component",
+            "style-dna",
+            "brief",
+            "capture",
+            "inspection"
+          ]
+        },
+        "artifact": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!.*\\\\)(?!.*:).+"
+        },
+        "digestMode": {
+          "enum": [
+            "bytes",
+            "utf8-lf"
+          ]
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    }
+  }
+}
