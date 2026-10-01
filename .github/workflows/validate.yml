@@ -39,6 +39,7 @@ jobs:
           npm ci --prefix skills/reference-lab-builder
           npm ci --prefix skills/visual-tuning-kit
           npm ci --prefix skills/wordpress-publisher
+          npm ci --prefix skills/elementor-component-spec
 
       - name: Set up PHP for generated plugins
         uses: shivammathur/setup-php@v2

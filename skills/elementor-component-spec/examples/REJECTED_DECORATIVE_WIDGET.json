@@ -1,0 +1,329 @@
+{
+  "schemaVersion": "0.1",
+  "componentName": "Hero decorativo",
+  "componentSlug": "decorative-hero",
+  "purpose": "Preservar composición Astro compleja no editable.",
+  "sourceReference": [
+    {
+      "id": "brief",
+      "kind": "brief",
+      "artifact": "reference.md",
+      "digestMode": "utf8-lf",
+      "sha256": "3b1930b3bfbdd7990fa992f2ae812235e588b20524c2c6bf274bd42412c25b2f",
+      "description": "Brief sintético; no captura ni instalación inspeccionada."
+    }
+  ],
+  "publicationMode": "ELEMENTOR_CUSTOM_WIDGET",
+  "decision": {
+    "granularEditing": false,
+    "dynamicContent": false,
+    "reusable": false,
+    "decorativeOnly": true,
+    "rationale": "Sin edición ni datos dinámicos; conservar Astro.",
+    "nativeAssessment": {
+      "feasible": null,
+      "preservesFidelity": null,
+      "fragmentation": "unknown",
+      "editingComplexity": "unknown",
+      "reason": "No necesita Elementor.",
+      "evidenceRefs": []
+    },
+    "scope": {
+      "regionId": "decorative-hero",
+      "keepCompiledRegions": [
+        "decorative-hero"
+      ],
+      "editableRegions": []
+    },
+    "compiledIntegration": "page-template",
+    "nativeMapping": []
+  },
+  "visualRequirements": [
+    {
+      "id": "visual-hero",
+      "statement": "Conservar composición compleja aprobada.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "layoutStructure": [
+    {
+      "id": "layout-hero",
+      "statement": "Componente Astro canónico sin controles Elementor.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "responsiveBehavior": [
+    {
+      "viewport": "desktop",
+      "width": 1440,
+      "requirements": [
+        {
+          "id": "desktop-intro",
+          "statement": "Lectura vertical e imagen fluida sin desbordes a 1440px.",
+          "basis": "decision",
+          "evidenceRefs": [
+            "brief"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "tablet",
+      "width": 768,
+      "requirements": [
+        {
+          "id": "tablet-intro",
+          "statement": "Lectura vertical e imagen fluida sin desbordes a 768px.",
+          "basis": "decision",
+          "evidenceRefs": [
+            "brief"
+          ]
+        }
+      ]
+    },
+    {
+      "viewport": "mobile",
+      "width": 390,
+      "requirements": [
+        {
+          "id": "mobile-intro",
+          "statement": "Lectura vertical e imagen fluida sin desbordes a 390px.",
+          "basis": "decision",
+          "evidenceRefs": [
+            "brief"
+          ]
+        }
+      ]
+    }
+  ],
+  "editableControls": [],
+  "dynamicData": [],
+  "dataSources": [],
+  "interactions": [],
+  "states": [
+    {
+      "id": "intro-default",
+      "statement": "Contenido visible sin comportamiento adicional.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "id": "wordpress",
+      "kind": "wordpress",
+      "versionConstraint": "Confirmar versión instalada y compatibilidad en preflight.",
+      "required": true,
+      "fallback": "Guard de carga sin fatal; detener funcionalidad dependiente con aviso administrativo."
+    }
+  ],
+  "cssIsolation": {
+    "strategy": "compiled",
+    "rootSelector": ".bs-decorative-hero",
+    "forbiddenGlobalSelectors": [
+      "body",
+      "html",
+      "* sin raíz"
+    ],
+    "assetLoading": "compiled-page"
+  },
+  "javascriptRequirements": {
+    "required": false,
+    "reason": "Sin comportamiento adicional.",
+    "initialization": "Sin JS propio.",
+    "cleanup": "Sin listeners propios.",
+    "reducedMotion": "No añadir animación no aprobada."
+  },
+  "accessibilityRequirements": [
+    {
+      "id": "accessible-intro",
+      "statement": "Heading coherente y alt significativo.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "fallbackBehavior": [
+    {
+      "id": "fallback-intro",
+      "statement": "Conservar texto, no publicar imagen faltante.",
+      "basis": "decision",
+      "evidenceRefs": [
+        "brief"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "accept-visual-hero",
+      "description": "Verificar Conservar composición compleja aprobada.",
+      "method": "inspection",
+      "expected": "Conservar composición compleja aprobada.",
+      "requirementRefs": [
+        "visual-hero"
+      ]
+    },
+    {
+      "id": "accept-layout-hero",
+      "description": "Verificar Componente Astro canónico sin controles Elementor.",
+      "method": "inspection",
+      "expected": "Componente Astro canónico sin controles Elementor.",
+      "requirementRefs": [
+        "layout-hero"
+      ]
+    },
+    {
+      "id": "accept-desktop-intro",
+      "description": "Verificar Lectura vertical e imagen fluida sin desbordes a 1440px.",
+      "method": "inspection",
+      "expected": "Lectura vertical e imagen fluida sin desbordes a 1440px.",
+      "requirementRefs": [
+        "desktop-intro"
+      ]
+    },
+    {
+      "id": "accept-tablet-intro",
+      "description": "Verificar Lectura vertical e imagen fluida sin desbordes a 768px.",
+      "method": "inspection",
+      "expected": "Lectura vertical e imagen fluida sin desbordes a 768px.",
+      "requirementRefs": [
+        "tablet-intro"
+      ]
+    },
+    {
+      "id": "accept-mobile-intro",
+      "description": "Verificar Lectura vertical e imagen fluida sin desbordes a 390px.",
+      "method": "inspection",
+      "expected": "Lectura vertical e imagen fluida sin desbordes a 390px.",
+      "requirementRefs": [
+        "mobile-intro"
+      ]
+    },
+    {
+      "id": "accept-intro-default",
+      "description": "Verificar Contenido visible sin comportamiento adicional.",
+      "method": "inspection",
+      "expected": "Contenido visible sin comportamiento adicional.",
+      "requirementRefs": [
+        "intro-default"
+      ]
+    },
+    {
+      "id": "accept-accessible-intro",
+      "description": "Verificar Heading coherente y alt significativo.",
+      "method": "accessibility-test",
+      "expected": "Heading coherente y alt significativo.",
+      "requirementRefs": [
+        "accessible-intro"
+      ]
+    },
+    {
+      "id": "accept-fallback-intro",
+      "description": "Verificar Conservar texto, no publicar imagen faltante.",
+      "method": "inspection",
+      "expected": "Conservar texto, no publicar imagen faltante.",
+      "requirementRefs": [
+        "fallback-intro"
+      ]
+    }
+  ],
+  "implementationNotes": [
+    "Ejemplo sintético en borrador. Exportar página con wordpress-publisher page-template, no widget."
+  ],
+  "validationChecklist": [
+    {
+      "id": "check-accept-visual-hero",
+      "criterionRefs": [
+        "accept-visual-hero"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-layout-hero",
+      "criterionRefs": [
+        "accept-layout-hero"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-desktop-intro",
+      "criterionRefs": [
+        "accept-desktop-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-tablet-intro",
+      "criterionRefs": [
+        "accept-tablet-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-mobile-intro",
+      "criterionRefs": [
+        "accept-mobile-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-intro-default",
+      "criterionRefs": [
+        "accept-intro-default"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-accessible-intro",
+      "criterionRefs": [
+        "accept-accessible-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    },
+    {
+      "id": "check-accept-fallback-intro",
+      "criterionRefs": [
+        "accept-fallback-intro"
+      ],
+      "status": "pending",
+      "evidenceRefs": [],
+      "reviewer": null
+    }
+  ],
+  "approval": {
+    "status": "draft",
+    "approvedBy": null,
+    "approvedAt": null,
+    "record": null,
+    "specDigest": null
+  },
+  "executionPolicy": {
+    "executorNeutral": true,
+    "preferredContainer": "compiled-build",
+    "productionRequiresExplicitApproval": true,
+    "remoteWritesAuthorized": false
+  }
+}

@@ -1,9 +1,9 @@
 ---
 name: wordpress-publisher
-description: Publica diseños Astro en WordPress como portada, plantilla de página o experiencia embebida, y genera widgets de dominio Elementor cuando se necesita edición o datos dinámicos. Elige la integración adecuada, valida el plugin y genera un ZIP sin instalarlo en producción. No convierte automáticamente una landing en widgets ni ejecuta Astro dentro de WordPress.
+description: Empaqueta diseños Astro para WordPress como portada, plantilla o experiencia embebida. Para editabilidad deriva primero a elementor-component-spec y a un executor disponible; conserva exportación ZIP de widgets de dominio como alternativa explícita. Valida artefactos sin instalar en producción ni ejecutar Astro en WordPress.
 license: MIT
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # WordPress Publisher
@@ -11,6 +11,14 @@ metadata:
 El último paso: elegir la integración adecuada dentro de un WordPress que sigue vivo.
 
 ## Elegir la integración antes de producir
+
+Si se solicita edición Elementor, usar primero elementor-component-spec para
+decidir COMPILED, ELEMENTOR_NATIVE o ELEMENTOR_CUSTOM_WIDGET. Con Novamira u
+otro executor apto, entregar el contrato aprobado para implementación en el
+destino autorizado; no generar un ZIP de widgets por defecto. El modo histórico
+elementor-widgets sigue disponible como alternativa explícita si falta ese
+executor, con sus límites actuales. No transforma automáticamente el nuevo
+contrato en PHP. Los tres exportadores compilados no cambian.
 
 Determinar con el brief y preguntar sólo lo que falte:
 
@@ -30,7 +38,7 @@ tampoco obligan a Elementor: confirmar el requisito editorial.
 | A. Rediseñar la home sin tocar WooCommerce | `front-page` |
 | B. Landing Astro en /servicio-x/ | `page-template` |
 | C. Calculadora dentro de una página Elementor | `embedded-page` |
-| D. Shop con filtros editables y productos reales | `elementor-widgets` |
+| D. Shop con filtros editables y productos reales | Primero spec y executor; `elementor-widgets` sólo alternativa explícita |
 | E. Landing terminada que nadie editará | `page-template`, no fragmentarla |
 
 Leer `references/integration-modes.md` para configuración, límites y puesta en

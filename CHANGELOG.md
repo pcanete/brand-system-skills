@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+`elementor-component-spec` 0.1.0 · `wordpress-publisher` 0.3.1
+
+- Separates design criteria, portable Elementor component specification and
+  authorized remote execution. Supports COMPILED, ELEMENTOR_NATIVE and
+  ELEMENTOR_CUSTOM_WIDGET decisions per region without automatic page conversion.
+- Adds strict schema, local evidence hashes, approval revision digest, typed
+  controls, dynamic providers, acceptance coverage, synthetic positive/rejected
+  examples and standalone tests. Validation never grants remote permissions.
+- Adds executor-neutral Novamira preflight/implementation/QA guide and reusable
+  handoff prompt; no connector API or live WordPress validation is invented.
+- Preserves all publisher exporters; routes editorial work through specs and
+  an available executor instead of defaulting to a widget ZIP.
+- Documents architecture, boundaries, five decision cases and installation.
+
 `wordpress-publisher` 0.3.0
 
 - Keeps mode-less configurations on the original front-page exporter; adds

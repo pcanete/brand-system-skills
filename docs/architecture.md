@@ -57,6 +57,57 @@ panel or its write endpoint.
 
 ## Contract ownership
 
+### WordPress: criterio, contrato y ejecución
+
+La revisión de responsabilidades conserva reference-to-astro como dueño de la
+implementación Astro y visual-tuning-kit como ajuste acotado de desarrollo.
+Ninguno debe convertirse en un editor WordPress ni perder su fuente canónica.
+wordpress-publisher mantiene sus exportadores compilados y el generador
+histórico de widgets como alternativa explícita; no adquiere un conector remoto.
+
+La nueva capacidad independiente elementor-component-spec posee la decisión
+por región y ELEMENTOR_COMPONENT_SPEC 0.1. Recibe diseño aprobado, HTML,
+componentes Astro o STYLE_DNA con evidencia y brief editorial. No necesita
+copiar los contratos de los scanners, generar PHP ni diseñar desde cero.
+
+```text
+diseño aprobado + evidencia + necesidades editoriales
+  -> elementor-component-spec -> revisión humana del contrato
+       COMPILED -> wordpress-publisher -> build/ZIP validado
+       NATIVE   -> widgets existentes en documento Elementor
+       CUSTOM   -> plugin propio del proyecto / widget de dominio
+                    |
+              executor apto (Novamira cuando disponible)
+              inspección -> permiso de staging -> implementación
+              -> evidencia visual -> revisión -> permiso de producción
+```
+
+El executor descubre capacidades y versiones reales. No existe dependencia de
+una API Novamira supuesta: el contrato puede trasladarse a otro agente o equipo.
+La aprobación de diseño no autoriza operaciones remotas. No se crea un ZIP de
+widgets como paso predeterminado ni se modifica Elementor core.
+
+En un sitio híbrido cada región editable tiene su spec y las regiones
+compiladas se inventarían explícitamente. El punto de montaje debe verificarse
+en destino: no se promete composición automática entre Astro y Elementor.
+Los cinco casos y la definición completa están en
+[contract.md](../skills/elementor-component-spec/references/contract.md).
+
+### Alcance de esta incorporación
+
+Se agrega skills/elementor-component-spec con instrucciones, schema, ejemplos,
+validator y pruebas autónomas. Se cambia sólo el routing documental y versión
+patch de wordpress-publisher, además de README, arquitectura, instalación,
+versiones, changelog y registro/CI de pruebas. No se modifica el código de
+exportación, reference-to-astro ni visual-tuning-kit; sus responsabilidades se
+evaluaron arriba sin duplicarlas.
+
+No se modifica un repositorio de Claude, una copia instalada del skill ni un
+WordPress remoto. Esta incorporación entrega especificación y pruebas locales,
+no un plugin Elementor probado en una instalación real.
+
+## Propiedad de contratos
+
 - Brand contracts belong to `brand-dna-scanner`.
 - The manual composition and review contract belongs to `brand-manual-builder`.
 - Web reference contracts are authored by `reference-scanner`.
@@ -68,6 +119,9 @@ panel or its write endpoint.
 - Tuning schema and value contracts belong to `visual-tuning-kit`; the Astro
   builder may propose controls but cannot approve the user's choices.
 - CI fails if shared web schemas drift.
+- ELEMENTOR_COMPONENT_SPEC belongs to elementor-component-spec, including its
+  revision approval digest. Implementation reports remain separate from the
+  approved contract and are tied to that digest.
 
 The same applies to verification. `scripts/lib/web-contracts.mjs` holds the
 gates for the web contracts and is duplicated byte-identically in

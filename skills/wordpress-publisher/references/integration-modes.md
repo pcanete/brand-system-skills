@@ -1,5 +1,10 @@
 # Integraciones WordPress
 
+Para necesidades editoriales, decidir primero con elementor-component-spec y
+entregar el contrato aprobado a Novamira u otro executor apto. La exportación
+elementor-widgets documentada aquí es una alternativa explícita cuando falta
+ese executor, no una conversión automática del nuevo contrato.
+
 ## Configuración y comandos
 
 Se preservan slug, name, description, author, version (x.y.z), constPrefix,

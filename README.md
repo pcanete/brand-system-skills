@@ -4,7 +4,7 @@
 
 Una marca no es solamente una paleta. Una web no es solamente una captura de pantalla. Y reconstruir una referencia no debería significar copiar su código ni confundir su identidad con la del cliente.
 
-`brand-system-skills` organiza ese trabajo en cinco capacidades independientes y compatibles: extraer el ADN de una marca, convertirlo en un checkpoint visual aprobable, analizar una web de referencia, probar ese sistema en un laboratorio neutral y convertir los contratos aprobados en un sitio Astro con contenido real.
+`brand-system-skills` organiza ese trabajo en ocho capacidades independientes: marca, manual visual, referencia, laboratorio, Astro, ajuste visual, publicación compilada y especificación de componentes editables. Separa criterio de diseño, contrato portable y ejecución en WordPress.
 
 El repositorio está pensado para diseñadores, desarrolladores, equipos de marca y agentes de IA que necesitan trabajar con más criterio que una indicación como «hacelo parecido a esto».
 
@@ -23,7 +23,7 @@ Sin un método, esas señales terminan convertidas en decisiones arbitrarias. Es
 
 El objetivo no es automatizar el gusto. Es hacer visible el razonamiento para que la dirección creativa, la producción y la validación puedan trabajar sobre una misma base.
 
-## Las seis capas
+## Las ocho capacidades
 
 | Capa | Skill | Pregunta que responde | Salida principal |
 | --- | --- | --- | --- |
@@ -33,7 +33,8 @@ El objetivo no es automatizar el gusto. Es hacer visible el razonamiento para qu
 | Laboratorio | `reference-lab-builder` | ¿Entendimos realmente sus componentes y comportamientos? | Web neutral interactiva y aprobable |
 | Implementación | `reference-to-astro` | ¿Cómo se reconstruye ese sistema con el contenido del cliente? | Proyecto Astro verificado |
 | Ajuste visual | `visual-tuning-kit` | ¿Qué detalles declarados necesita ajustar una persona sobre la implementación? | Valores validados y aprobables |
-| Publicación WordPress | `wordpress-publisher` | ¿Conviene portada, plantilla, experiencia embebida o widget editable? | Plugin validado por modo y ZIP instalable |
+| Publicación WordPress | `wordpress-publisher` | ¿Cómo integrar el build sin alterar el resto del sitio? | Plugin compilado validado; widgets ZIP como alternativa explícita |
+| Especificación editable | `elementor-component-spec` | ¿Qué conservar compilado y qué editar de forma nativa o como componente? | `ELEMENTOR_COMPONENT_SPEC.json` para Novamira u otro executor |
 
 ```text
 Fuentes de marca ──> brand-dna-scanner ──> BRAND_DNA
@@ -64,8 +65,12 @@ Contenido + assets + brief ─────────────────�
                                  ajuste acotado + aprobación
                                               │
                                               v
-                                    wordpress-publisher
-                          integración por modo + validación
+                                 elementor-component-spec
+                            decisión por región + aprobación
+                                 /                     \
+                         COMPILED                  NATIVE / CUSTOM
+                    wordpress-publisher           executor autorizado
+                         build/ZIP                prueba + revisión
 ```
 
 Las capas se complementan, pero no se confunden. El ADN de marca puede orientar una web, una campaña, una presentación o una pieza social. El ADN visual de una referencia web describe ese canal específico. La implementación consume ambos criterios sin apropiarse de la identidad de terceros.
@@ -186,6 +191,29 @@ aprobación humana y no se incluye en el build de producción. El contenido
 aprobado se aplica de forma transaccional al manifiesto canónico: si una ruta o
 la navegación completa falla, no escribe cambios parciales.
 
+### 7. `wordpress-publisher`
+
+Conserva los modos portada, plantilla y experiencia embebida para Astro.
+Valida el artefacto y su ZIP sin instalarlo en el destino. La exportación
+histórica de widgets sigue disponible como alternativa explícita, no como
+salida automática de toda necesidad editorial.
+
+### 8. `elementor-component-spec`
+
+Analiza un diseño ya aprobado y decide por región: conservar código compilado,
+usar widgets nativos suficientes o definir un widget de dominio. Entrega un
+contrato portable con controles, fuentes dinámicas, responsive, estados,
+aislamiento y aceptación. Novamira puede ejecutarlo después de inspeccionar el
+WordPress real y obtener autorización; no gobierna el diseño.
+
+- [Contrato y cinco casos de decisión](skills/elementor-component-spec/references/contract.md).
+- [Ejemplo completo: card WooCommerce](skills/elementor-component-spec/examples/ELEMENTOR_COMPONENT_SPEC.json).
+- [Guía de ejecución](skills/elementor-component-spec/references/NOVAMIRA_EXECUTION_GUIDE.md)
+  y [prompt para el executor](skills/elementor-component-spec/references/EXECUTOR_PROMPT.md).
+
+Los ejemplos son sintéticos y permanecen en borrador. Validar su integridad no
+demuestra fidelidad visual ni autoriza cambios en un WordPress.
+
 ## Flujo completo de trabajo
 
 1. **Reunir fuentes.** Web, manuales, campañas, redes, contenido, fotografías, videos y la referencia elegida.
@@ -200,7 +228,8 @@ la navegación completa falla, no escribe cambios parciales.
 10. **Construir con Astro.** Ejecutar `reference-to-astro` sobre el blueprint aprobado.
 11. **Ajustar visualmente.** Usar `visual-tuning-kit` sobre los controles que el proyecto declaró seguros.
 12. **Verificar.** Comparar comportamiento, responsive, accesibilidad, contratos y evidencia visual.
-13. **Publicar en WordPress, si corresponde.** Usar `wordpress-publisher` para elegir portada, plantilla de página, experiencia embebida o widgets Elementor de dominio. Conservar el build para páginas estables y WordPress/WooCommerce como fuente de datos dinámicos; no convertir automáticamente una landing en widgets.
+13. **Decidir edición por región.** Usar `elementor-component-spec` si se evalúa editabilidad: COMPILED, ELEMENTOR_NATIVE o ELEMENTOR_CUSTOM_WIDGET. Aprobar el contrato antes de ejecutar.
+14. **Integrar en WordPress.** COMPILED usa `wordpress-publisher`; las áreas editables van a Novamira u otro executor apto. Inspeccionar entorno, obtener permiso, probar en draft y revisar visualmente. Publicación requiere autorización independiente; ZIP de widgets no es el modo predeterminado.
 
 Cada paso que produce un contrato termina con su validador. Un contrato rechazado no se fuerza: se completa la evidencia o se baja la afirmación.
 
@@ -230,7 +259,7 @@ También es posible utilizar solamente una capa. Por ejemplo, `brand-dna-scanner
 
 ## Instalación
 
-Los siete skills funcionan igual en **Claude** y en **Codex**: un `SKILL.md` con
+Los ocho skills se distribuyen para **Claude** y **Codex** como un `SKILL.md` con
 su frontmatter, sus referencias, sus contratos y sus validadores. Cambia dónde
 se copia el directorio.
 
@@ -243,8 +272,9 @@ Skills disponibles:
 - [reference-to-astro](https://github.com/pcanete/brand-system-skills/tree/main/skills/reference-to-astro)
 - [visual-tuning-kit](https://github.com/pcanete/brand-system-skills/tree/main/skills/visual-tuning-kit)
 - [wordpress-publisher](https://github.com/pcanete/brand-system-skills/tree/main/skills/wordpress-publisher)
+- [elementor-component-spec](https://github.com/pcanete/brand-system-skills/tree/main/skills/elementor-component-spec)
 
-Instala los siete para el flujo completo de marca a web y WordPress, o solamente el que corresponda a una tarea puntual.
+Instala los ocho para el flujo completo de marca a web y WordPress, o solamente el que corresponda a una tarea puntual. Esto no instala conectores ni concede acceso a sitios.
 
 ### En Claude
 
@@ -345,15 +375,23 @@ brand-system-skills/
 │   │   ├── scripts/
 │   │   └── references/
 │   ├── visual-tuning-kit/
+│   │   ├── SKILL.md
+│   │   ├── schemas/
+│   │   ├── scripts/
+│   │   ├── assets/
+│   │   └── references/
+│   ├── wordpress-publisher/
+│   │   ├── SKILL.md
+│   │   ├── scripts/
+│   │   └── assets/
+│   └── elementor-component-spec/
 │       ├── SKILL.md
+│       ├── agents/
 │       ├── schemas/
-│       ├── scripts/
-│       ├── assets/
-│       └── references/
-│   └── wordpress-publisher/
-│       ├── SKILL.md
-│       ├── scripts/
-│       └── assets/
+│       ├── scripts/       validador y tests autónomos
+│       ├── examples/      tres modos y rechazo sintético
+│       ├── references/    contrato, guía Novamira y prompt
+│       └── package.json   con package-lock.json
 ├── docs/
 │   ├── architecture.md
 │   ├── installation.md
@@ -401,6 +439,7 @@ npm ci --prefix skills/visual-tuning-kit
 
 ```bash
 npm ci --prefix skills/wordpress-publisher
+npm ci --prefix skills/elementor-component-spec
 npm test
 ```
 
@@ -427,7 +466,8 @@ Cada skill sigue versionado semántico de forma independiente:
 | `reference-lab-builder` | `0.2.1` | Reference Lab Spec `0.1`, con mediciones renderizadas fielmente |
 | `reference-to-astro` | `1.3.0` | Web reference schemas `0.3.x–0.4.x` + Site Blueprint `1.0`, con revisión externa trazable |
 | `visual-tuning-kit` | `0.6.0` | Tuning Schema and Values `0.1`, con aplicación transaccional de contenido aprobado |
-| `wordpress-publisher` | `0.3.0` | Cuatro modos de integración; configuración antigua conserva portada |
+| `wordpress-publisher` | `0.3.1` | Cuatro modos compatibles; routing editorial hacia spec y executor |
+| `elementor-component-spec` | `0.1.0` | Elementor Component Spec `0.1`, sin permisos remotos |
 
 Para actualizar una copia del repositorio:
 

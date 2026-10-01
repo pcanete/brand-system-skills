@@ -1,4 +1,4 @@
 interface:
   display_name: "WordPress Publisher"
   short_description: "Publica páginas, experiencias y widgets en WordPress"
-  default_prompt: "Usa $wordpress-publisher para elegir el modo de integración WordPress de este diseño y generar un plugin validado, sin instalarlo en producción."
+  default_prompt: "Usa $wordpress-publisher para integrar el build compilado en WordPress. Si necesito edición Elementor, deriva primero a elementor-component-spec y a un executor apto; no generes ZIP de widgets por defecto ni instales en producción."
