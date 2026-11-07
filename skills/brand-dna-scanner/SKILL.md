@@ -1,6 +1,6 @@
 ---
 name: brand-dna-scanner
-description: Extracts an evidence-backed Brand DNA from a brand's own material — website, guidelines, campaigns, social, photography, video, packaging, product, UI and copy — separating lasting identity from category convention, campaign styling and one-off execution. Produces BRAND_DNA, BRAND_EVIDENCE, BRAND_REPORT, BRAND_RULES and a reusable BRAND_PROMPT. Use when a brand's rules have to be captured, audited, or handed to whoever makes new work. Not for analyzing one reference website's layout and behavior — that is reference-scanner.
+description: Extracts an evidence-backed Brand DNA from a brand's own material — website, guidelines, campaigns, social, photography, video, packaging, product, UI and copy — separating lasting identity from category convention, campaign styling and one-off execution. Produces BRAND_DNA, BRAND_EVIDENCE, BRAND_REPORT, checkable BRAND_RULES, a reusable BRAND_PROMPT and a DESIGN.md export for design and video tools. Use when a brand's rules have to be captured, audited, or handed to whoever makes new work in any channel — social, video, decks, campaigns, copy or web. Not for analyzing one reference website's layout and behavior — that is reference-scanner.
 license: MIT
 metadata:
   version: "0.5.0"

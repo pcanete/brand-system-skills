@@ -1,12 +1,19 @@
 # Brand System Skills
 
-**Un sistema abierto de skills para pasar de señales dispersas de una marca a una implementación web fiel, explicable y verificable.**
+**Un sistema abierto de skills para convertir las señales dispersas de una marca en un contrato verificable que cualquier producción puede usar: piezas para redes, video, presentaciones, campañas, textos o una web.**
 
-Una marca no es solamente una paleta. Una web no es solamente una captura de pantalla. Y reconstruir una referencia no debería significar copiar su código ni confundir su identidad con la del cliente.
+Una marca no es solamente una paleta. Un manual no es solamente un PDF que alguien lee una vez. Y producir contenido con agentes de IA no debería significar que cada pieza reinterprete la marca desde cero.
 
-`brand-system-skills` organiza ese trabajo en cinco capacidades independientes y compatibles: extraer el ADN de una marca, convertirlo en un checkpoint visual aprobable, analizar una web de referencia, probar ese sistema en un laboratorio neutral y convertir los contratos aprobados en un sitio Astro con contenido real.
+El centro del repositorio es `brand-dna-scanner`. Lee la marca en todos sus canales —web, manual, redes, campañas, fotografía, video, packaging— y produce un ADN respaldado por evidencia, con salidas pensadas para quien produce después, sea una persona, un agente o una herramienta:
 
-El repositorio está pensado para diseñadores, desarrolladores, equipos de marca y agentes de IA que necesitan trabajar con más criterio que una indicación como «hacelo parecido a esto».
+- **reglas verificables** (`BRAND_RULES.json` + `check-piece.mjs`) para revisar el texto de cualquier pieza antes de publicarla, sin que lo revise solamente quien la escribió;
+- **un prompt maestro** (`BRAND_PROMPT.md`) para agentes que generan texto, imagen o video;
+- **`DESIGN.md`**, el formato abierto que leen herramientas de diseño y de video —HyperFrames, Stitch y otros agentes— para usar los colores y la tipografía de la marca, con solo los valores observados como normativos;
+- **un manual navegable** (`brand-manual-builder`) para que una persona apruebe la identidad antes de que nadie produzca con ella.
+
+Sobre ese núcleo, el repositorio trae una línea completa para la web: analizar una web de referencia, probarla en un laboratorio neutral, reconstruirla en Astro con el contenido del cliente, ajustarla y publicarla en WordPress. Es el consumidor más desarrollado del ADN, no el único.
+
+El repositorio está pensado para equipos de marca y de contenido, diseñadores, desarrolladores y agentes de IA que necesitan trabajar con más criterio que una indicación como «hacelo parecido a esto».
 
 ## El problema que resuelve
 
@@ -19,16 +26,35 @@ En un proyecto real suelen convivir fuentes incompletas o contradictorias:
 - una referencia externa elegida por su estructura o su atmósfera;
 - contenido nuevo provisto por el cliente.
 
-Sin un método, esas señales terminan convertidas en decisiones arbitrarias. Este sistema las transforma en contratos explícitos: qué está observado, qué fue inferido, qué pertenece al núcleo de la marca, qué corresponde solamente al canal web y cómo debe implementarse.
+Sin un método, esas señales terminan convertidas en decisiones arbitrarias, y cada pieza nueva —un carrusel, un reel, una presentación, una página— las vuelve a interpretar. Este sistema las transforma en contratos explícitos: qué está observado, qué fue inferido, qué pertenece al núcleo de la marca, qué corresponde solamente a un canal y cómo se verifica una pieza terminada.
 
 El objetivo no es automatizar el gusto. Es hacer visible el razonamiento para que la dirección creativa, la producción y la validación puedan trabajar sobre una misma base.
 
-## Las seis capas
+## Dos partes: el núcleo de marca y la línea web
+
+**El núcleo de marca** sirve para cualquier canal. Sus dos skills alcanzan para producir contenido con la marca sin construir ninguna web.
+
+```text
+Fuentes de marca ──> brand-dna-scanner ──> BRAND_DNA + BRAND_EVIDENCE
+(web, manual, redes,                              │
+ campañas, foto, video)                           v
+                                        brand-manual-builder
+                                         revisión + aprobación
+                                                  │
+        ┌──────────────────┬──────────────────────┼──────────────────────┐
+        v                  v                      v                      v
+   BRAND_RULES        BRAND_PROMPT            DESIGN.md              línea web
+   check-piece:       agentes que generan     HyperFrames, Stitch    (más abajo)
+   el texto de        texto, imagen           y otras herramientas
+   cualquier pieza    y video                 que leen el formato
+```
+
+**La línea web** consume el ADN para un canal concreto: reconstruir el sistema de una web de referencia con la identidad y el contenido de un cliente.
 
 | Capa | Skill | Pregunta que responde | Salida principal |
 | --- | --- | --- | --- |
-| Identidad | `brand-dna-scanner` | ¿Qué hace reconocible y consistente a esta marca? | `BRAND_DNA.json` y evidencia asociada |
-| Checkpoint de marca | `brand-manual-builder` | ¿Cómo se ve y qué debe aprobar una persona antes de producir? | Manual de identidad web navegable |
+| Identidad | `brand-dna-scanner` | ¿Qué hace reconocible y consistente a esta marca, en todos sus canales? | `BRAND_DNA.json`, evidencia, reglas verificables, prompt y `DESIGN.md` |
+| Checkpoint de marca | `brand-manual-builder` | ¿Cómo se ve y qué debe aprobar una persona antes de producir? | Manual de identidad navegable |
 | Expresión web | `reference-scanner` | ¿Cómo funciona visualmente esta web de referencia? | `STYLE_DNA.json` y evidencia asociada |
 | Laboratorio | `reference-lab-builder` | ¿Entendimos realmente sus componentes y comportamientos? | Web neutral interactiva y aprobable |
 | Implementación | `reference-to-astro` | ¿Cómo se reconstruye ese sistema con el contenido del cliente? | Proyecto Astro verificado |
@@ -68,7 +94,7 @@ Contenido + assets + brief ─────────────────�
                               plugin de portada + validación
 ```
 
-Las capas se complementan, pero no se confunden. El ADN de marca puede orientar una web, una campaña, una presentación o una pieza social. El ADN visual de una referencia web describe ese canal específico. La implementación consume ambos criterios sin apropiarse de la identidad de terceros.
+Las capas se complementan, pero no se confunden. El ADN de marca puede orientar una web, una campaña, una presentación, un video o una pieza social. El ADN visual de una referencia web describe ese canal específico. La implementación consume ambos criterios sin apropiarse de la identidad de terceros.
 
 ## Principios de funcionamiento
 
@@ -123,7 +149,9 @@ Produce:
 - `BRAND_PROMPT.md`: base reutilizable para crear nuevas piezas con IA;
 - `DESIGN.md` (opcional, con `scripts/export-design-md.mjs`): el sistema visual en el formato abierto que leen otras herramientas —HyperFrames para video, Stitch, agentes—, con solo los valores respaldados por evidencia como normativos.
 
-Puede alimentar webs, presentaciones, campañas, contenido social, guiones, prompts visuales y sistemas de diseño. Su foco no es describir una pieza aislada, sino encontrar los patrones que sobreviven entre canales.
+Puede alimentar webs, presentaciones, campañas, contenido social, video, guiones, prompts visuales y sistemas de diseño. Su foco no es describir una pieza aislada, sino encontrar los patrones que sobreviven entre canales.
+
+Lo que hoy se verifica automáticamente sobre una pieza terminada es su texto: `check-piece.mjs` la corre contra `BRAND_RULES.json`, y las reglas que no se pueden chequear por patrón se reportan como pendientes de juicio, nunca pasan en silencio. Los valores visuales viajan como contrato (`DESIGN.md`), pero todavía no hay un verificador visual de piezas.
 
 ### 2. `brand-manual-builder`
 
@@ -205,17 +233,24 @@ la navegación completa falla, no escribe cambios parciales.
 
 Cada paso que produce un contrato termina con su validador. Un contrato rechazado no se fuerza: se completa la evidencia o se baja la afirmación.
 
-También es posible utilizar solamente una capa. Por ejemplo, `brand-dna-scanner` puede preparar una campaña sin construir una web, y `reference-scanner` puede documentar una referencia para un equipo que implementará con otra tecnología.
+Este es el recorrido completo de la línea web. Para producir contenido alcanza con los pasos 1 a 4: con el ADN aprobado, cada pieza se produce con el prompt maestro o con `DESIGN.md`, y su texto se revisa con `check-piece.mjs` antes de publicarla. También es posible usar una sola capa: `reference-scanner` puede documentar una referencia para un equipo que implementará con otra tecnología.
 
 ## Casos de uso
 
+Con el núcleo de marca:
+
+- convertir un manual de marca y sus piezas reales en reglas que un agente de IA puede seguir y que se pueden verificar;
+- producir carruseles, reels, presentaciones o campañas con la misma identidad, sin que cada pieza reinterprete la marca;
+- revisar el texto de una pieza nueva contra las reglas de la marca antes de publicarla;
+- pasarle la paleta y la tipografía de la marca a una herramienta de video o de diseño mediante `DESIGN.md`;
+- auditar una marca: qué es núcleo, qué es moda de campaña y dónde se contradice entre canales.
+
+Con la línea web:
+
 - reconstruir una web de referencia con la identidad y el contenido de un cliente;
-- transformar un manual de marca y sus piezas reales en reglas utilizables por agentes de IA;
-- alinear diseño y desarrollo antes de producir componentes;
-- preparar prompts consistentes para imágenes, presentaciones, redes o campañas;
-- auditar si una pieza nueva respeta el núcleo de una marca;
 - documentar el sistema visual de una web antes de migrarla;
-- crear una base reproducible para equipos distribuidos.
+- alinear diseño y desarrollo antes de producir componentes;
+- publicar una portada nueva sobre un WordPress existente.
 
 ## Qué no es
 

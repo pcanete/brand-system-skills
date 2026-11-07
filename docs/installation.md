@@ -12,8 +12,11 @@ Available skills:
 - `skills/reference-lab-builder`
 - `skills/reference-to-astro`
 - `skills/visual-tuning-kit`
+- `skills/wordpress-publisher`
 
-Install all six for the complete brand-to-web workflow. Install only the
+For brand-consistent content in any channel — social, video, decks,
+campaigns, copy — `brand-dna-scanner` and `brand-manual-builder` are enough.
+Install all seven for the complete brand-to-web workflow. Install only the
 relevant one when the task is narrower.
 
 ## Install for Claude
