@@ -19,19 +19,21 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: |
-            skills/brand-dna-scanner/package-lock.json
-            skills/reference-scanner/package-lock.json
-            skills/reference-to-astro/package-lock.json
+          cache-dependency-path: skills/*/package-lock.json
 
-      - name: Install Brand DNA validator dependencies
-        run: npm ci --prefix skills/brand-dna-scanner
+      # Every skill with a lockfile has validators the repository check runs.
+      # Listing them by hand left three skills without dependencies.
+      - name: Install validator dependencies
+        run: |
+          for lock in skills/*/package-lock.json; do
+            npm ci --prefix "$(dirname "$lock")"
+          done
 
-      - name: Install reference scanner validator dependencies
-        run: npm ci --prefix skills/reference-scanner
-
-      - name: Install Astro builder validator dependencies
-        run: npm ci --prefix skills/reference-to-astro
+      # The external-editor changeset check renders pages with Playwright,
+      # which ships without its browser.
+      - name: Install Playwright browser
+        working-directory: skills/reference-to-astro
+        run: npx playwright install --with-deps chromium
 
       - name: Validate repository
         run: npm test

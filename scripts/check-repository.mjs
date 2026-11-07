@@ -749,6 +749,33 @@ runNode("Evasive Brand DNA fixture is malformed beyond the gates", [
   "--lenient"
 ]);
 
+// A token is a claim that leaves the contract: DESIGN.md consumers quote it
+// exactly. An exact token naming no evidence must be refused like any other
+// unsupported observation, and the export must keep inferences out of its
+// front matter.
+const tokenBrand = [
+  "--dna",
+  path.join(root, "tests", "rejected-tokens", "BRAND_DNA.json"),
+  "--evidence",
+  path.join(root, "tests", "rejected-tokens", "BRAND_EVIDENCE.json")
+];
+
+runNode(
+  "Brand DNA with an unsupported exact token was accepted: tokens escape the gates",
+  [brandValidator, ...tokenBrand],
+  { expect: "fail" }
+);
+
+runNode("Rejected token fixture is malformed beyond the gates", [
+  brandValidator,
+  ...tokenBrand,
+  "--lenient"
+]);
+
+runNode("DESIGN.md export", [
+  path.join(root, "skills", "brand-dna-scanner", "scripts", "test-export-design-md.mjs")
+]);
+
 if (failures.length) {
   console.error("\nRepository validation failed:\n");
   for (const issue of failures) console.error(`- ${issue}`);

@@ -59,7 +59,12 @@
       "description": "Homepage typography and composition.",
       "observed": {
         "display_type": "oversized",
-        "layout": "controlled editorial grid"
+        "layout": "controlled editorial grid",
+        "computed_colors": [
+          "#111111",
+          "#F4F1EA"
+        ],
+        "display_family": "Example Grotesk 800"
       },
       "notes": ""
     },

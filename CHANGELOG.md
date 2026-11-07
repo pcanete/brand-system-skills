@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+`brand-dna-scanner` 0.5.0
+
+- Adds optional `visual.tokens` (colours, typography, rounded, spacing): concrete
+  values with their own `mode` and `evidence_refs`, read by the same support,
+  reference and derived-material gates as observations.
+- Adds `export-design-md.mjs`, which writes the visual system as DESIGN.md
+  (google-labs-code/design.md). Only exact or derived tokens with evidence reach
+  the normative front matter; inferences are disclosed in the prose; a DNA that
+  fails its gates, or has no evidenced tokens, is refused.
+- Publishes the token marked `primary` as `colors.primary` and always declares
+  components omitted, since a Brand DNA does not own channel compositions.
+- Adds `tests/rejected-tokens/`, an exact token naming no evidence, which must
+  keep failing, and an export test that fails if an inferred value reaches the
+  front matter.
+
 `reference-to-astro` 1.3.0
 
 - Incorporates VvvebJs and other free-form HTML editors as external review

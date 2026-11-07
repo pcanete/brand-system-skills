@@ -4,7 +4,7 @@ Each skill follows semantic versioning independently.
 
 | Skill | Current version | Contract |
 | --- | ---: | --- |
-| brand-dna-scanner | 0.4.0 | Brand DNA 0.1.x |
+| brand-dna-scanner | 0.5.0 | Brand DNA 0.1.x (+ optional visual.tokens) |
 | brand-manual-builder | 0.1.0 | Brand Manual Spec 0.1 |
 | reference-scanner | 0.8.0 | Web reference schemas 0.4.x |
 | reference-lab-builder | 0.2.1 | Reference Lab Spec 0.1 |
@@ -23,7 +23,7 @@ versions do not need to move in lockstep.
 
 Use release tags such as:
 
-- `brand-dna-scanner-v0.4.0`
+- `brand-dna-scanner-v0.5.0`
 - `brand-manual-builder-v0.1.0`
 - `reference-scanner-v0.8.0`
 - `reference-lab-builder-v0.2.1`
