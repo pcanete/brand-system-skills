@@ -69,6 +69,33 @@ function evidenceIndex(evidence) {
   );
 }
 
+export const TOKEN_GROUPS = ["colors", "typography", "rounded", "spacing"];
+
+// visual.tokens holds concrete values (a hex, a family) that leave this
+// contract and become normative somewhere else, through export-design-md.
+// Each token carries its own provenance, so the gates read it the same way
+// they read an observation: a token is a claim with a path.
+export function tokenClaims(dna) {
+  const tokens = dna?.visual?.tokens || {};
+  const claims = [];
+
+  for (const group of TOKEN_GROUPS) {
+    for (const token of tokens[group] || []) {
+      claims.push({
+        path: `visual.tokens.${group}.${token.id}`,
+        mode: token.mode,
+        evidence_refs: token.evidence_refs || []
+      });
+    }
+  }
+
+  return claims;
+}
+
+function claimsWithTokens(dna) {
+  return [...(dna.observations || []), ...tokenClaims(dna)];
+}
+
 // Referential integrity: every reference points at recorded evidence.
 export function checkEvidenceReferences(dna, evidence) {
   const known = evidenceIndex(evidence);
@@ -82,7 +109,7 @@ export function checkEvidenceReferences(dna, evidence) {
     }
   };
 
-  for (const observation of dna.observations || []) {
+  for (const observation of claimsWithTokens(dna)) {
     inspect(observation, `observation:${observation.path}`);
   }
 
@@ -97,7 +124,7 @@ export function checkEvidenceReferences(dna, evidence) {
 export function checkObservationSupport(dna) {
   const issues = [];
 
-  for (const observation of dna.observations || []) {
+  for (const observation of claimsWithTokens(dna)) {
     const supported = (observation.evidence_refs || []).length > 0;
     const claimsObservation =
       observation.mode === "exact" || observation.mode === "derived";
@@ -349,7 +376,7 @@ export function checkDerivedNotTreatedAsObservation(dna, evidence) {
 
   const issues = [];
 
-  for (const observation of dna.observations || []) {
+  for (const observation of claimsWithTokens(dna)) {
     if (observation.mode !== "exact" && observation.mode !== "derived") continue;
 
     const refs = observation.evidence_refs || [];

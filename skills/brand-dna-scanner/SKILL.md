@@ -3,7 +3,7 @@ name: brand-dna-scanner
 description: Extracts an evidence-backed Brand DNA from a brand's own material — website, guidelines, campaigns, social, photography, video, packaging, product, UI and copy — separating lasting identity from category convention, campaign styling and one-off execution. Produces BRAND_DNA, BRAND_EVIDENCE, BRAND_REPORT, BRAND_RULES and a reusable BRAND_PROMPT. Use when a brand's rules have to be captured, audited, or handed to whoever makes new work. Not for analyzing one reference website's layout and behavior — that is reference-scanner.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.5.0"
 ---
 
 # Brand DNA Scanner
@@ -81,6 +81,31 @@ rules they are also interpreting, and that check always passes.
 
 Only write a rule the evidence supports. A brand rule with no observation
 behind it is an opinion with a rule number.
+
+## Handing the visual system to other tools
+
+`DESIGN.md` (google-labs-code/design.md) is an open format other tools read
+without knowing this skill: HyperFrames for video, Stitch, and agents that look
+for it at a project root. Its front matter is normative — whoever reads it
+quotes the values exactly — so the export only lets through tokens recorded as
+`exact` or `derived` with evidence:
+
+```bash
+node scripts/export-design-md.mjs \
+  --dna BRAND_DNA.json --evidence BRAND_EVIDENCE.json --out DESIGN.md
+```
+
+- It refuses a Brand DNA that fails its own gates. Exporting it would carry
+  unsupported claims into a file with no trace of their weakness.
+- It refuses when `visual.tokens` has no evidenced colour or typography. Prose
+  in `visual.color` is never mined for values.
+- Inferred tokens appear in the prose, marked as inferences, not in the front
+  matter. Components are always declared omitted: they belong to a channel.
+- A font family is a name, not the font. Whoever produces with the file needs
+  the font files; without them the consumer falls back silently.
+
+`scripts/test-export-design-md.mjs` checks the property that matters — no
+inferred value reaches the front matter — and runs with the repository check.
 
 ## Derived material is not evidence
 
@@ -334,6 +359,15 @@ Analyze:
 - distinctive visual assets
 
 Distinguish design-system constants from campaign art direction.
+
+When you observe a concrete value — a hex in a manual or in computed styles, a
+family in a font file or the CSS, a radius, a spacing step — record it as well
+in `visual.tokens` (`colors`, `typography`, `rounded`, `spacing`), each with
+its `mode` and `evidence_refs`. The prose blocks describe; the tokens are what
+another tool can quote. Mark one colour `primary: true` only when the evidence
+shows it dominating. Record a value that drifts from the system (a live site
+off its own palette) as an observation, not as a token. A guess is a token with
+`mode: inferred`: it is kept, and never exported as normative.
 
 ## Phase 5 — Photography
 
@@ -620,7 +654,8 @@ directory.
 
 Beyond schema shape, the validator enforces what this skill exists to protect:
 
-- an observation recorded as `exact` or `derived` carries `evidence_refs`
+- an observation recorded as `exact` or `derived` carries `evidence_refs`, and
+  so does every `visual.tokens` entry recorded that way
 - an asset claimed as owned or recurrent carries evidence
 - **recurrence is earned**: anything scored recurrent must trace back to at
   least two distinct sources, so one spectacular execution cannot become

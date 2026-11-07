@@ -120,7 +120,8 @@ Produce:
 - `BRAND_EVIDENCE.json`: inventario de fuentes y soporte de cada hallazgo;
 - `BRAND_REPORT.md`: lectura humana del sistema de marca;
 - `BRAND_RULES.md`: reglas operativas, límites y anti-patrones;
-- `BRAND_PROMPT.md`: base reutilizable para crear nuevas piezas con IA.
+- `BRAND_PROMPT.md`: base reutilizable para crear nuevas piezas con IA;
+- `DESIGN.md` (opcional, con `scripts/export-design-md.mjs`): el sistema visual en el formato abierto que leen otras herramientas —HyperFrames para video, Stitch, agentes—, con solo los valores respaldados por evidencia como normativos.
 
 Puede alimentar webs, presentaciones, campañas, contenido social, guiones, prompts visuales y sistemas de diseño. Su foco no es describir una pieza aislada, sino encontrar los patrones que sobreviven entre canales.
 
@@ -417,7 +418,7 @@ Cada skill sigue versionado semántico de forma independiente:
 
 | Skill | Versión actual | Contrato compatible |
 | --- | ---: | --- |
-| `brand-dna-scanner` | `0.4.0` | Brand DNA `0.1.x` |
+| `brand-dna-scanner` | `0.5.0` | Brand DNA `0.1.x` |
 | `brand-manual-builder` | `0.1.0` | Brand Manual Spec `0.1` |
 | `reference-scanner` | `0.8.0` | Web reference schemas `0.4.x`, con rutas de observación resolubles |
 | `reference-lab-builder` | `0.2.1` | Reference Lab Spec `0.1`, con mediciones renderizadas fielmente |

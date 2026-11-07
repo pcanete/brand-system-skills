@@ -38,7 +38,54 @@
     "typography": {},
     "layout": {},
     "shape_language": {},
-    "surfaces": {}
+    "surfaces": {},
+    "tokens": {
+      "colors": [
+        {
+          "id": "ink",
+          "value": "#111111",
+          "role": "text and structural rules",
+          "primary": true,
+          "mode": "exact",
+          "evidence_refs": [
+            "ev-web-home"
+          ],
+          "notes": "Computed style of body text and rules on the homepage."
+        },
+        {
+          "id": "paper",
+          "value": "#F4F1EA",
+          "role": "ground",
+          "mode": "exact",
+          "evidence_refs": [
+            "ev-web-home"
+          ]
+        },
+        {
+          "id": "accent",
+          "value": "#C68A2E",
+          "role": "accent, guessed from one campaign image",
+          "mode": "inferred",
+          "evidence_refs": [],
+          "notes": "Seen once; kept out of the normative tokens until a second source shows it."
+        }
+      ],
+      "typography": [
+        {
+          "id": "display",
+          "fontFamily": "Example Grotesk",
+          "fontWeight": 800,
+          "fontSize": "96px",
+          "lineHeight": 0.95,
+          "letterSpacing": "-0.02em",
+          "role": "oversized display",
+          "mode": "exact",
+          "evidence_refs": [
+            "ev-web-home"
+          ]
+        }
+      ]
+    }
   },
   "photography": {},
   "illustration": {},
